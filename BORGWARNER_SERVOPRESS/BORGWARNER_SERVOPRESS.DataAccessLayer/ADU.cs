@@ -15,7 +15,7 @@ namespace BORGWARNER_SERVOPRESS.DataAccessLayer
         public ADU(string serial)
         {
             SerialNumber = serial;
-            aduHandle = Module.OpenAduDeviceBySerialNumber(SerialNumber, 1);
+            aduHandle = ModuleADUImport.OpenAduDeviceBySerialNumber(SerialNumber, 1);
 
         }
 
@@ -31,14 +31,14 @@ namespace BORGWARNER_SERVOPRESS.DataAccessLayer
                 int iBytesWritten = default;
                 string msg = "RPA";
                 var arglepBuffer = msg;
-                iRC = Module.WriteAduDevice(aduHandle, arglepBuffer, msg.Length, ref iBytesWritten, 500);
+                iRC = ModuleADUImport.WriteAduDevice(aduHandle, arglepBuffer, msg.Length, ref iBytesWritten, 500);
                 int iBytesRead = 0;
                 StringBuilder sResponse = new StringBuilder(32);
                 String Response;
                 sResponse.Append("No Data");
 
                 // The preloaded string is "+++No Data+++" which will be displayed if there is no returned data.
-                iRC = Module.ReadAduDevice(aduHandle, sResponse, 7, iBytesRead, 500);
+                iRC = ModuleADUImport.ReadAduDevice(aduHandle, sResponse, 7, iBytesRead, 500);
                 Response = sResponse.ToString();
                 tempResult1 = Response.Select(c => c == '1').ToArray();
                 Array.Reverse(tempResult1);
@@ -47,12 +47,12 @@ namespace BORGWARNER_SERVOPRESS.DataAccessLayer
                 iBytesWritten = default;
                 msg = "RPB";
                 arglepBuffer = msg;
-                iRC = Module.WriteAduDevice(aduHandle, arglepBuffer, msg.Length, ref iBytesWritten, 500);
+                iRC = ModuleADUImport.WriteAduDevice(aduHandle, arglepBuffer, msg.Length, ref iBytesWritten, 500);
                 iBytesRead = 0;
                 sResponse = new StringBuilder(32);
                 sResponse.Append("No Data");
                 // The preloaded string is "+++No Data+++" which will be displayed if there is no returned data.
-                iRC = Module.ReadAduDevice(aduHandle, sResponse, 7, iBytesRead, 500);
+                iRC = ModuleADUImport.ReadAduDevice(aduHandle, sResponse, 7, iBytesRead, 500);
                 Response = sResponse.ToString();
                 tempResult2 = Response.Select(c => c == '1').ToArray();
                 Array.Reverse(tempResult2);
@@ -80,13 +80,13 @@ namespace BORGWARNER_SERVOPRESS.DataAccessLayer
                 int iBytesWritten = default;
 
                 var arglepBuffer = msg;
-                iRC = Module.WriteAduDevice(aduHandle, arglepBuffer, msg.Length, ref iBytesWritten, 500);
+                iRC = ModuleADUImport.WriteAduDevice(aduHandle, arglepBuffer, msg.Length, ref iBytesWritten, 500);
                 int iBytesRead = 0;
                 StringBuilder sResponse = new StringBuilder(32);
                 String Response;
                 sResponse.Append("No Data");
                 // The preloaded string is "+++No Data+++" which will be displayed if there is no returned data.
-                iRC = Module.ReadAduDevice(aduHandle, sResponse, 7, iBytesRead, 500);
+                iRC = ModuleADUImport.ReadAduDevice(aduHandle, sResponse, 7, iBytesRead, 500);
                 Response = sResponse.ToString();
                 //Displays the received ASCII string in the Textbox
             }

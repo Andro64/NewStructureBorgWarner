@@ -1,7 +1,9 @@
 ﻿using BORGWARNER_SERVOPRESS.DataModel;
+using BORGWARNER_SERVOPRESS.DataAccessLayer;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Data;
 using System.Diagnostics;
 using System.Linq;
 using System.Net.Sockets;
@@ -20,19 +22,16 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
         public ErgoArm(SessionApp _sessionApp)
         {
             sessionApp = _sessionApp;
-            communicationRobot = new CommunicationRobot();            
+            communicationRobot = new CommunicationRobot(sessionApp);            
         }        
         public void initializeModels()
         {
          
         }
-        public void runRobot()
-        {
-            //Conectamos el robot
-        }
+        
         public void connectingRobot()
-        {           
-            connection = communicationRobot.connectRobot("::1", 5000);
+        {            
+            connection = communicationRobot.connectRobot(CommunicationRobot.eTypeRobot.Screw, CommunicationRobot.eTypeConnection.Main);
             connectedRobot= connection.Connected;
         }
         public bool isRobotConnected()

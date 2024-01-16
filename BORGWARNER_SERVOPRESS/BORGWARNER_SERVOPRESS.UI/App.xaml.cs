@@ -1,4 +1,5 @@
 ﻿using BORGWARNER_SERVOPRESS.DataModel;
+using BORGWARNER_SERVOPRESS.BussinessLogicLayer;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -17,18 +18,10 @@ namespace BORGWARNER_SERVOPRESS.UI
     {
         private void Application_Startup(object sender, StartupEventArgs e)
         {
+            
             SessionApp sessionApp = new SessionApp();
-            sessionApp.connStr = ConfigurationManager.ConnectionStrings["conn_str"].ToString();
-            sessionApp.settings = new Settings()
-            {
-                adus_serial = int.Parse(ConfigurationManager.AppSettings["adus_serial"]),
-                scanners = int.Parse(ConfigurationManager.AppSettings["scanners"]),
-                camaras = int.Parse(ConfigurationManager.AppSettings["camaras"]),
-                robots = int.Parse(ConfigurationManager.AppSettings["robots"]),
-                screwdrivers = int.Parse(ConfigurationManager.AppSettings["screwdrivers"]),
-                FISs = int.Parse(ConfigurationManager.AppSettings["ErgoArms"]),
-                conexions = int.Parse(ConfigurationManager.AppSettings["conexions"]),
-            };
+            sessionApp.connStr = ConfigurationManager.ConnectionStrings["conn_str"].ToString();            
+            sessionApp.settings = new BussinessLogicLayer.Settings(sessionApp).getSettings();
             string occupation = ConfigurationManager.AppSettings["occupation"];
             MainWindow mainWindow = new MainWindow(sessionApp);
             mainWindow.Title = "BORGWARNER SERVOPRENSA";

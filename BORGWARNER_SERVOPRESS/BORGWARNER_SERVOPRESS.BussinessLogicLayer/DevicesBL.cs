@@ -38,11 +38,11 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
                 if (dtDevices.Rows.Count > 0)
                 {
 
-                    for (int i = 0; i <= sessionApp.settings.adus_serial; i++)
-                    {
-                        devices.lstIOCard = new List<IOCard>() { new IOCard() { NumSerial = dtDevices.Rows[0]["adu1_serial"].ToString() } };
+                    //for (int i = 0; i <= sessionApp.settings.adus_serial; i++)
+                    //{
+                    //    devices.lstIOCard = new List<IOCardInput_Type1>() { new IOCardInput_Type1() { NumSerial = dtDevices.Rows[0]["adu1_serial"].ToString() } };
 
-                    }
+                    //}
                     //devices = new Devices()
                     //{
 

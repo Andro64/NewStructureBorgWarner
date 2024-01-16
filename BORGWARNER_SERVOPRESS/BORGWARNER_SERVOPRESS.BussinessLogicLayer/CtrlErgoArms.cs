@@ -16,13 +16,16 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
             sessionApp = _sessionApp;
         }
 
-        public void screwingCycle()
+        public void Initialize_ADU_IO_Cards()
         {
-          
+            IOCard_Type1 ioCard_Type1 = new IOCard_Type1(sessionApp);
+            ioCard_Type1.getDataInput();
         }
         public void Ejecutatorque()
         {
-            ErgoArm ergoArm = new ErgoArm(sessionApp);            
+            ErgoArm ergoArm = new ErgoArm(sessionApp);
+
+            Initialize_ADU_IO_Cards();
 
             ergoArm.connectingRobot();
             if(ergoArm.isRobotConnected())

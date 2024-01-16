@@ -21,14 +21,26 @@ namespace BORGWARNER_SERVOPRESS.UI
     /// <summary>
     /// Lógica de interacción para MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class MainWindow : Window, ISensorObserver
     {
-        SessionApp sessionApp;
+        #region OPF
+        private SensorLogic sensorLogic;
+        private List<CheckBox> checkBoxes;
+        #endregion
+
+        private SessionApp sessionApp;
+        
         public MainWindow(SessionApp _sessionApp)
         {
             sessionApp = _sessionApp;
             InitializeComponent();
+            #region OPF
+            sensorLogic = new SensorLogic();
+            sensorLogic.Attach(this);
+            InitializeCheckBoxes();
+            #endregion
         }
+
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
@@ -66,7 +78,8 @@ namespace BORGWARNER_SERVOPRESS.UI
             try
             {
                 //Robot robot = new Robot(sessionApp);
-                //bool blinitialize = robot.startConnectionRobot();                
+                //bool blinitialize = robot.startConnectionRobot();
+                
                 CtrlErgoArms ctrlErgoArms = new CtrlErgoArms(sessionApp);
 
                 for (int i = 0; i < 8; i++)
@@ -81,5 +94,34 @@ namespace BORGWARNER_SERVOPRESS.UI
                 MessageBox.Show("Error: " + ex.Message + "\nSource: " + ex.Source + "\nInner: " + ex.InnerException, "Error", System.Windows.MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
+        #region  Observer Pattern Functionality (OPF)
+        public void UpdateStatus(string sensorName, string newStatus)
+        {
+            // Actualiza el estado del CheckBox correspondiente
+            var checkBox = checkBoxes.Find(c => c.Content == sensorName);
+
+            if (checkBox != null)
+            {
+                checkBox.Content = $"{sensorName}: {newStatus}";
+            }
+        }
+
+        private void InitializeCheckBoxes()
+        {
+            checkBoxes = new List<CheckBox> { checkBoxSensor1, checkBoxSensor2, checkBoxSensor3, checkBoxSensor4, checkBoxSensor5 };
+            foreach (var checkBox in checkBoxes)
+            {
+                string sensorName = checkBox.Content.ToString();
+                checkBox.Checked += (sender, e) => HandleCheckBoxClick(sensorName, (bool)checkBox.IsChecked);
+                checkBox.Content = $"{sensorName}: {sensorLogic.GetSensorStatus(sensorName)}";
+            }
+        }
+        private void HandleCheckBoxClick(string sensorName, bool isChecked)
+        {
+            // Maneja el clic en el CheckBox cambiando el estado del sensor
+            sensorLogic.ToggleSensorStatus(sensorName);
+            listBoxStatus.Items.Insert(0, $"{sensorName} {(isChecked ? "Activado" : "Desactivado")}");
+        }
+        #endregion
     }
 }
