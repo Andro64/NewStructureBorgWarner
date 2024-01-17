@@ -94,6 +94,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ADU.cs" />
+    <Compile Include="Cognex2800.cs" />
+    <Compile Include="CognexD900.cs" />
     <Compile Include="CommunicationGeneral.cs" />
     <Compile Include="CommunicationIOCard.cs" />
     <Compile Include="CommunicationRobot.cs" />

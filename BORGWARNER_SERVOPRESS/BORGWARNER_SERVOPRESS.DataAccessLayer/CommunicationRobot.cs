@@ -116,8 +116,11 @@ namespace BORGWARNER_SERVOPRESS.DataAccessLayer
         }
         public void disconnectRobot(Socket socket)
         {
-            socket.Shutdown(SocketShutdown.Both);
-            socket.Close();
+            if (socket != null)
+            {
+                socket.Shutdown(SocketShutdown.Both);
+                socket.Close();
+            }
         }
         public string responseRobot(Socket socket)
         {

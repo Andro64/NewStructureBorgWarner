@@ -9,6 +9,7 @@ using System.Linq;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
+using System.Threading;
 
 namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
 {
@@ -17,21 +18,31 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
         SessionApp sessionApp;
         CommunicationRobot communicationRobot;
         Socket connection;
-        
+        IOCard_Type1 ioCard_Type1;
+        CancellationTokenSource cancellationToken_ioCard1;
+
         private bool connectedRobot;
         public ErgoArm(SessionApp _sessionApp)
         {
             sessionApp = _sessionApp;
             communicationRobot = new CommunicationRobot(sessionApp);            
         }        
-        public void initializeModels()
+        public async Task startReadSensors()
         {
-         
+            ioCard_Type1 = new IOCard_Type1(sessionApp);
+            cancellationToken_ioCard1 = new CancellationTokenSource();
+            Debug.WriteLine("Inicia lectura de los sensores");
+            Task sensorTask = ioCard_Type1.getDataInput(cancellationToken_ioCard1.Token);
+        }
+        public void endReadSensors()
+        {
+            cancellationToken_ioCard1.Cancel();
+            Debug.WriteLine("Termine de leer los sensores");
         }
         
         public void connectingRobot()
         {            
-            connection = communicationRobot.connectRobot(CommunicationRobot.eTypeRobot.Screw, CommunicationRobot.eTypeConnection.Main);
+            connection = communicationRobot.connectRobot(CommunicationRobot.eTypeRobot.RobotEpson, CommunicationRobot.eTypeConnection.Main);
             connectedRobot= connection.Connected;
         }
         public bool isRobotConnected()

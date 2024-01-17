@@ -2,8 +2,10 @@
 using BORGWARNER_SERVOPRESS.DataModel;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
@@ -63,20 +65,28 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
         {
             NumSerial = sessionApp.settings.FirstOrDefault(x => x.setting.Contains("ADU_SERIAL_1")).valueSetting;
         }
-        //Este si se debe estar leyendo constantemente en un ciclo de lectura infinito
-        public void getDataInput()
+        //Este si se debe estar leyendo constantemente en un ciclo de lectura infinito hasta que se le envia
+        //un token de cancelacion
+        public async Task getDataInput(CancellationToken cancellationToken)
         {
             ADU ioADUCard = new ADU(NumSerial);
-            CardInputs = ioADUCard.MapADUInput();
+            while (!cancellationToken.IsCancellationRequested)
+            {
+                CardInputs = ioADUCard.MapADUInput();
 
-            _pressure_Sensor = CardInputs[0];
-            _prestoper_Pallet_Present = CardInputs[1];
-            _stopper_Pallet_Present = CardInputs[2];
-            _pA3 = CardInputs[3];
-            _toolActive = CardInputs[4];
-            _pB1 = CardInputs[5];
-            _pB2 = CardInputs[6];
-            _e_Stop_Active = CardInputs[7];
+                _pressure_Sensor = CardInputs[0];
+                _prestoper_Pallet_Present = CardInputs[1];
+                _stopper_Pallet_Present = CardInputs[2];
+                _pA3 = CardInputs[3];
+                _toolActive = CardInputs[4];
+                _pB1 = CardInputs[5];
+                _pB2 = CardInputs[6];
+                _e_Stop_Active = CardInputs[7];
+
+                Debug.WriteLine("Leyendo Sensores");
+                await Task.Delay(5); //Tiempo entre cada lectura 5mls
+                
+            }
         }
         //Cada clic en el boton deberia enviar la info dentro del evento clic
         public void sendDataOutput()

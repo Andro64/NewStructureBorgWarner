@@ -15,34 +15,44 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
         {
             sessionApp = _sessionApp;
         }
+        
 
-        public void Initialize_ADU_IO_Cards()
-        {
-            IOCard_Type1 ioCard_Type1 = new IOCard_Type1(sessionApp);
-            ioCard_Type1.getDataInput();
-        }
-        public void Ejecutatorque()
+        public async Task Ejecutatorque()
         {
             ErgoArm ergoArm = new ErgoArm(sessionApp);
-
-            Initialize_ADU_IO_Cards();
-
-            ergoArm.connectingRobot();
-            if(ergoArm.isRobotConnected())
+            try
             {
-                if(ergoArm.controllerConnectionInitation() == "0002")
+                Task.Run(async () =>
                 {
-                    ergoArm.ScrewingProgram_by_Model("modelo1", true, false);
-                    if(ergoArm.enableScrewdriver()== "0005")
+                    await ergoArm.startReadSensors();
+                }).Wait();
+
+                ergoArm.connectingRobot();
+                if (ergoArm.isRobotConnected())
+                {
+                    if (ergoArm.controllerConnectionInitation() == "0002")
                     {
-                        if(ergoArm.screwingSubscription() =="0005")
+                        ergoArm.ScrewingProgram_by_Model("modelo1", true, false);
+                        if (ergoArm.enableScrewdriver() == "0005")
                         {
-                            Debug.WriteLine("Se ejecutado atornillador");
+                            if (ergoArm.screwingSubscription() == "0005")
+                            {
+                                Debug.WriteLine("Se ejecutado atornillador");
+                            }
                         }
                     }
                 }
+                //ergoArm.disconnectingRobot();
             }
-            ergoArm.disconnectingRobot();
+            catch (Exception ex)
+            {
+                Debug.WriteLine("Error: " + ex.Message);
+            }
+            finally
+            {
+                ergoArm.endReadSensors();
+                ergoArm.disconnectingRobot();
+            }
         }
     }
 }
