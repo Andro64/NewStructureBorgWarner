@@ -17,7 +17,7 @@
         <Label x:Name="lblPage" Content="Página" HorizontalAlignment="Left" Margin="440,116,0,0" VerticalAlignment="Top" FontSize="9"/>
         <TextBox x:Name="txtPagination" HorizontalAlignment="Left" Margin="481,121,0,0" TextWrapping="Wrap" Text="1" VerticalAlignment="Top" Width="28" Height="13" FontSize="9"/>
         <Button x:Name="btnInitialize" Content="Inicializa el sistema" HorizontalAlignment="Left" Margin="414,28,0,0" VerticalAlignment="Top" Click="btnInitialize_Click"/>
-        <Label x:Name="lblMessageScrew" Content="..." HorizontalAlignment="Left" Margin="266,101,0,0" VerticalAlignment="Top" FontSize="18" Foreground="#FF0B2ADA" FontWeight="Bold"/>
+        <Label x:Name="lblMessageScrew" Content="{Binding MessageScrew}" HorizontalAlignment="Left" Margin="181,106,0,0" VerticalAlignment="Top" FontSize="18" Foreground="#FF0B2ADA" FontWeight="Bold"/>
         <DataGrid x:Name="dtgScrews" HorizontalAlignment="Left" Height="100" Margin="14,141,0,0" VerticalAlignment="Top" Width="504" ItemsSource="{Binding}" AutoGenerateColumns="True"/>
         <CheckBox x:Name="checkBoxSensor1" Content="Sensor 1" HorizontalAlignment="Left" Margin="546,20,0,0" VerticalAlignment="Top"/>
         <CheckBox x:Name="checkBoxSensor2" Content="Sensor 2" HorizontalAlignment="Left" Margin="546,39,0,0" VerticalAlignment="Top"/>
@@ -25,6 +25,7 @@
         <CheckBox x:Name="checkBoxSensor4" Content="Sensor 4" HorizontalAlignment="Left" Margin="546,75,0,0" VerticalAlignment="Top"/>
         <CheckBox x:Name="checkBoxSensor5" Content="Sensor 5" HorizontalAlignment="Left" Margin="546,94,0,0" VerticalAlignment="Top"/>
         <ListBox x:Name="listBoxStatus" HorizontalAlignment="Left" Height="120" Margin="546,121,0,0" VerticalAlignment="Top" Width="226"/>
-
+        <Label x:Name="lblFecha" Content="{Binding Timestamp}" HorizontalAlignment="Left" Margin="14,58,0,0" VerticalAlignment="Top"/>
+        <Label x:Name="lblNumAleatorio" Content="{Binding NumeroAleatorio}" HorizontalAlignment="Left" Margin="241,58,0,0" VerticalAlignment="Top"/>
     </Grid>
 </Window>

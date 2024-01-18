@@ -53,6 +53,7 @@
     <Compile Include="SessionApp.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="User.cs" />
+    <Compile Include="Views\ModelViewMain.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

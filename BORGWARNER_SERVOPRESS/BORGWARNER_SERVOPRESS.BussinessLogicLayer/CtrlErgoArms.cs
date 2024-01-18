@@ -11,20 +11,22 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
     public class CtrlErgoArms
     {
         SessionApp sessionApp;
-        public CtrlErgoArms(SessionApp _sessionApp)
+        Views.ViewMain viewMain;
+        public CtrlErgoArms(SessionApp _sessionApp, Views.ViewMain _viewMain)
         {
             sessionApp = _sessionApp;
+            viewMain = _viewMain;
         }
         
 
-        public async Task Ejecutatorque()
+        public async Task Ejecutatorque(IProgress<string> progress)
         {
-            ErgoArm ergoArm = new ErgoArm(sessionApp);
+            ErgoArm ergoArm = new ErgoArm(sessionApp, viewMain);
             try
             {
                 Task.Run(async () =>
                 {
-                    await ergoArm.startReadSensors();
+                    await ergoArm.startReadSensors(progress);
                 }).Wait();
 
                 ergoArm.connectingRobot();
@@ -37,6 +39,11 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
                         {
                             if (ergoArm.screwingSubscription() == "0005")
                             {
+                                Task.Run(async () =>
+                                {
+                                   await viewMain.getStatusScrew("Se ejecutado atornillador");
+                                }).Wait();
+
                                 Debug.WriteLine("Se ejecutado atornillador");
                             }
                         }
@@ -46,6 +53,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
             }
             catch (Exception ex)
             {
+                viewMain.getStatusScrew("Error: " + ex.Message);
                 Debug.WriteLine("Error: " + ex.Message);
             }
             finally

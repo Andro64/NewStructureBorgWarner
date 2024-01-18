@@ -16,27 +16,33 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
     public class ErgoArm
     {
         SessionApp sessionApp;
+        Views.ViewMain viewMain;
+
         CommunicationRobot communicationRobot;
         Socket connection;
         IOCard_Type1 ioCard_Type1;
         CancellationTokenSource cancellationToken_ioCard1;
 
         private bool connectedRobot;
-        public ErgoArm(SessionApp _sessionApp)
+        public ErgoArm(SessionApp _sessionApp, Views.ViewMain _viewMain)
         {
             sessionApp = _sessionApp;
+            viewMain = _viewMain;
             communicationRobot = new CommunicationRobot(sessionApp);            
         }        
-        public async Task startReadSensors()
+        public async Task startReadSensors(IProgress<string> progressScrew)
         {
-            ioCard_Type1 = new IOCard_Type1(sessionApp);
-            cancellationToken_ioCard1 = new CancellationTokenSource();
+            ioCard_Type1 = new IOCard_Type1(sessionApp, viewMain);
+            cancellationToken_ioCard1 = new CancellationTokenSource();            
+            //viewMain .getStatusScrew("Inicia lectura de los sensores");            
             Debug.WriteLine("Inicia lectura de los sensores");
-            Task sensorTask = ioCard_Type1.getDataInput(cancellationToken_ioCard1.Token);
+            progressScrew.Report("Inicia lectura de los sensores");
+            Task sensorTask = ioCard_Type1.getDataInput(cancellationToken_ioCard1.Token, progressScrew);
         }
         public void endReadSensors()
         {
-            cancellationToken_ioCard1.Cancel();
+            cancellationToken_ioCard1.Cancel();            
+            //viewMain.getStatusScrew("Termine de leer los sensores");
             Debug.WriteLine("Termine de leer los sensores");
         }
         

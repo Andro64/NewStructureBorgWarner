@@ -13,12 +13,21 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
     public class IOCard_Type1
     {
         SessionApp sessionApp;
+        Views.ViewMain viewMain;
+
         private bool[] CardInputs;
         private bool[] CardOutputs;
         private string NumSerial;
-        public IOCard_Type1(SessionApp _sessionApp)
+        public IOCard_Type1(SessionApp _sessionApp, Views.ViewMain _viewMain)
         {
             sessionApp = _sessionApp;
+            viewMain = _viewMain;
+            initialize();
+        }
+
+        public IOCard_Type1(SessionApp _sessionApp)
+        {
+            sessionApp = _sessionApp;            
             initialize();
         }
 
@@ -67,8 +76,9 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
         }
         //Este si se debe estar leyendo constantemente en un ciclo de lectura infinito hasta que se le envia
         //un token de cancelacion
-        public async Task getDataInput(CancellationToken cancellationToken)
+        public async Task getDataInput(CancellationToken cancellationToken,IProgress<string> progressScrew)
         {
+            int cont = 0;
             ADU ioADUCard = new ADU(NumSerial);
             while (!cancellationToken.IsCancellationRequested)
             {
@@ -83,9 +93,14 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
                 _pB2 = CardInputs[6];
                 _e_Stop_Active = CardInputs[7];
 
-                Debug.WriteLine("Leyendo Sensores");
+
+                string report = "Leyendo Sensores " + cont.ToString();
+                Debug.WriteLine(report); // + cont.ToString());
+                //viewMain.getStatusScrew("Leyendo Sensores veces:");// + cont.ToString());                
+                progressScrew.Report(report);
+
                 await Task.Delay(5); //Tiempo entre cada lectura 5mls
-                
+                cont++;
             }
         }
         //Cada clic en el boton deberia enviar la info dentro del evento clic

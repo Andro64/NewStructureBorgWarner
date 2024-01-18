@@ -1,4 +1,5 @@
 ﻿using BORGWARNER_SERVOPRESS.BussinessLogicLayer;
+using BORGWARNER_SERVOPRESS.BussinessLogicLayer.Views;
 using BORGWARNER_SERVOPRESS.DataModel;
 using System;
 using System.Collections.Generic;
@@ -15,6 +16,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 
 namespace BORGWARNER_SERVOPRESS.UI
 {
@@ -29,7 +31,14 @@ namespace BORGWARNER_SERVOPRESS.UI
         #endregion
 
         private SessionApp sessionApp;
-        
+        private ViewMain viewMain;
+
+
+        /***************************************/
+        private readonly DispatcherTimer _timer;
+        Progress<string> progress;
+        /***************************************/
+
         public MainWindow(SessionApp _sessionApp)
         {
             sessionApp = _sessionApp;
@@ -39,18 +48,36 @@ namespace BORGWARNER_SERVOPRESS.UI
             sensorLogic.Attach(this);
             InitializeCheckBoxes();
             #endregion
+
+            viewMain = new ViewMain();
+            DataContext = viewMain.GetModel();
+            viewMain.ShowDate();
+
+            /************************************************************/
+            //_timer = new DispatcherTimer();
+            //_timer.Interval = TimeSpan.FromSeconds(1);
+            //_timer.Tick += async (sender, e) => await UpdateProgress();
+            
+            /************************************************************/
         }
 
+        //private async Task UpdateProgress()
+        //{
+        //    progress = new Progress<string>(message => {
+        //        lblMessageScrew.Content = message;
+        //    });
+        //}
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             try
             {
-                UsersAdmin usersAdmin = new UsersAdmin(sessionApp);
-                //bool blAccess = usersAdmin.authentication(txtUser.Text, txtPassword.Text);
-                bool blAccess = usersAdmin.authenticationSP(txtUser.Text, txtPassword.Text);
+                //UsersAdmin usersAdmin = new UsersAdmin(sessionApp);
+                ////bool blAccess = usersAdmin.authentication(txtUser.Text, txtPassword.Text);
+                //bool blAccess = usersAdmin.authenticationSP(txtUser.Text, txtPassword.Text);
 
-                lblAccess.Content = blAccess ? "Acceso consedido" : "Acceso denegado";
+                //lblAccess.Content = blAccess ? "Acceso consedido" : "Acceso denegado";
+                viewMain.getStatusScrew("Todo bien ufff (*=*)" + new Random().Next(1, 100));
             }
             catch (Exception ex)
             {
@@ -64,8 +91,8 @@ namespace BORGWARNER_SERVOPRESS.UI
             try
             {
                 SCREWS screws = new SCREWS(sessionApp);
-                DataTable dtScrews = screws.getScrewsSP(int.Parse(txtPagination.Text), 2); //el 2 son los registros que trae                
-                dtgScrews.ItemsSource = dtScrews.AsDataView();
+                //DataTable dtScrews = screws.getScrewsSP(int.Parse(txtPagination.Text), 2); //el 2 son los registros que trae                
+                //dtgScrews.ItemsSource = dtScrews.AsDataView();
             }
             catch (Exception ex)
             {
@@ -73,19 +100,26 @@ namespace BORGWARNER_SERVOPRESS.UI
             }
         }
 
-        private void btnInitialize_Click(object sender, RoutedEventArgs e)
+        private async void btnInitialize_Click(object sender, RoutedEventArgs e)
         {
             try
             {
                 //Robot robot = new Robot(sessionApp);
                 //bool blinitialize = robot.startConnectionRobot();
                 
-                CtrlErgoArms ctrlErgoArms = new CtrlErgoArms(sessionApp);
+                CtrlErgoArms ctrlErgoArms = new CtrlErgoArms(sessionApp, viewMain);
+                /***************************************/
+                //_timer.Start();                
+                /***************************************/
 
-                for (int i = 0; i < 8; i++)
+                for (int i = 0; i < 2; i++)
                 {
-                    lblMessageScrew.Content = "Atronillando: Tronillo " + i.ToString();
-                    ctrlErgoArms.Ejecutatorque();
+                    //lblMessageScrew.Content = "Atronillando: Tronillo " + i.ToString();
+                    progress = new Progress<string>(message => {
+                        lblMessageScrew.Content = message;
+                    });
+                    
+                    await ctrlErgoArms.Ejecutatorque(progress);
                 }
 
             }
