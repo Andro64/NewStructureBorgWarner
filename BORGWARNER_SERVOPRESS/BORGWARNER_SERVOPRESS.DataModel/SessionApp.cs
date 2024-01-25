@@ -10,6 +10,11 @@ namespace BORGWARNER_SERVOPRESS.DataModel
     {        
         public string connStr { get; set; }
         public int statusCiclo { get; set; }
-        public List<Settings> settings { get; set; }        
+        public List<Settings> settings { get; set; }
+        public List<ConnectionWorkStation> connectionsWorkStation { get; set; }
+        public IOCardType_M1 Sensors_M1 { get; set; }
+        public IOCardType_M2 Sensors_M2 { get; set; }
+        public IOCardType_M3 Sensors_M3 { get; set; }
+        public QRs QR { get; set; }
     }
 }

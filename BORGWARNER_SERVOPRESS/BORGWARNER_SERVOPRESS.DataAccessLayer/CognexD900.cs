@@ -5,85 +5,45 @@ using System.IO;
 using System.Threading;
 using System.Text;
 using System.Threading.Tasks;
+using BORGWARNER_SERVOPRESS.DataModel;
 
 namespace BORGWARNER_SERVOPRESS.DataAccessLayer
 {
-    class CognexD900
+    public class CognexD900
     {
+        SessionApp sessionApp;
+        Camara _camara;
 
         public static bool Inspection_Result = false;
         public static bool Inspection_ResultD1 = false;
         public static bool Inspection_ResultD2 = false;
 
         public static bool ready;
-
-        public static void cambiarJob(TCP_IP _Camara, string _IP)
+        public CognexD900(SessionApp _sessionApp)
         {
-            TCP_IP camara = new TCP_IP(23);
-            string Inspection_IP = "";
-
-            camara = _Camara;
-            Inspection_IP = _IP;
-
-            string Lectura_trabajo = "";
-            string Aux_trabajo = "";
-
-            camara.Conectar(Inspection_IP);
-
-            camara.EnviarComando("admin" + (char)13 + (char)10);
-
-            camara.EnviarComando("SW8" + (char)13 + (char)10);
-
-            camara.EnviarComando("GVOUTPUT" + (char)13 + (char)10);
-
-            camara.EnviarComando("GJ" + (char)13 + (char)10);
-
-            //camara.EnviarComando("SW8" + (char)13 + (char)10);
-
-            Thread.Sleep(25);
-
-            Lectura_trabajo = camara.Leer();
-
-            Thread.Sleep(25);
-
-            if (Lectura_trabajo.Contains("1\r"))
-            {
-                Aux_trabajo = Lectura_trabajo.Substring(3, 2);
-
-                if (Aux_trabajo != "96")
-                {
-                    camara.EnviarComando("SJ96" + (char)13 + (char)10);
-
-                    Thread.Sleep(20);
-
-                    camara.Desconectar();
-                }
-            }
-            else if (Lectura_trabajo.Contains("-2"))
-            {
-                camara.EnviarComando("SJ96" + (char)13 + (char)10);
-
-                Thread.Sleep(20);
-
-                camara.Desconectar();
-            }
-
-            camara.Desconectar();
-
-            return;
-
+            sessionApp = _sessionApp;
+            Initialize();
         }
-
-        public static void Trigger(TCP_IP _Camara, string _IP)
+      
+        public void Initialize()
         {
-            TCP_IP camara = new TCP_IP(23);
-            TCP_IP camaraD1 = new TCP_IP(23);
-            TCP_IP camaraD2 = new TCP_IP(23);
+            _camara = new Camara() { 
+                IP = sessionApp.connectionsWorkStation.FirstOrDefault(x => x.idTypeDevice.Equals(eTypeDevices.Scanner) && x.idTypeConnection.Equals(eTypeConnection.CognexD900)).IP,
+                Port = sessionApp.connectionsWorkStation.FirstOrDefault(x => x.idTypeDevice.Equals(eTypeDevices.Scanner) && x.idTypeConnection.Equals(eTypeConnection.CognexD900)).Port
+            };            
+        }
+       
+
+        public void Trigger(TCP_IP _Camara)
+        {
+            TCP_IP camara = new TCP_IP(_camara.Port);
+            TCP_IP camaraD1 = new TCP_IP(_camara.Port);
+            TCP_IP camaraD2 = new TCP_IP(_camara.Port);
             camara = _Camara;
             camaraD1 = _Camara;
             camaraD2 = _Camara;
             string Inspection_IP = "";
-            Inspection_IP = _IP;
+            Inspection_IP = _camara.IP;
 
             string Lectura = "";
             string Herramienta = "";
@@ -188,6 +148,193 @@ namespace BORGWARNER_SERVOPRESS.DataAccessLayer
 
                 camaraD2.Desconectar();
                 Thread.Sleep(50);
+            }
+        }
+
+        public static void TriggerPad(TCP_IP _Camara, string _IP)
+        {
+            TCP_IP camara = new TCP_IP(23);
+            camara = _Camara;
+            string Inspection_IP = "";
+            Inspection_IP = _IP;
+
+            string Lectura1 = "";
+            string Lectura2 = "";
+            string Lectura3 = "";
+            string Lectura4 = "";
+
+            bool RuteoCable;
+            bool ConectorCable;
+
+            if (!camara.conectado)
+            {
+                camara.Conectar(Inspection_IP);
+
+                camara.EnviarComandoSinRespuesta("admin" + (char)13 + (char)10);
+
+                camara.EnviarComandoSinRespuesta("" + (char)13 + (char)10);
+            }
+
+            if (camara.conectado)
+            {
+                if(true)//if (G.status == 315)
+                {
+                    camara.EnviarComando("SFEXP 5.00" + (char)13 + (char)10);
+
+                    Thread.Sleep(100);
+
+                    camara.EnviarComando("SE8" + (char)13 + (char)10);
+
+                    camara.EnviarComando("GVOutput1" + (char)13 + (char)10);
+
+                    Lectura2 = camara.Leer();
+
+                    Thread.Sleep(100);
+
+                    if (Lectura2.Contains("1\r\n") || Lectura2.Contains("1.000\r\n"))
+                    {
+                        Thread.Sleep(10);
+                    }
+
+                    //camara.EnviarComando("SE8" + (char)13 + (char)10); // comando telnet que da trigger a la camara
+
+                    camara.EnviarComando("GVOutput" + (char)13 + (char)10); // comando telnet que obtiene resultado de la camara              
+
+                    Lectura2 = camara.Leer();
+
+                    Thread.Sleep(100);
+
+                    if (Lectura2.Contains("1\r\n") || Lectura2.Contains("1.000\r\n"))
+                    {
+                        Inspection_Result = true;
+                        ready = true;
+                    }
+                    else
+                    {
+                        Inspection_Result = true;
+                        ready = true;
+                    }
+                    Lectura2 = "";
+                    Thread.Sleep(50);
+                }
+
+                else if(true)//if (G.status == 337)
+                {
+
+                    camara.EnviarComando("SFEXP 20.00" + (char)13 + (char)10);
+
+                    Thread.Sleep(150);
+
+                    camara.EnviarComando("SE8" + (char)13 + (char)10);
+
+                    //Thread.Sleep(50);
+
+                    camara.EnviarComando("GVOutput1" + (char)13 + (char)10);
+
+                    Lectura3 = camara.Leer();
+
+                    Thread.Sleep(100);
+
+                    if (Lectura3.Contains("1\r\n") || Lectura3.Contains("1.000\r\n"))
+                    {
+                        Thread.Sleep(100);
+                    }
+
+                    camara.EnviarComando("GVOutput3" + (char)13 + (char)10);// comando telnet que obtiene resultado de la camara              
+
+                    Lectura3 = camara.Leer();
+
+                    Thread.Sleep(100);
+
+                    if (Lectura3.Contains("1\r\n") || Lectura3.Contains("1.000\r\n"))
+                    {
+                        ConectorCable = true;
+                        //Inspection_Result = true;
+                        //ready = true;
+                    }
+                    else
+                    {
+                        ConectorCable = false;
+                        //Inspection_Result = false;
+                        //ready = true;
+                    }
+
+                    camara.EnviarComando("GVOutput2" + (char)13 + (char)10);// comando telnet que obtiene resultado de la camara              
+
+                    Lectura1 = camara.Leer();
+
+                    Thread.Sleep(100);
+
+                    if (Lectura1.Contains("1\r\n") || Lectura1.Contains("1.000\r\n"))
+                    {
+                        RuteoCable = true;
+                        //Inspection_Result = true;
+                        //ready = true;
+                    }
+                    else
+                    {
+                        RuteoCable = false;
+                        //Inspection_Result = false;
+                        //ready = true;
+                    }
+
+                    if (RuteoCable && ConectorCable)
+                    {
+                        Inspection_Result = true;
+                        ready = true;
+                    }
+                    else
+                    {
+                        Inspection_Result = true;
+                        ready = true;
+                    }
+                    Lectura1 = "";
+                    Lectura3 = "";
+                    Thread.Sleep(50);
+
+                }
+
+                else if(true)//if (G.status == 339)
+                {
+                    camara.EnviarComando("SFEXP 10.00" + (char)13 + (char)10);
+
+                    Thread.Sleep(150);
+
+                    camara.EnviarComando("SE8" + (char)13 + (char)10);
+
+                    //Thread.Sleep(50);
+
+                    camara.EnviarComando("GVOutput1" + (char)13 + (char)10);
+
+                    Lectura4 = camara.Leer();
+
+                    Thread.Sleep(100);
+
+                    if (Lectura4.Contains("1\r\n") || Lectura4.Contains("1.000\r\n"))
+                    {
+                        Thread.Sleep(100);
+                    }
+
+                    camara.EnviarComando("GVResultado" + (char)13 + (char)10);// comando telnet que obtiene resultado de la camara              
+
+                    Lectura4 = camara.Leer();
+
+                    Thread.Sleep(100);
+
+                    if (Lectura4.Contains("1\r\n") || Lectura4.Contains("1.000\r\n"))
+                    {
+                        Inspection_Result = true;
+                        ready = true;
+                    }
+                    else
+                    {
+                        Inspection_Result = true;
+                        ready = true;
+                    }
+                    Lectura4 = "";
+                    Thread.Sleep(50);
+                }
+                camara.Desconectar();
             }
         }
 

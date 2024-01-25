@@ -90,7 +90,7 @@ namespace BORGWARNER_SERVOPRESS.UI
         {
             try
             {
-                SCREWS screws = new SCREWS(sessionApp);
+                Screw screws = new Screw(sessionApp);
                 //DataTable dtScrews = screws.getScrewsSP(int.Parse(txtPagination.Text), 2); //el 2 son los registros que trae                
                 //dtgScrews.ItemsSource = dtScrews.AsDataView();
             }

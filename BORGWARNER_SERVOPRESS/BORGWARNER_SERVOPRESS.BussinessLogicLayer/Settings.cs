@@ -20,5 +20,10 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
             CommunicationGeneral communication = new CommunicationGeneral(sessionApp);
             return communication.getSettings();
         }
+        public List<ConnectionWorkStation> getConnections()
+        {
+            CommunicationGeneral communication = new CommunicationGeneral(sessionApp);
+            return communication.getConnectionsDevices();
+        }
     }
 }

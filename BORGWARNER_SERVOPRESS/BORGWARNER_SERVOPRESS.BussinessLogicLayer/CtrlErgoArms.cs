@@ -22,13 +22,16 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
         public async Task Ejecutatorque(IProgress<string> progress)
         {
             ErgoArm ergoArm = new ErgoArm(sessionApp, viewMain);
+            SensorsIO sensors = new SensorsIO(sessionApp);
             try
             {
-                Task.Run(async () =>
-                {
-                    await ergoArm.startReadSensors(progress);
-                }).Wait();
+                //Task.Run(async () =>
+                //{
+                //    await ergoArm.startReadSensors(progress);
+                //}).Wait();
 
+                //ergoArm.startReadSensors(progress);
+                sensors.startRead();
                 ergoArm.connectingRobot();
                 if (ergoArm.isRobotConnected())
                 {
@@ -58,7 +61,8 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
             }
             finally
             {
-                ergoArm.endReadSensors();
+                //ergoArm.endReadSensors();
+                sensors.endRead();
                 ergoArm.disconnectingRobot();
             }
         }

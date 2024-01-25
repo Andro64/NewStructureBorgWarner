@@ -43,12 +43,19 @@
   <ItemGroup>
     <Compile Include="ActionModel.cs" />
     <Compile Include="Camara.cs" />
-    <Compile Include="ConnectionRobot.cs" />
+    <Compile Include="ConnectionWorkStation.cs" />
     <Compile Include="Devices.cs" />
+    <Compile Include="Enums.cs" />
     <Compile Include="EpsonRobot.cs" />
     <Compile Include="ErgoArm.cs" />
     <Compile Include="FIS.cs" />
+    <Compile Include="IOCardType_A1.cs" />
+    <Compile Include="IOCardType_M1.cs" />
+    <Compile Include="IOCardType_M2.cs" />
+    <Compile Include="IOCardType_M3.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="QRs.cs" />
+    <Compile Include="ScannerDataProcessedEventArgs.cs" />
     <Compile Include="Screwdriver.cs" />
     <Compile Include="SessionApp.cs" />
     <Compile Include="Settings.cs" />

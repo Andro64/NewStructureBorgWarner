@@ -99,6 +99,7 @@
     <Compile Include="CommunicationGeneral.cs" />
     <Compile Include="CommunicationIOCard.cs" />
     <Compile Include="CommunicationRobot.cs" />
+    <Compile Include="CommunicationFIS.cs" />
     <Compile Include="ModuleADUImport.cs" />
     <Compile Include="MYSQL_DB.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

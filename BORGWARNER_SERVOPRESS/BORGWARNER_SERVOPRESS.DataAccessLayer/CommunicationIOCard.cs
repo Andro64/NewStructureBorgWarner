@@ -12,22 +12,22 @@ namespace BORGWARNER_SERVOPRESS.DataAccessLayer
     public class CommunicationIOCard
     {
         SessionApp sessionApp;
-        List<ConnectionRobot> connections;
+        List<ConnectionWorkStation> connections;
         
         public CommunicationIOCard(SessionApp _sessionApp)
         {
             sessionApp = _sessionApp;
             connections = getConnectionsRobot();
         }
-        public List<ConnectionRobot> getConnectionsRobot()
+        public List<ConnectionWorkStation> getConnectionsRobot()
         {
-            List<ConnectionRobot> lstconnectionsRobots = new List<ConnectionRobot>();
+            List<ConnectionWorkStation> lstconnectionsRobots = new List<ConnectionWorkStation>();
             try
             {
                 MYSQL_DB mYSQL = new MYSQL_DB(sessionApp.connStr);
                 DataTable resultData = mYSQL.ExecuteSP("SP_GET_ROBOT_CONNECTIONS");
                 lstconnectionsRobots = resultData.AsEnumerable().Select(row =>
-                new ConnectionRobot
+                new ConnectionWorkStation
                 {
                     id = row.Field<int>("id"),
                     idTypeDevice = row.Field<int>("id_type_device"),

@@ -12,11 +12,11 @@ using MySql.Data.MySqlClient;
 
 namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
 {
-    public class SCREWS
+    public class Screw
     {
         SessionApp sessionApp;
         ADUS adus;
-        public SCREWS(SessionApp _sessionApp)
+        public Screw(SessionApp _sessionApp)
         {
             sessionApp = _sessionApp;
             adus = new ADUS(sessionApp);

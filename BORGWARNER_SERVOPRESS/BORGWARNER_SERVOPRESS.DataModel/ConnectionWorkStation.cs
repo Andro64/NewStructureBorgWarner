@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BORGWARNER_SERVOPRESS.DataModel
 {
-    public class ConnectionRobot
+    public class ConnectionWorkStation
     {
         public int id { get; set; }
         public int idTypeDevice { get; set; }

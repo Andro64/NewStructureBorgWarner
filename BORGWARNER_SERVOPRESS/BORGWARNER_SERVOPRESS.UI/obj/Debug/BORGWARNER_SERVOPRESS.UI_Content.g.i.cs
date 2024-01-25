@@ -10,5 +10,7 @@
 
 [assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("resources/aduhid.dll")]
 [assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("resources/aduhid64.dll")]
+[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("resources/keyence.autoid.sdk.dll")]
+[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("resources/modbus.dll")]
 
 

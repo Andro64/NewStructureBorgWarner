@@ -20,8 +20,12 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
 
         CommunicationRobot communicationRobot;
         Socket connection;
-        IOCard_Type1 ioCard_Type1;
+        IOCards ioCard_Type1;
+        IOCards ioCard_Type2;
+        IOCards ioCard_Type3;
         CancellationTokenSource cancellationToken_ioCard1;
+        CancellationTokenSource cancellationToken_ioCard2;
+        CancellationTokenSource cancellationToken_ioCard3;
 
         private bool connectedRobot;
         public ErgoArm(SessionApp _sessionApp, Views.ViewMain _viewMain)
@@ -29,19 +33,46 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
             sessionApp = _sessionApp;
             viewMain = _viewMain;
             communicationRobot = new CommunicationRobot(sessionApp);            
-        }        
-        public async Task startReadSensors(IProgress<string> progressScrew)
+        }
+        public ErgoArm(SessionApp _sessionApp)
         {
-            ioCard_Type1 = new IOCard_Type1(sessionApp, viewMain);
-            cancellationToken_ioCard1 = new CancellationTokenSource();            
-            //viewMain .getStatusScrew("Inicia lectura de los sensores");            
+            sessionApp = _sessionApp;            
+            communicationRobot = new CommunicationRobot(sessionApp);
+        }
+        public void startReadSensors(IProgress<string> progressScrew)
+        {
             Debug.WriteLine("Inicia lectura de los sensores");
             progressScrew.Report("Inicia lectura de los sensores");
-            Task sensorTask = ioCard_Type1.getDataInput(cancellationToken_ioCard1.Token, progressScrew);
+
+
+
+            ioCard_Type1 = new IOCards(sessionApp, new IOCardType_M1());//IOCard_Type1(sessionApp, viewMain);
+            cancellationToken_ioCard1 = new CancellationTokenSource();
+            Task.Run(async () =>
+            {
+                ioCard_Type1.getDataInput(cancellationToken_ioCard1.Token, progressScrew);
+            }).Wait();
+
+            ioCard_Type2 = new IOCards(sessionApp, new IOCardType_M2());//IOCard_Type1(sessionApp, viewMain);
+            cancellationToken_ioCard2 = new CancellationTokenSource();
+            Task.Run(async () =>
+            {
+                 ioCard_Type2.getDataInput(cancellationToken_ioCard2.Token, progressScrew);
+            }).Wait();
+
+            ioCard_Type3 = new IOCards(sessionApp, new IOCardType_M3());//IOCard_Type1(sessionApp, viewMain);
+            cancellationToken_ioCard3 = new CancellationTokenSource();
+            Task.Run(async () =>
+            {
+
+                 ioCard_Type3.getDataInput(cancellationToken_ioCard3.Token, progressScrew);
+            }).Wait();
         }
         public void endReadSensors()
         {
-            cancellationToken_ioCard1.Cancel();            
+            cancellationToken_ioCard1.Cancel();
+            cancellationToken_ioCard2.Cancel();
+            cancellationToken_ioCard3.Cancel();
             //viewMain.getStatusScrew("Termine de leer los sensores");
             Debug.WriteLine("Termine de leer los sensores");
         }
