@@ -13,8 +13,8 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
         SessionApp sessionApp;
         //Componentes de la Workstation
         ADUS adus;
-        ErgoArm ergoArm;
-        Screw screw;
+        ErgoArmOLD ergoArm;
+        ScrewDriver screw;
         Robot robot;
         Scanner scanner;
         Fis fis;
@@ -25,8 +25,8 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
             sessionApp = _sessionApp;
 
             adus = new ADUS(sessionApp);
-            ergoArm = new ErgoArm(sessionApp);
-            screw = new Screw(sessionApp);
+            ergoArm = new ErgoArmOLD(sessionApp);
+            screw = new ScrewDriver(sessionApp);
             fis = new Fis();            
         }
 

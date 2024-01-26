@@ -13,18 +13,19 @@ namespace BORGWARNER_SERVOPRESS.DataAccessLayer
     {
         private const int RECV_DATA_MAX = 1024000;
         public ClientSocket clientSocketInstance;
-        public Boolean conectado = false;
-        //String ip = "";
+        public bool conectado = false;        
         int puerto = 0;
+        string ip;
 
-        public TCP_IP(int puertoConexion)
+        public TCP_IP(string _ip,int puertoConexion)
         {
             puerto = puertoConexion;
+            ip = _ip;
         }
 
-        public Boolean Conectar(String ip)
+        public bool Conectar()
         {
-            Boolean ok = false;
+            bool ok = false;
 
             if (!conectado)
             {
@@ -33,7 +34,7 @@ namespace BORGWARNER_SERVOPRESS.DataAccessLayer
                     conectado = false;
 
                     //Configurar
-                    String[] _ip = ip.Split(".".ToCharArray());
+                    string[] _ip = ip.Split(".".ToCharArray());
                     byte[] ipAddress = { byte.Parse(_ip[0]), byte.Parse(_ip[1]), byte.Parse(_ip[2]), byte.Parse(_ip[3]) };
 
                     IPAddress iTACIpAddress = new IPAddress(ipAddress);
@@ -76,10 +77,10 @@ namespace BORGWARNER_SERVOPRESS.DataAccessLayer
             return ok;
         }
 
-        public String EnviarComando(String comando)
+        public string EnviarComando(string comando)
         {
-            String respuesta = "";
-            Boolean ok = true;
+            string respuesta = "";
+            bool ok = true;
 
             if (conectado)
             {
@@ -165,9 +166,9 @@ namespace BORGWARNER_SERVOPRESS.DataAccessLayer
             return respuesta;
         }
 
-        public void EnviarComandoSinRespuesta(String comando)
+        public void EnviarComandoSinRespuesta(string comando)
         {
-            Boolean ok = true;
+            bool ok = true;
 
             if (conectado)
             {
@@ -199,9 +200,9 @@ namespace BORGWARNER_SERVOPRESS.DataAccessLayer
             }
         }
 
-        public String Leer()
+        public string Leer()
         {
-            String respuesta = "";
+            string respuesta = "";
 
             //Esperar respuesta
 
@@ -247,9 +248,9 @@ namespace BORGWARNER_SERVOPRESS.DataAccessLayer
             return respuesta;
         }
 
-        public String Leer2()
+        public string Leer2()
         {
-            String respuesta2 = "";
+            string respuesta2 = "";
 
             //Esperar respuesta
 

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+
 namespace BORGWARNER_SERVOPRESS.DataModel
 {
     public class SessionApp
@@ -16,5 +17,6 @@ namespace BORGWARNER_SERVOPRESS.DataModel
         public IOCardType_M2 Sensors_M2 { get; set; }
         public IOCardType_M3 Sensors_M3 { get; set; }
         public QRs QR { get; set; }
+        public string PathImageResultFromCamera { get; set; }
     }
 }

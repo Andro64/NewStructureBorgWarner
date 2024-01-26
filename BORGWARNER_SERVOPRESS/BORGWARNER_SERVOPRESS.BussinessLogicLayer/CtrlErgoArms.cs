@@ -21,7 +21,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
 
         public async Task Ejecutatorque(IProgress<string> progress)
         {
-            ErgoArm ergoArm = new ErgoArm(sessionApp, viewMain);
+            ErgoArmOLD ergoArm = new ErgoArmOLD(sessionApp, viewMain);
             SensorsIO sensors = new SensorsIO(sessionApp);
             try
             {

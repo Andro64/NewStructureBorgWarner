@@ -87,10 +87,23 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
         {
             return sessionApp.Sensors_M1.OptoBtn;
         }
+        public bool WasPressedOpto()
+        {
+            return sessionApp.Sensors_M1.OptoBtn;
+        }
         public bool UltraCapBoardReadyToScan()
         {
             return sessionApp.Sensors_M2.UltraCapBoardReadytoScan;
-        }        
+        }
+        public bool MaskOnHousing()
+        {
+            return sessionApp.Sensors_M2.MaskatHousing;
+        }
+        public void ActivateSignalToScrewDispenser()
+        {
+            sessionApp.Sensors_M1.ScrewDispenser = true;
+            ioCard_Type_M1.sendDataOutput();
+        }
         public void WaitingResponse(bool sensorToCheck)
         {
             while(!sensorToCheck)

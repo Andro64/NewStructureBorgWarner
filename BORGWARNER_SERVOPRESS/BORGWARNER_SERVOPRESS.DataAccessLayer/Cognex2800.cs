@@ -22,9 +22,9 @@ namespace BORGWARNER_SERVOPRESS.DataAccessLayer
         public static bool ready;
         public static int Inspection_Result_Value = 0;
 
-        public static void cambiarJob(TCP_IP _Camara, string _IP)
+        public static void cambiarJob(TCP_IP _Camara, string _IP, int port)
         {
-            TCP_IP camara = new TCP_IP(23);
+            TCP_IP camara = new TCP_IP(_IP,port);
             string Inspection_IP = "";
 
             camara = _Camara;
@@ -33,7 +33,7 @@ namespace BORGWARNER_SERVOPRESS.DataAccessLayer
             string Lectura_trabajo = "";
             string Aux_trabajo = "";
 
-            camara.Conectar(Inspection_IP);
+            camara.Conectar();
 
             camara.EnviarComando("admin" + (char)13 + (char)10);
 
@@ -79,9 +79,9 @@ namespace BORGWARNER_SERVOPRESS.DataAccessLayer
 
         }
 
-        public static void Trigger(TCP_IP _Camara, string _IP)
+        public static void Trigger(TCP_IP _Camara, string _IP, int port)
         {
-            TCP_IP camara = new TCP_IP(23);
+            TCP_IP camara = new TCP_IP(_IP, port);
             camara = _Camara;
             string Inspection_IP = "";
             Inspection_IP = _IP;
@@ -102,7 +102,7 @@ namespace BORGWARNER_SERVOPRESS.DataAccessLayer
             string Herramienta6 = "";
             string Herramienta7 = "";
 
-            camara.Conectar(Inspection_IP);
+            camara.Conectar();
             //Aqui empieza hacer inspeccion PARA EL BYPASS  de las demas inspecciones
             camara.EnviarComando("admin" + (char)13 + (char)10);
 

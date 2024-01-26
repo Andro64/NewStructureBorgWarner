@@ -36,9 +36,9 @@ namespace BORGWARNER_SERVOPRESS.DataAccessLayer
 
         public void Trigger(TCP_IP _Camara)
         {
-            TCP_IP camara = new TCP_IP(_camara.Port);
-            TCP_IP camaraD1 = new TCP_IP(_camara.Port);
-            TCP_IP camaraD2 = new TCP_IP(_camara.Port);
+            TCP_IP camara = new TCP_IP(_camara.IP, _camara.Port);
+            TCP_IP camaraD1 = new TCP_IP(_camara.IP, _camara.Port);
+            TCP_IP camaraD2 = new TCP_IP(_camara.IP, _camara.Port);
             camara = _Camara;
             camaraD1 = _Camara;
             camaraD2 = _Camara;
@@ -54,7 +54,7 @@ namespace BORGWARNER_SERVOPRESS.DataAccessLayer
             string LecturaD2 = "";
             string HerramientaD2 = "";
 
-            camara.Conectar(Inspection_IP);
+            camara.Conectar();
 
             camara.EnviarComando("admin" + (char)13 + (char)10);
 
@@ -87,7 +87,7 @@ namespace BORGWARNER_SERVOPRESS.DataAccessLayer
                 camara.Desconectar();
             }
 
-            camaraD1.Conectar(Inspection_IP);
+            camaraD1.Conectar();
 
             camaraD1.EnviarComando("admin" + (char)13 + (char)10);
 
@@ -118,7 +118,7 @@ namespace BORGWARNER_SERVOPRESS.DataAccessLayer
                 camaraD1.Desconectar();
             }
 
-            camaraD2.Conectar(Inspection_IP);
+            camaraD2.Conectar();
 
             camaraD2.EnviarComando("admin" + (char)13 + (char)10);
 
@@ -151,9 +151,9 @@ namespace BORGWARNER_SERVOPRESS.DataAccessLayer
             }
         }
 
-        public static void TriggerPad(TCP_IP _Camara, string _IP)
+        public void TriggerPad(TCP_IP _Camara, string _IP)
         {
-            TCP_IP camara = new TCP_IP(23);
+            TCP_IP camara = new TCP_IP(_camara.IP, _camara.Port);
             camara = _Camara;
             string Inspection_IP = "";
             Inspection_IP = _IP;
@@ -168,7 +168,7 @@ namespace BORGWARNER_SERVOPRESS.DataAccessLayer
 
             if (!camara.conectado)
             {
-                camara.Conectar(Inspection_IP);
+                camara.Conectar();
 
                 camara.EnviarComandoSinRespuesta("admin" + (char)13 + (char)10);
 
@@ -177,7 +177,7 @@ namespace BORGWARNER_SERVOPRESS.DataAccessLayer
 
             if (camara.conectado)
             {
-                if(true)//if (G.status == 315)
+                if(true)//if (G.status == 315)  Inspeccionando pieza
                 {
                     camara.EnviarComando("SFEXP 5.00" + (char)13 + (char)10);
 
@@ -218,7 +218,7 @@ namespace BORGWARNER_SERVOPRESS.DataAccessLayer
                     Thread.Sleep(50);
                 }
 
-                else if(true)//if (G.status == 337)
+                else if(true)//if (G.status == 337) Inspeccionando piezas
                 {
 
                     camara.EnviarComando("SFEXP 20.00" + (char)13 + (char)10);
@@ -294,7 +294,7 @@ namespace BORGWARNER_SERVOPRESS.DataAccessLayer
 
                 }
 
-                else if(true)//if (G.status == 339)
+                else if(true)//if (G.status == 339) Insepeccionando piezas
                 {
                     camara.EnviarComando("SFEXP 10.00" + (char)13 + (char)10);
 
