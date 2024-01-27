@@ -10,6 +10,7 @@ namespace BORGWARNER_SERVOPRESS.DataModel
     {        
         public string connStr { get; set; }
         public int statusCiclo { get; set; }
-        public List<Settings> settings { get; set; }        
+        public List<Settings> settings { get; set; }
+        public User user { get; set; }
     }
 }

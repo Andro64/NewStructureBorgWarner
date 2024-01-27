@@ -3,159 +3,120 @@ using BORGWARNER_SERVOPRESS.BussinessLogicLayer.Views;
 using BORGWARNER_SERVOPRESS.DataModel;
 using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using BORGWARNER_SERVOPRESS.UI.Pages;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Shapes;
-using System.Windows.Threading;
+using System.ComponentModel;
+using System.Threading;
 
 namespace BORGWARNER_SERVOPRESS.UI
 {
     /// <summary>
-    /// Lógica de interacción para MainWindow.xaml
+    /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window, ISensorObserver
+    public partial class MainWindow : Window
     {
-        #region OPF
-        private SensorLogic sensorLogic;
-        private List<CheckBox> checkBoxes;
-        #endregion
-
         private SessionApp sessionApp;
-        private ViewMain viewMain;
 
-
-        /***************************************/
-        private readonly DispatcherTimer _timer;
-        Progress<string> progress;
-        /***************************************/
-
+        homeDashboard _homeDashboard;
+        LoginWindow loginWindow;
         public MainWindow(SessionApp _sessionApp)
         {
             sessionApp = _sessionApp;
             InitializeComponent();
-            #region OPF
-            sensorLogic = new SensorLogic();
-            sensorLogic.Attach(this);
-            InitializeCheckBoxes();
-            #endregion
-
-            viewMain = new ViewMain();
-            DataContext = viewMain.GetModel();
-            viewMain.ShowDate();
-
-            /************************************************************/
-            //_timer = new DispatcherTimer();
-            //_timer.Interval = TimeSpan.FromSeconds(1);
-            //_timer.Tick += async (sender, e) => await UpdateProgress();
-            
-            /************************************************************/
         }
 
-        //private async Task UpdateProgress()
-        //{
-        //    progress = new Progress<string>(message => {
-        //        lblMessageScrew.Content = message;
-        //    });
-        //}
-
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            try
-            {
-                //UsersAdmin usersAdmin = new UsersAdmin(sessionApp);
-                ////bool blAccess = usersAdmin.authentication(txtUser.Text, txtPassword.Text);
-                //bool blAccess = usersAdmin.authenticationSP(txtUser.Text, txtPassword.Text);
+            showMenu(sessionApp.user.profile);
 
-                //lblAccess.Content = blAccess ? "Acceso consedido" : "Acceso denegado";
-                viewMain.getStatusScrew("Todo bien ufff (*=*)" + new Random().Next(1, 100));
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error: " + ex.Message + "\nSource: " + ex.Source + "\nInner: " + ex.InnerException, "Error", System.Windows.MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-
+            lblUsername.Content = sessionApp.user.userName;
+            lblProfile.Content = sessionApp.user.profile;
         }
 
-        private void btnScrews_Click(object sender, RoutedEventArgs e)
+        private void home_option_btn_Click(object sender, RoutedEventArgs e)
         {
-            try
-            {
-                SCREWS screws = new SCREWS(sessionApp);
-                //DataTable dtScrews = screws.getScrewsSP(int.Parse(txtPagination.Text), 2); //el 2 son los registros que trae                
-                //dtgScrews.ItemsSource = dtScrews.AsDataView();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error: " + ex.Message + "\nSource: " + ex.Source + "\nInner: " + ex.InnerException, "Error", System.Windows.MessageBoxButton.OK, MessageBoxImage.Error);
-            }
+
         }
 
-        private async void btnInitialize_Click(object sender, RoutedEventArgs e)
+        private void settings_option_btn_Click(object sender, RoutedEventArgs e)
         {
-            try
-            {
-                //Robot robot = new Robot(sessionApp);
-                //bool blinitialize = robot.startConnectionRobot();
-                
-                CtrlErgoArms ctrlErgoArms = new CtrlErgoArms(sessionApp, viewMain);
-                /***************************************/
-                //_timer.Start();                
-                /***************************************/
 
-                for (int i = 0; i < 2; i++)
-                {
-                    //lblMessageScrew.Content = "Atronillando: Tronillo " + i.ToString();
-                    progress = new Progress<string>(message => {
-                        lblMessageScrew.Content = message;
-                    });
-                    
-                    await ctrlErgoArms.Ejecutatorque(progress);
-                }
-
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error: " + ex.Message + "\nSource: " + ex.Source + "\nInner: " + ex.InnerException, "Error", System.Windows.MessageBoxButton.OK, MessageBoxImage.Error);
-            }
         }
-        #region  Observer Pattern Functionality (OPF)
-        public void UpdateStatus(string sensorName, string newStatus)
+
+        private void Btn_exit_click(object sender, RoutedEventArgs e)
         {
-            // Actualiza el estado del CheckBox correspondiente
-            var checkBox = checkBoxes.Find(c => c.Content == sensorName);
+            loginWindow = new LoginWindow(sessionApp);
+            loginWindow.Show();
+            this.Close();
+        }
 
-            if (checkBox != null)
+        private void run_btn_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void fis_btn_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void history_btn_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void export_btn_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void manual_btn_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void positions_btn_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void StartCycle_btn_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void StopCycle_btn_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void Screw_Scrap_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void showMenu(string profile)
+        {
+            if(profile == "Operario")
             {
-                checkBox.Content = $"{sensorName}: {newStatus}";
+                fis_btn.Visibility = Visibility.Hidden;
+                history_btn.Visibility = Visibility.Hidden;
+                export_btn.Visibility = Visibility.Hidden;
+                manual_btn.Visibility = Visibility.Hidden;
+                positions_btn.Visibility = Visibility.Hidden;
             }
         }
 
-        private void InitializeCheckBoxes()
-        {
-            checkBoxes = new List<CheckBox> { checkBoxSensor1, checkBoxSensor2, checkBoxSensor3, checkBoxSensor4, checkBoxSensor5 };
-            foreach (var checkBox in checkBoxes)
-            {
-                string sensorName = checkBox.Content.ToString();
-                checkBox.Checked += (sender, e) => HandleCheckBoxClick(sensorName, (bool)checkBox.IsChecked);
-                checkBox.Content = $"{sensorName}: {sensorLogic.GetSensorStatus(sensorName)}";
-            }
-        }
-        private void HandleCheckBoxClick(string sensorName, bool isChecked)
-        {
-            // Maneja el clic en el CheckBox cambiando el estado del sensor
-            sensorLogic.ToggleSensorStatus(sensorName);
-            listBoxStatus.Items.Insert(0, $"{sensorName} {(isChecked ? "Activado" : "Desactivado")}");
-        }
-        #endregion
+        
     }
 }

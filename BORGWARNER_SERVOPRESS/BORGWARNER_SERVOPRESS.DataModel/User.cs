@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 
 namespace BORGWARNER_SERVOPRESS.DataModel
 {
-    internal class User
+    public class User
     {        
         public string name { get; set; }
         public string lastName { get; set; }
         public string userName { get; set; }
         public string password { get; set; }
-
+        public string profile { get; set; }
     }
 }
