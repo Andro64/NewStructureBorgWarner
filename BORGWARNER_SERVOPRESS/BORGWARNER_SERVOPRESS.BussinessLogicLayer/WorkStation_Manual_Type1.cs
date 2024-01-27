@@ -23,8 +23,14 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
             Scanner scanner;
             CommunicationFIS fIS;
             VisionSystem visionSystem;
+            Screws screws;
+            ErgoArm ergoArm;
+            ScrewDriver screwdriver;
+
             string serial;
             string resultFIS;
+
+            int quantityScrews;
 
             sensorsIO.startRead();
             if (!sensorsIO.PalletInStopper())
@@ -143,6 +149,30 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
                     }
                     sensorsIO.ActivateSignalToScrewDispenser();
                     Debug.WriteLine("PIDE A OPERADOR TOMAR ATORNILLADOR Y REALIZAR ATORNILLADO CORRESPONDIENTE");
+
+                    screws = new Screws(sessionApp);
+                    quantityScrews = screws.retriveNumberScrewsPerModel(sessionApp.ModelScrewSelected);
+                    List<Screw> lstScrewsToProcess = screws.retriveScrewsToProcess(sessionApp.ModelScrewSelected);
+                    if(lstScrewsToProcess.Count != 0 && (quantityScrews == lstScrewsToProcess.Count))
+                    {
+                        ergoArm = new ErgoArm(sessionApp);
+                        screwdriver = new ScrewDriver(sessionApp);
+                        foreach (var screw in lstScrewsToProcess)
+                        {
+                            ergoArm.startReadPositionRespectScrew(screw);
+                            if(sessionApp.positionErgoArm.InPositionReadyToProcess)
+                            {
+                                Debug.WriteLine("BRAZO ERGONOMICO EN POSICION");
+                                screwdriver.Enable();
+                            }
+                        }
+                    }
+                    else
+                    {
+                        Debug.WriteLine("La informacion correspondiente a los tornillos esta incompleta");
+                    }
+
+
 
                 }//Falta si no PASS 2
 

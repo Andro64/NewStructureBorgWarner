@@ -53,6 +53,8 @@
     <Compile Include="IOCardType_M1.cs" />
     <Compile Include="IOCardType_M2.cs" />
     <Compile Include="IOCardType_M3.cs" />
+    <Compile Include="ModelScrew.cs" />
+    <Compile Include="PositionErgoArm.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="QRs.cs" />
     <Compile Include="ScannerDataProcessedEventArgs.cs" />

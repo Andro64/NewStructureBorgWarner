@@ -18,5 +18,7 @@ namespace BORGWARNER_SERVOPRESS.DataModel
         public IOCardType_M3 Sensors_M3 { get; set; }
         public QRs QR { get; set; }
         public string PathImageResultFromCamera { get; set; }
+        public int ModelScrewSelected { get; set; }
+        public PositionErgoArm positionErgoArm { get; set; }        
     }
 }

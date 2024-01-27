@@ -20,7 +20,14 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
             sessionApp = _sessionApp;
             
         }
-        
+        public void Enable()
+        {
+
+        }
+        public void Disable()
+        {
+
+        }
        
     }
 }

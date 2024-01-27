@@ -16,9 +16,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
     public class SensorsIO
     {
         SessionApp sessionApp;
-        //Views.ViewMain viewMain;
-
-        CommunicationRobot communicationRobot;
+        
         IOCards ioCard_Type_M1;
         IOCards ioCard_Type_M2;
         IOCards ioCard_Type_M3;
@@ -30,8 +28,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
             sessionApp = _sessionApp;                    
         }        
         public void startRead()
-        {            
-            cancellationToken_ioCard1 = new CancellationTokenSource();
+        {   
             ioCard_Type_M1 = new IOCards(sessionApp, new IOCardType_M1());
             cancellationToken_ioCard1 = new CancellationTokenSource();
             Task.Run(async () =>
@@ -99,11 +96,15 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
         {
             return sessionApp.Sensors_M2.MaskatHousing;
         }
+        public bool ScrewInScrap()
+        {
+            return sessionApp.Sensors_M1.MaskatHolder;
+        }
         public void ActivateSignalToScrewDispenser()
         {
             sessionApp.Sensors_M1.ScrewDispenser = true;
             ioCard_Type_M1.sendDataOutput();
-        }
+        }        
         public void WaitingResponse(bool sensorToCheck)
         {
             while(!sensorToCheck)

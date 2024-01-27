@@ -6,15 +6,11 @@ using System.Threading.Tasks;
 
 namespace BORGWARNER_SERVOPRESS.DataModel
 {
-    public class Screw
+    public class PositionErgoArm
     {
-        public int id { get; set; }
-        public int id_screw { get; set; }
         public double encoder1 { get; set; }
         public double encoder2 { get; set; }
-        public double tolerance { get; set; }
-        public int id_model_screw { get; set; }
-        public string desc_model { get; set; }
-
+        public bool InHome { get; set; }
+        public bool InPositionReadyToProcess { get; set; }
     }
 }

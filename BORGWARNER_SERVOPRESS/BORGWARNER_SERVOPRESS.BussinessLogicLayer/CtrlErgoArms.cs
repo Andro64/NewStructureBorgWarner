@@ -1,4 +1,5 @@
 ﻿using BORGWARNER_SERVOPRESS.DataModel;
+using BORGWARNER_SERVOPRESS.DataAccessLayer;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -25,6 +26,12 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
             SensorsIO sensors = new SensorsIO(sessionApp);
             try
             {
+                Screws screws = new Screws(sessionApp);
+                int numeroTornillo = screws.Quantity;
+               
+
+
+
                 //Task.Run(async () =>
                 //{
                 //    await ergoArm.startReadSensors(progress);
