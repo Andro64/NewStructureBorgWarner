@@ -10,6 +10,8 @@ _ReSharper.*/
 *.sdf
 bin/
 obj/
+*/obj/
+*/.vs/
 Debug/
 Release/
 *.opensdf
@@ -20,3 +22,5 @@ TestResult.xml
 Version.cs
 Version.h
 Version.cpp
+
+/BORGWARNER_SERVOPRESS/.vs/BORGWARNER_SERVOPRESS
