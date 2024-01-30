@@ -12,5 +12,6 @@ namespace BORGWARNER_SERVOPRESS.DataModel
         public int Port { get; set; }
         public string Process { get; set; }
         public string Station { get; set; }
+        public bool pass { get; set; }
     }
 }

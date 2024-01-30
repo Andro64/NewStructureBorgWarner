@@ -4,10 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BORGWARNER_SERVOPRESS.DataModel
+namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
 {
-    public class IOCard
+    public class Fis
     {
-        public string NumSerial { get; set; }
     }
 }
