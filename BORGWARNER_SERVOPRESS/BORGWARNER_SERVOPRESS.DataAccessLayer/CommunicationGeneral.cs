@@ -20,24 +20,24 @@ namespace BORGWARNER_SERVOPRESS.DataAccessLayer
         public List<Settings> getSettings()
         {
             List<Settings> lstSettings = new List<Settings>();
-            //try
-            //{
-            //    MYSQL_DB mYSQL = new MYSQL_DB(sessionApp.connStr);
-            //    DataTable resultData = mYSQL.ExecuteSP("SP_GET_SETTINGS");
-            //    lstSettings = resultData.AsEnumerable().Select(row =>
-            //    new Settings
-            //    {
-            //        id = row.Field<int>("id"),
-            //        setting = row.Field<string>("setting"),
-            //        valueSetting = row.Field<string>("value_setting")                    
-            //    }).ToList();
+            try
+            {
+                MYSQL_DB mYSQL = new MYSQL_DB(sessionApp.connStr);
+                DataTable resultData = mYSQL.ExecuteSP("SP_GET_SETTINGS");
+                lstSettings = resultData.AsEnumerable().Select(row =>
+                new Settings
+                {
+                    id = row.Field<int>("id"),
+                    setting = row.Field<string>("setting"),
+                    valueSetting = row.Field<string>("value_setting")
+                }).ToList();
 
-            //}
-            //catch (Exception ex)
-            //{
-            //    Debug.WriteLine(ex.Message);
-            //    throw;
-            //}
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+                throw;
+            }
             return lstSettings;
 
         }
@@ -48,7 +48,7 @@ namespace BORGWARNER_SERVOPRESS.DataAccessLayer
             try
             {
                 MYSQL_DB mYSQL = new MYSQL_DB(sessionApp.connStr);
-                DataTable resultData = mYSQL.ExecuteSP("SP_GET_ROBOT_CONNECTIONS");
+                DataTable resultData = mYSQL.ExecuteSP("SP_GET_CONNECTIONS");
                 lstconnectionsRobots = resultData.AsEnumerable().Select(row =>
                 new ConnectionWorkStation
                 {
