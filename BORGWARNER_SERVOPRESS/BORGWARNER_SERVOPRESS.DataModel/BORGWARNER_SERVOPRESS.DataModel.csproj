@@ -62,6 +62,7 @@
     <Compile Include="Screwdriver.cs" />
     <Compile Include="SessionApp.cs" />
     <Compile Include="Settings.cs" />
+    <Compile Include="TighteningProcess.cs" />
     <Compile Include="User.cs" />
     <Compile Include="Views\ModelViewMain.cs" />
   </ItemGroup>

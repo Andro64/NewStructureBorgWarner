@@ -39,7 +39,7 @@ namespace BORGWARNER_SERVOPRESS.DataAccessLayer
             }
         }
         public void Disconnect()
-        {            
+        {                      
             tcpClient.Close();
         }
         public async Task getDataPosition(CancellationToken cancellationToken, Screw screw)

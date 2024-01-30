@@ -16,7 +16,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
     {
         SessionApp sessionApp;
         TcpClient tcpClient;
-        
+
         CancellationTokenSource cancellationToken_ErgoArm;
         CommunicationErgoArm communicationErgoArm;
 
@@ -37,7 +37,26 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
         public void endReadPostion()
         {
             cancellationToken_ErgoArm.Cancel();
-            Debug.WriteLine("Termine de leer los sensores ioCard1");
-        }       
+            communicationErgoArm.Disconnect();
+            Debug.WriteLine("Termine de leer la posicion del ErgoArm");
+        }
+        public bool isInHome()
+        {
+            if ((sessionApp.positionErgoArm.encoder1 > 105) && (sessionApp.positionErgoArm.encoder1 < 120) && (sessionApp.positionErgoArm.encoder2 > -40) && (sessionApp.positionErgoArm.encoder2 < -30))
+            {
+                return true;
+            }
+            return false;
+        }
+        public void WaitingResponse(bool sensorToCheck)
+        {
+            while (!sensorToCheck)
+            {
+                Task.Run(async () =>
+                {
+                    await Task.Delay(5);
+                }).Wait();
+            }
+        }
     }
 }

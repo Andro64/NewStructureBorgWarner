@@ -159,13 +159,90 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
                         screwdriver = new ScrewDriver(sessionApp);
                         foreach (var screw in lstScrewsToProcess)
                         {
+                            screw.tighteningprocess = new TighteningProcess();
                             ergoArm.startReadPositionRespectScrew(screw);
                             if(sessionApp.positionErgoArm.InPositionReadyToProcess)
                             {
                                 Debug.WriteLine("BRAZO ERGONOMICO EN POSICION");
-                                screwdriver.Enable();
+
+                                if (!screwdriver.FirstTighteningAttempt(screw))
+                                {
+                                    if (!sensorsIO.WasPressedOpto())
+                                    {
+                                        sensorsIO.WaitingResponse(sensorsIO.WasPressedOpto());
+                                        Debug.WriteLine("Fallo primer intento de atornillado  ESPERA ACTIVACION DE OPTO ");
+                                        if (!screwdriver.SecondTighteningAttempt(screw))
+                                        {
+                                            if (!sensorsIO.WasPressedOpto())
+                                            {
+                                                sensorsIO.WaitingResponse(sensorsIO.WasPressedOpto());
+                                                Debug.WriteLine("Fallo segundo intento de atornillado ESPERA ACTIVACION DE OPTO ");
+
+                                                if (screwdriver.ThirdTighteningAttempt(screw))
+                                                {
+                                                    Debug.WriteLine("Fallaron los 3 intentos de atornillado");  ///Falta poner que hace en este caso
+                                                }
+                                            }
+                                        }
+                                    }
+                                }                                
                             }
                         }
+                        Debug.WriteLine("PIDE A OPERADOR COLOCAR BRAZO EN HOME Y RETIRAR MASCARA");
+                        if(!ergoArm.isInHome())
+                        {
+                            ergoArm.WaitingResponse(ergoArm.isInHome());
+                            ergoArm.endReadPostion();
+                        }                        
+
+                        if(!sensorsIO.MaskInHolder())
+                        {
+                            sensorsIO.WaitingResponse(sensorsIO.MaskInHolder());
+                        }
+                        Debug.WriteLine("PIDE A OPERADOR TOMAR INSULADOR, COLOCAR SOBRE ULTRA CAP BOARD Y ACTIVAR OPTO");
+                        if (!sensorsIO.WasPressedOpto())
+                        {
+                            sensorsIO.WaitingResponse(sensorsIO.WasPressedOpto());
+                            Debug.WriteLine("OPTO ACTIVADO");
+                        }
+
+                        visionSystem = new VisionSystem(sessionApp);
+                        if (!visionSystem.FirstInspectionAttempt())
+                        {
+                            if (!sensorsIO.WasPressedOpto())
+                            {
+                                sensorsIO.WaitingResponse(sensorsIO.WasPressedOpto());
+                                Debug.WriteLine("Fallo primer intento ESPERA ACTIVACION DE OPTO ");
+
+                                if (!visionSystem.SecondInspectionAttempt())
+                                {
+                                    if (!sensorsIO.WasPressedOpto())
+                                    {
+                                        sensorsIO.WaitingResponse(sensorsIO.WasPressedOpto());
+                                        Debug.WriteLine("Fallo segundo intento ESPERA ACTIVACION DE OPTO ");
+
+                                        if (!visionSystem.ThirdInspectionAttempt())
+                                        {
+                                            Debug.WriteLine("Fallaron los 3 intentos ");  ///Falta poner que hace en este caso
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        visionSystem.getNameImageResultFromCamera();
+                        visionSystem.Disconnect();
+                        Debug.WriteLine("INSPECCION OK ENVIA BCMP A FIS");
+
+                        fIS = new CommunicationFIS(sessionApp);
+                        resultFIS = fIS.BCMP(serial,true); //?Cual serial se envia y el pass que signifca?
+                        
+                        Debug.WriteLine("DETECTA CLAMP DE PALLET RETRAIDO");
+                        if (!sensorsIO.DetectsRetractedPalletClamp())
+                        {
+                            sensorsIO.WaitingResponse(sensorsIO.DetectsRetractedPalletClamp());
+                        }
+                        Debug.WriteLine("LIBERA PALLET");
+
                     }
                     else
                     {

@@ -100,6 +100,14 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
         {
             return sessionApp.Sensors_M1.MaskatHolder;
         }
+        public bool MaskInHolder()
+        {
+            return sessionApp.Sensors_M1.MaskatHolder;
+        }
+        public bool DetectsRetractedPalletClamp()
+        {
+            return sessionApp.Sensors_M1.MaskatHolder;
+        }
         public void ActivateSignalToScrewDispenser()
         {
             sessionApp.Sensors_M1.ScrewDispenser = true;
