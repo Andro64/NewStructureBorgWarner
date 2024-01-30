@@ -198,6 +198,12 @@
     <Resource Include="Resources\Images\menu-burger.png" />
     <Resource Include="Resources\Images\technologies-new.jpg" />
     <Resource Include="Resources\Images\user.png" />
+    <Content Include="Resources\Keyence.AutoID.SDK.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Modbus.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

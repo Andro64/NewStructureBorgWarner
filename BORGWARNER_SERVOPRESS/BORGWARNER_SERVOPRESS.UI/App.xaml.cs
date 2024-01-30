@@ -17,8 +17,21 @@ namespace BORGWARNER_SERVOPRESS.UI
     public partial class App : Application
     {
         private void Application_Startup(object sender, StartupEventArgs e)
-        { 
+        {
+            //string occupation = ConfigurationManager.AppSettings["occupation"];
+            //Obtiene la información de Appconfig
             SessionApp sessionApp = new SessionApp();
+            sessionApp.connStr = ConfigurationManager.ConnectionStrings["conn_str"].ToString();
+            
+            //Obtiene la información de configuracion de la BD
+            BussinessLogicLayer.Settings settingsGeneral = new BussinessLogicLayer.Settings(sessionApp);
+            sessionApp.settings = settingsGeneral.getSettings();
+            sessionApp.connectionsWorkStation = settingsGeneral.getConnections();
+            
+            //Inicial la ventana Main
+            MainWindow mainWindow = new MainWindow(sessionApp);
+            mainWindow.Title = "BORGWARNER SERVOPRENSA";
+            mainWindow.Show();
             sessionApp.connStr = ConfigurationManager.ConnectionStrings["conn_str"].ToString();            
             sessionApp.settings = new BussinessLogicLayer.Settings(sessionApp).getSettings();
             string occupation = ConfigurationManager.AppSettings["occupation"];

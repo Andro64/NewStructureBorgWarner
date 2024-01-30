@@ -2,123 +2,61 @@
 using BORGWARNER_SERVOPRESS.DataAccessLayer;
 using System;
 using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
 using System.Diagnostics;
 using System.Linq;
+using System.Net;
 using System.Net.Sockets;
 using System.Text;
-using System.Threading.Tasks;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
 {
     public class ErgoArm
     {
         SessionApp sessionApp;
-        Views.ViewMain viewMain;
+        TcpClient tcpClient;
 
-        CommunicationRobot communicationRobot;
-        Socket connection;
-        IOCard_Type1 ioCard_Type1;
-        CancellationTokenSource cancellationToken_ioCard1;
+        CancellationTokenSource cancellationToken_ErgoArm;
+        CommunicationErgoArm communicationErgoArm;
 
-        private bool connectedRobot;
-        public ErgoArm(SessionApp _sessionApp, Views.ViewMain _viewMain)
+        public ErgoArm(SessionApp _sessionApp)
         {
             sessionApp = _sessionApp;
-            viewMain = _viewMain;
-            communicationRobot = new CommunicationRobot(sessionApp);            
-        }        
-        public async Task startReadSensors(IProgress<string> progressScrew)
-        {
-            ioCard_Type1 = new IOCard_Type1(sessionApp, viewMain);
-            cancellationToken_ioCard1 = new CancellationTokenSource();            
-            //viewMain .getStatusScrew("Inicia lectura de los sensores");            
-            Debug.WriteLine("Inicia lectura de los sensores");
-            progressScrew.Report("Inicia lectura de los sensores");
-            Task sensorTask = ioCard_Type1.getDataInput(cancellationToken_ioCard1.Token, progressScrew);
+            tcpClient = new TcpClient();
+            communicationErgoArm = new CommunicationErgoArm(sessionApp);
         }
-        public void endReadSensors()
+        public void startReadPositionRespectScrew(Screw screw)
         {
-            cancellationToken_ioCard1.Cancel();            
-            //viewMain.getStatusScrew("Termine de leer los sensores");
-            Debug.WriteLine("Termine de leer los sensores");
-        }
-        
-        public void connectingRobot()
-        {            
-            connection = communicationRobot.connectRobot(CommunicationRobot.eTypeRobot.RobotEpson, CommunicationRobot.eTypeConnection.Main);
-            connectedRobot= connection.Connected;
-        }
-        public bool isRobotConnected()
-        {
-            return connectedRobot;
-        }
-
-        public void disconnectingRobot()
-        {
-            communicationRobot.disconnectRobot(connection);
-        }
-        public string controllerConnectionInitation()
-        {
-            if (connection.Connected)
+            cancellationToken_ErgoArm = new CancellationTokenSource();
+            Task.Run(async () =>
             {
-                communicationRobot.sendCodesRobot(connection, @"00200001001000000000\0");
-                string response = communicationRobot.responseRobot(connection, 4, 4);
-                Debug.WriteLine(response);    
-                return response;
-            }
-            return string.Empty;
+                communicationErgoArm.getDataPosition(cancellationToken_ErgoArm.Token, screw);
+            }).Wait();
         }
-        public string enableScrewdriver()
+        public void endReadPostion()
         {
-            communicationRobot.sendCodesRobot(connection, @"00200043000000000000\0");
-            string response = communicationRobot.responseRobot(connection, 4, 4);
-            Debug.WriteLine(response);
-            return response;
+            cancellationToken_ErgoArm.Cancel();
+            communicationErgoArm.Disconnect();
+            Debug.WriteLine("Termine de leer la posicion del ErgoArm");
         }
-        public string screwingSubscription()
+        public bool isInHome()
         {
-            communicationRobot.sendCodesRobot(connection, @"00200060000000000000\0");
-            string response = communicationRobot.responseRobot(connection, 4, 4);
-            Debug.WriteLine(response);
-            return response;
-        }
-        public void ScrewingProgram_by_Model(string model,bool rework, bool debug)
-        {
-            string ScrewingProgram = string.Empty;
-            if (model == "modelo1")
+            if ((sessionApp.positionErgoArm.encoder1 > 105) && (sessionApp.positionErgoArm.encoder1 < 120) && (sessionApp.positionErgoArm.encoder2 > -40) && (sessionApp.positionErgoArm.encoder2 < -30))
             {
-                if (!rework && !debug)
-                {
-                    ScrewingProgram = "01";
-                }
-                else if (rework)
-                {
-                    ScrewingProgram = "05";
-                }
-                else if (debug)
-                {
-                    ScrewingProgram = "25";
-                }
+                return true;
             }
-            else if (model == "modelo2")
+            return false;
+        }
+        public void WaitingResponse(bool sensorToCheck)
+        {
+            while (!sensorToCheck)
             {
-                if (!rework && !debug)
+                Task.Run(async () =>
                 {
-                    ScrewingProgram = "11";
-                }
-                else if (rework)
-                {
-                    ScrewingProgram = "15";
-                }
-                else if (debug)
-                {
-                    ScrewingProgram = "25";
-                }
+                    await Task.Delay(5);
+                }).Wait();
             }
-            communicationRobot.sendCodesRobot(connection, @"002300180010000000000" + ScrewingProgram + @"\0");
         }
     }
 }

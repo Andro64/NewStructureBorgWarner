@@ -1,4 +1,5 @@
 ﻿using BORGWARNER_SERVOPRESS.DataModel;
+using BORGWARNER_SERVOPRESS.DataAccessLayer;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -21,14 +22,23 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
 
         public async Task Ejecutatorque(IProgress<string> progress)
         {
-            ErgoArm ergoArm = new ErgoArm(sessionApp, viewMain);
+            ErgoArmOLD ergoArm = new ErgoArmOLD(sessionApp, viewMain);
+            SensorsIO sensors = new SensorsIO(sessionApp);
             try
             {
-                Task.Run(async () =>
-                {
-                    await ergoArm.startReadSensors(progress);
-                }).Wait();
+                Screws screws = new Screws(sessionApp);
+                int numeroTornillo = screws.Quantity;
+               
 
+
+
+                //Task.Run(async () =>
+                //{
+                //    await ergoArm.startReadSensors(progress);
+                //}).Wait();
+
+                //ergoArm.startReadSensors(progress);
+                sensors.startRead();
                 ergoArm.connectingRobot();
                 if (ergoArm.isRobotConnected())
                 {
@@ -58,7 +68,8 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
             }
             finally
             {
-                ergoArm.endReadSensors();
+                //ergoArm.endReadSensors();
+                sensors.endRead();
                 ergoArm.disconnectingRobot();
             }
         }

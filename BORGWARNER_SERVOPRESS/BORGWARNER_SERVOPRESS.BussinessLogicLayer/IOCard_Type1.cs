@@ -94,10 +94,35 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
                 _e_Stop_Active = CardInputs[7];
 
 
-                string report = "Leyendo Sensores " + cont.ToString();
+                string report = "Leyendo Sensores ioCard1" + cont.ToString();
                 Debug.WriteLine(report); // + cont.ToString());
                 //viewMain.getStatusScrew("Leyendo Sensores veces:");// + cont.ToString());                
                 progressScrew.Report(report);
+
+                await Task.Delay(5); //Tiempo entre cada lectura 5mls
+                cont++;
+            }
+        }
+
+        public async Task getDataInput(CancellationToken cancellationToken)
+        {
+            int cont = 0;
+            ADU ioADUCard = new ADU(NumSerial);
+            while (!cancellationToken.IsCancellationRequested)
+            {
+                CardInputs = ioADUCard.MapADUInput();
+
+                _pressure_Sensor = CardInputs[0];
+                _prestoper_Pallet_Present = CardInputs[1];
+                _stopper_Pallet_Present = CardInputs[2];
+                _pA3 = CardInputs[3];
+                _toolActive = CardInputs[4];
+                _pB1 = CardInputs[5];
+                _pB2 = CardInputs[6];
+                _e_Stop_Active = CardInputs[7];
+
+                string report = "Leyendo Sensores ioCard1" + cont.ToString();
+                Debug.WriteLine(report);
 
                 await Task.Delay(5); //Tiempo entre cada lectura 5mls
                 cont++;

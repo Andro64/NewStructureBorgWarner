@@ -16,7 +16,7 @@ namespace BORGWARNER_SERVOPRESS.DataAccessLayer
     public class CommunicationRobot
     {
         SessionApp sessionApp;
-        List<ConnectionRobot> connections;
+        List<ConnectionWorkStation> connections;
         public enum eTypeConnection
         {
             Main = 1,
@@ -35,15 +35,15 @@ namespace BORGWARNER_SERVOPRESS.DataAccessLayer
             sessionApp = _sessionApp;
             connections = getConnectionsRobot();            
         }
-        public List<ConnectionRobot> getConnectionsRobot()
+        public List<ConnectionWorkStation> getConnectionsRobot()
         {
-            List<ConnectionRobot> lstconnectionsRobots = new List<ConnectionRobot>();
+            List<ConnectionWorkStation> lstconnectionsRobots = new List<ConnectionWorkStation>();
             try
             {
                 MYSQL_DB mYSQL = new MYSQL_DB(sessionApp.connStr);
                 DataTable resultData = mYSQL.ExecuteSP("SP_GET_ROBOT_CONNECTIONS");
                 lstconnectionsRobots = resultData.AsEnumerable().Select(row =>
-                new ConnectionRobot
+                new ConnectionWorkStation
                 {
                     id = row.Field<int>("id"),
                     idTypeDevice = row.Field<int>("id_type_device"),
@@ -64,7 +64,7 @@ namespace BORGWARNER_SERVOPRESS.DataAccessLayer
 
         }
 
-        public Dictionary<eTypeRobot,string> becomeTypoRobotToEnum(List<ConnectionRobot> lstTypeRobotFromBD)
+        public Dictionary<eTypeRobot,string> becomeTypoRobotToEnum(List<ConnectionWorkStation> lstTypeRobotFromBD)
         {
             Dictionary<eTypeRobot, string> dctTypeRobot = new Dictionary<eTypeRobot, string>();
 
@@ -87,7 +87,7 @@ namespace BORGWARNER_SERVOPRESS.DataAccessLayer
         {
             try
             {
-                ConnectionRobot connectionRobot = connnectionSelected(robotSelected, connectionSelected);
+                ConnectionWorkStation connectionRobot = connnectionSelected(robotSelected, connectionSelected);
                 Socket socket = new Socket(IPAddress.Parse(connectionRobot.IP).AddressFamily, SocketType.Stream, ProtocolType.Tcp);
                 IPEndPoint iPEndPoint = new IPEndPoint(IPAddress.Parse(connectionRobot.IP), connectionRobot.Port);
                 socket.Connect(iPEndPoint);
@@ -99,9 +99,9 @@ namespace BORGWARNER_SERVOPRESS.DataAccessLayer
                 throw;
             }
         }
-        public ConnectionRobot connnectionSelected(eTypeRobot robotSelected, eTypeConnection connectionSelected)
+        public ConnectionWorkStation connnectionSelected(eTypeRobot robotSelected, eTypeConnection connectionSelected)
         {
-            ConnectionRobot connectionRobot;
+            ConnectionWorkStation connectionRobot;
             try
             {
                 connectionRobot = connections.

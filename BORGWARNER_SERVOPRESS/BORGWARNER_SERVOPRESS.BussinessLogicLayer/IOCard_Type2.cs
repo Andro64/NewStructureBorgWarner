@@ -2,8 +2,10 @@
 using BORGWARNER_SERVOPRESS.DataModel;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
@@ -63,19 +65,25 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
             NumSerial = sessionApp.settings.FirstOrDefault(x => x.setting.Contains("ADU_SERIAL_2")).valueSetting;
         }
         //Este si se debe estar leyendo constantemente en un ciclo de lectura infinito
-        public void getDataInput()
+        public async Task getDataInput(CancellationToken cancellationToken)
         {
             ADU ioADUCard = new ADU(NumSerial);
-            CardInputs = ioADUCard.MapADUInput();
+            while (!cancellationToken.IsCancellationRequested)
+            {
+                CardInputs = ioADUCard.MapADUInput();
 
-            _pA0 = CardInputs[0];
-            _pA1 = CardInputs[1];
-            _pA2 = CardInputs[2];
-            _pA3 = CardInputs[3];
-            _pB0 = CardInputs[4];
-            _pB1 = CardInputs[5];
-            _pB2 = CardInputs[6];
-            _pB3 = CardInputs[7];
+                _pA0 = CardInputs[0];
+                _pA1 = CardInputs[1];
+                _pA2 = CardInputs[2];
+                _pA3 = CardInputs[3];
+                _pB0 = CardInputs[4];
+                _pB1 = CardInputs[5];
+                _pB2 = CardInputs[6];
+                _pB3 = CardInputs[7];
+
+                Debug.WriteLine("Leyendo Sensores ioCard2");
+                await Task.Delay(5);
+            }
         }
         //Cada clic en el boton deberia enviar la info dentro del evento clic
         public void sendDataOutput()
