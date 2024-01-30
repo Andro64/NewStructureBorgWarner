@@ -28,9 +28,7 @@ namespace BORGWARNER_SERVOPRESS.UI
             sessionApp.settings = settingsGeneral.getSettings();
             sessionApp.connectionsWorkStation = settingsGeneral.getConnections();
             
-            //Inicial la ventana Login
-            sessionApp.connStr = ConfigurationManager.ConnectionStrings["conn_str"].ToString();            
-            string occupation = ConfigurationManager.AppSettings["occupation"];
+            //Inicial la ventana Login          
             LoginWindow _loginWindow = new LoginWindow(sessionApp);
             _loginWindow.Show();
 
