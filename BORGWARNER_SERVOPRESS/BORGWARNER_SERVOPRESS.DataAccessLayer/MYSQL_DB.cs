@@ -161,5 +161,35 @@ namespace BORGWARNER_SERVOPRESS.DataAccessLayer
             }
             return dt;
         }
+        public void Insert(MySqlConnection conn, string table, string columns, Object[] values)
+        {
+            var temp = conn.State.ToString();
+            using (MySqlConnection conn2 = new MySqlConnection(connStr))
+            {
+                conn2.Open();
+                string query = $"INSERT INTO {table} ({columns}) VALUES (";
+
+                for (int i = 0; i < values.Length; i++)
+                {
+                    if (values[i] is String)
+                    {
+                        query = i == 0 ? query + "\'" + values[i] + "\'" : query + "," + "\'" + values[i] + "\'";
+                    }
+                    else
+                    {
+                        query = i == 0 ? query + values[i] : query + "," + values[i];
+                    }
+                }
+
+                query += ");";
+
+                MySqlCommand cmd = new MySqlCommand(query, conn2);
+
+                cmd.ExecuteNonQuery();
+                conn2.Close();
+            }
+
+
+        }
     }
 }

@@ -20,10 +20,21 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
             try
             {
                 MYSQL_DB mYSQL = new MYSQL_DB(sessionApp.connStr);
-                DataTable dtUsers = mYSQL.GetDataTable("users", "name,lastName,username,password", $"username = '{user}'");
+                DataTable dtUsers = mYSQL.GetDataTable("users", "name,lastName,username,password,profile", $"username = '{user}'");
                 if(dtUsers.Rows.Count > 0)
                 {
                     aut = dtUsers.Rows[0]["password"].ToString() == password ? true : false;
+                    if (aut)
+                    {
+                        User _user = new User{
+                            name = dtUsers.Rows[0]["name"].ToString(),
+                            lastName = dtUsers.Rows[0]["lastname"].ToString(),
+                            userName = dtUsers.Rows[0]["username"].ToString(),
+                            password = dtUsers.Rows[0]["password"].ToString(),
+                            profile = dtUsers.Rows[0]["profile"].ToString()
+                        };
+                        sessionApp.user = _user;
+                    } 
                 }                
             }
             catch (Exception ex)

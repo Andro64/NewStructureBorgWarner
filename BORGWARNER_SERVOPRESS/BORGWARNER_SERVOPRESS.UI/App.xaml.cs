@@ -1,4 +1,5 @@
 ﻿using BORGWARNER_SERVOPRESS.DataModel;
+using BORGWARNER_SERVOPRESS.BussinessLogicLayer;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -17,22 +18,20 @@ namespace BORGWARNER_SERVOPRESS.UI
     {
         private void Application_Startup(object sender, StartupEventArgs e)
         {
+            //string occupation = ConfigurationManager.AppSettings["occupation"];
+            //Obtiene la información de Appconfig
             SessionApp sessionApp = new SessionApp();
             sessionApp.connStr = ConfigurationManager.ConnectionStrings["conn_str"].ToString();
-            sessionApp.settings = new Settings()
-            {
-                adus_serial = int.Parse(ConfigurationManager.AppSettings["adus_serial"]),
-                scanners = int.Parse(ConfigurationManager.AppSettings["scanners"]),
-                camaras = int.Parse(ConfigurationManager.AppSettings["camaras"]),
-                robots = int.Parse(ConfigurationManager.AppSettings["robots"]),
-                screwdrivers = int.Parse(ConfigurationManager.AppSettings["screwdrivers"]),
-                FISs = int.Parse(ConfigurationManager.AppSettings["ErgoArms"]),
-                conexions = int.Parse(ConfigurationManager.AppSettings["conexions"]),
-            };
-            string occupation = ConfigurationManager.AppSettings["occupation"];
-            MainWindow mainWindow = new MainWindow(sessionApp);
-            mainWindow.Title = "BORGWARNER SERVOPRENSA";
-            mainWindow.Show();
+            
+            //Obtiene la información de configuracion de la BD
+            BussinessLogicLayer.Settings settingsGeneral = new BussinessLogicLayer.Settings(sessionApp);
+            sessionApp.settings = settingsGeneral.getSettings();
+            sessionApp.connectionsWorkStation = settingsGeneral.getConnections();
+            
+            //Inicial la ventana Login          
+            LoginWindow _loginWindow = new LoginWindow(sessionApp);
+            _loginWindow.Show();
+
         }
     }
 }

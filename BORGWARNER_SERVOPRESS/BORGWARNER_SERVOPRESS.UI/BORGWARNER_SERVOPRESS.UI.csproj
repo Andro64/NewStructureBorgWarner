@@ -14,6 +14,7 @@
     <WarningLevel>4</WarningLevel>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Deterministic>true</Deterministic>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -59,20 +60,87 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Page Include="MainWindow.xaml">
-      <Generator>MSBuild:Compile</Generator>
+    <Page Include="LoginWindow.xaml">
       <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="MainWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="LoginWindow.xaml.cs">
+      <DependentUpon>LoginWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
-      <SubType>Code</SubType>
     </Compile>
+    <Page Include="Pages\FIS.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\History.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\homeDashboard.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\ManualMode.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\Models.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\runMode.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\Screwing.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\Settings.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Resources\Themes\Dark.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Pages\FIS.xaml.cs">
+      <DependentUpon>FIS.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\GridLengthAnimation.cs" />
+    <Compile Include="Pages\History.xaml.cs">
+      <DependentUpon>History.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\homeDashboard.xaml.cs">
+      <DependentUpon>homeDashboard.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\ManualMode.xaml.cs">
+      <DependentUpon>ManualMode.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Models.xaml.cs">
+      <DependentUpon>Models.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\runMode.xaml.cs">
+      <DependentUpon>runMode.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Screwing.xaml.cs">
+      <DependentUpon>Screwing.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Settings.xaml.cs">
+      <DependentUpon>Settings.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -95,6 +163,11 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
+    <Resource Include="Resources\Fonts\Open-Sans\OpenSans-ExtraBold.ttf" />
+    <Resource Include="Resources\Fonts\Open-Sans\OpenSans-Light.ttf" />
+    <Resource Include="Resources\Fonts\Open-Sans\OpenSans-Medium.ttf" />
+    <Resource Include="Resources\Fonts\Open-Sans\OpenSans-Regular.ttf" />
+    <Resource Include="Resources\Fonts\Open-Sans\OpenSans-SemiBold.ttf" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -109,5 +182,29 @@
       <Name>BORGWARNER_SERVOPRESS.DataModel</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="Resources\AduHid.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\AduHid64.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Resource Include="Resources\Images\BorgWarner Dark.png" />
+    <Resource Include="Resources\Images\BW Dark.png" />
+    <Resource Include="Resources\Images\BW.png" />
+    <Resource Include="Resources\Images\exit.png" />
+    <Resource Include="Resources\Images\gears.png" />
+    <Resource Include="Resources\Images\home.png" />
+    <Resource Include="Resources\Images\menu-burger.png" />
+    <Resource Include="Resources\Images\technologies-new.jpg" />
+    <Resource Include="Resources\Images\user.png" />
+    <Content Include="Resources\Keyence.AutoID.SDK.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Modbus.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

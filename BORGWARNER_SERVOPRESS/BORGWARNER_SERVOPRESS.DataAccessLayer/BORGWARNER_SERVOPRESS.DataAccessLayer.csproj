@@ -49,6 +49,9 @@
     <Reference Include="Microsoft.Bcl.AsyncInterfaces, Version=5.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Bcl.AsyncInterfaces.5.0.0\lib\net461\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
     </Reference>
+    <Reference Include="Modbus">
+      <HintPath>..\BORGWARNER_SERVOPRESS.UI\Resources\Modbus.dll</HintPath>
+    </Reference>
     <Reference Include="MySql.Data, Version=8.2.0.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
       <HintPath>..\packages\MySql.Data.8.2.0\lib\net462\MySql.Data.dll</HintPath>
     </Reference>
@@ -94,7 +97,16 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ADU.cs" />
-    <Compile Include="Module.cs" />
+    <Compile Include="Cognex2800.cs" />
+    <Compile Include="CognexD900.cs" />
+    <Compile Include="CommunicationErgoArm.cs" />
+    <Compile Include="CommunicationGeneral.cs" />
+    <Compile Include="CommunicationIOCard.cs" />
+    <Compile Include="CommunicationRobot.cs" />
+    <Compile Include="CommunicationFIS.cs" />
+    <Compile Include="CommunicationScrew.cs" />
+    <Compile Include="CommunicationScrewDriver.cs" />
+    <Compile Include="ModuleADUImport.cs" />
     <Compile Include="MYSQL_DB.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Sockets.cs" />

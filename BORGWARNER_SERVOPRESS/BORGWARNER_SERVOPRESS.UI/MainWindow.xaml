@@ -4,21 +4,195 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:BORGWARNER_SERVOPRESS.UI"
+        xmlns:localPages="clr-namespace:BORGWARNER_SERVOPRESS.UI.Pages"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Grid>
-        <Button Content="Iniciar Sesión" HorizontalAlignment="Left" Margin="233,18,0,0" VerticalAlignment="Top" Click="Button_Click" RenderTransformOrigin="5.345,0.443"/>
-        <Label x:Name="lblUser" Content="Usuario" HorizontalAlignment="Left" Margin="10,2,0,0" VerticalAlignment="Top"/>
-        <TextBox x:Name="txtUser" HorizontalAlignment="Left" Margin="81,5,0,0" TextWrapping="Wrap" Text="Androide" VerticalAlignment="Top" Width="120"/>
-        <Label x:Name="lblPassword" Content="Contraseña" HorizontalAlignment="Left" Margin="10,33,0,0" VerticalAlignment="Top"/>
-        <TextBox x:Name="txtPassword" HorizontalAlignment="Left" Margin="81,37,0,0" TextWrapping="Wrap" Text="12345" VerticalAlignment="Top" Width="120"/>
-        <Label x:Name="lblAccess" Content="Inicie sesion!......." HorizontalAlignment="Left" Margin="10,75,0,0" VerticalAlignment="Top" FontWeight="Bold"/>
-        <Button x:Name="btnScrews" Content="Obtener Tornillos(Screws)" HorizontalAlignment="Left" Margin="10,106,0,0" VerticalAlignment="Top" Click="btnScrews_Click"/>
-        <DataGrid x:Name="dtgScrews" HorizontalAlignment="Left" Height="101" Margin="14,141,0,0" VerticalAlignment="Top" Width="504" d:ItemsSource="{Binding}" AutoGenerateColumns="True"/>
-        <Label x:Name="lblPage" Content="Página" HorizontalAlignment="Left" Margin="440,116,0,0" VerticalAlignment="Top" FontSize="9"/>
-        <TextBox x:Name="txtPagination" HorizontalAlignment="Left" Margin="481,121,0,0" TextWrapping="Wrap" Text="1" VerticalAlignment="Top" Width="28" Height="13" FontSize="9"/>
-        <Button x:Name="btnInitialize" Content="Inicializa el sistema" HorizontalAlignment="Left" Margin="414,28,0,0" VerticalAlignment="Top" Click="btnInitialize_Click"/>
-        <Label x:Name="lblMessageScrew" Content="..." HorizontalAlignment="Left" Margin="266,101,0,0" VerticalAlignment="Top" FontSize="18" Foreground="#FF0B2ADA" FontWeight="Bold"/>
+        Title="MainWindow" WindowStartupLocation="Manual" WindowState="Maximized" WindowStyle="None" Height="720" Width="1280" Icon="Resources/Images/BW.png" Loaded="Window_Loaded">
+    <Window.Background>
+        <ImageBrush ImageSource="/Resources/Images/technologies-new.jpg" Stretch="UniformToFill" />
+    </Window.Background>
+    <Viewbox StretchDirection="Both" Stretch="Uniform">
+        <Grid x:Name="maingrid" Background="{StaticResource BaseControlBackgroundDark}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Height="720" Width="1280">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="150" x:Name="menupanel" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="55" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
 
-    </Grid>
+            <!--Top bar-->
+            <Grid x:Name="topgrid" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Row="0" Grid.ColumnSpan="2" Background="{StaticResource BaseBackgroundDark}" UseLayoutRounding="False" >
+                <Grid.Effect>
+                    <DropShadowEffect Color="Black" ShadowDepth="1" RenderingBias="Quality"/>
+                </Grid.Effect>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="50" />
+                    <!--Menu-->
+                    <ColumnDefinition Width="250*" />
+                    <!--Logo-->
+                    <ColumnDefinition Width="250*" />
+                    <!--Current time-->
+                    <ColumnDefinition Width="50" />
+                    <!--Home-->
+                    <ColumnDefinition Width="50" />
+                    <!--Config-->
+                    <ColumnDefinition Width="50" />
+                    <!--User-->
+                    <ColumnDefinition Width="100*" />
+                    <!--Data user-->
+                    <ColumnDefinition Width="50" />
+                    <!--Exit-->
+                </Grid.ColumnDefinitions>
+
+                <ToggleButton x:Name="tglbutton" VerticalAlignment="Center" Grid.Column="0" BorderThickness="0" Background="{StaticResource BaseBackgroundDark}" IsChecked="True">
+                    <Image Source="/Resources/Images/menu-burger.png" Margin="15,15,15,15"/>
+                    <ToggleButton.Triggers>
+                        <EventTrigger RoutedEvent="ToggleButton.Unchecked">
+                            <BeginStoryboard>
+                                <Storyboard x:Name="HideStackPanel">
+                                    <localPages:GridLengthAnimation
+                                    Storyboard.TargetName="menupanel"
+                                    Storyboard.TargetProperty="Width"
+                                    BeginTime="0:0:0"
+                                    From="150" To="0"
+                                    Duration="0:0:0.2">
+                                    </localPages:GridLengthAnimation>
+                                </Storyboard>
+                            </BeginStoryboard>
+                        </EventTrigger>
+                        <EventTrigger RoutedEvent="ToggleButton.Checked">
+                            <BeginStoryboard>
+                                <Storyboard x:Name="ShowStackPanel">
+                                    <localPages:GridLengthAnimation
+                                    Storyboard.TargetName="menupanel"
+                                    Storyboard.TargetProperty="Width"
+                                    BeginTime="0:0:0"
+                                    From="0" To="150"
+                                    Duration="0:0:0.3">
+                                    </localPages:GridLengthAnimation>
+                                </Storyboard>
+                            </BeginStoryboard>
+                        </EventTrigger>
+                    </ToggleButton.Triggers>
+                </ToggleButton>
+
+                <Border Grid.Column="0" Background="LightGray" Width="1" Margin="0,5,0,5" HorizontalAlignment="Right" />
+                <Image Source="/Resources/Images/BorgWarner Dark.png" HorizontalAlignment="Left" Grid.Column="1" Margin="15,15,0,15" />
+                <Label x:Name="timestamp_lbl" Style="{StaticResource Font_Bold}" FontSize="14" Content="03:44:16 p.m." Grid.Column="2" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Foreground="#FF0E8086"/>
+                <Button x:Name="home_option_btn" VerticalAlignment="Center"  Grid.Column="3" BorderThickness="0" Background="{StaticResource BaseBackgroundDark}" Click="home_option_btn_Click">
+                    <Image Source="/Resources/Images/home.png" Margin="15,15,15,15" />
+                </Button>
+                <Border Grid.Column="3" Background="LightGray" Width="1" Margin="0,5,0,5" HorizontalAlignment="Right" />
+                <Button x:Name="settings_option_btn" VerticalAlignment="Center" Grid.Column="4" BorderThickness="0" Background="{StaticResource BaseBackgroundDark}" Click="settings_option_btn_Click" >
+                    <Image Source="/Resources/Images/gears.png" Margin="15,15,15,15" />
+                </Button>
+                <Border Grid.Column="4" Background="LightGray" Width="1" Margin="0,5,0,5" HorizontalAlignment="Right" />
+                <Image Source="/Resources/Images/user.png" VerticalAlignment="Center" Grid.Column="5" Margin="15,15,15,15"/>
+                <Label x:Name="lblUsername" Style="{StaticResource Font_Bold}" Grid.Column="6" VerticalContentAlignment="Top" FontSize="16" Margin="0,5,0,5" Foreground="#FF0E8086"/>
+                <Label x:Name="lblProfile" Grid.Column="6" VerticalContentAlignment="Bottom" FontSize="16" Margin="0,5,0,5" Foreground="#FF0E8086"/>
+                <Button x:Name="exit_btn" VerticalAlignment="Center" BorderThickness="0" Background="{StaticResource BaseBackgroundDark}" Grid.Column="7" Click="Btn_exit_click">
+                    <Image Source="/Resources/Images/exit.png" Margin="15,15,15,15" />
+                </Button>
+            </Grid>
+
+            <!--Menu-->
+            <StackPanel x:Name="nav_pnl" Orientation="Vertical" Grid.Row="1" Grid.Column="0" Background="{StaticResource BaseBackgroundDark}" FlowDirection="LeftToRight" >
+                <StackPanel.Effect>
+                    <DropShadowEffect Color="Black" ShadowDepth="1" RenderingBias="Quality"/>
+                </StackPanel.Effect>
+                <Menu Background="{StaticResource BaseBackgroundDark}" Style="{StaticResource Font_Regular}" FontSize="16" Margin="0,5,0,0" >
+                    <Menu.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <VirtualizingStackPanel Orientation="Vertical"/>
+                        </ItemsPanelTemplate>
+                    </Menu.ItemsPanel>
+                    <MenuItem x:Name="run_btn" Header=" Run" Height="25" Click="run_btn_Click"  />
+                    <Separator Background="LightGray" Width="auto" Margin="-25,5,5,5" Height="1" />
+                    <MenuItem x:Name="fis_btn" Header=" FIS" Height="25" Click="fis_btn_Click"/>
+                    <Separator Background="LightGray" Width="auto" Margin="-25,5,5,5" Height="1" />
+                    <MenuItem x:Name="history_btn" Header=" Historial" Height="25" Click="history_btn_Click"/>
+                    <Separator Background="LightGray" Width="auto" Margin="-25,5,5,5" Height="1" />
+                    <MenuItem x:Name="export_btn" Header=" Modelos" Height="25" Click="export_btn_Click"/>
+                    <Separator Background="LightGray" Width="auto" Margin="-25,5,5,5" Height="1" />
+                    <MenuItem x:Name="manual_btn" Header=" Manual" Height="25" Click="manual_btn_Click"/>
+                    <Separator Background="LightGray" Width="auto" Margin="-25,5,5,5" Height="1" />
+                    <MenuItem x:Name="positions_btn" Header=" Posiciones" Height="25" Click="positions_btn_Click"/>
+                    <Separator Background="LightGray" Width="auto" Margin="-25,5,5,5" Height="1" />
+                </Menu>
+            </StackPanel>
+            <Grid x:Name="contentgrid" Grid.Column="1" Grid.Row="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="150*" x:Name="expanderpanel" />
+                    <RowDefinition Height="300*" />
+                </Grid.RowDefinitions>
+
+                <Expander Style="{DynamicResource ExpanderStyle}" IsExpanded="True" Header="FIS" Width="auto" FlowDirection="RightToLeft" VerticalAlignment="Stretch" Height="auto" ExpandDirection="Down" FontSize="16" >
+                    <Expander.Effect>
+                        <DropShadowEffect Color="Black" ShadowDepth="1" RenderingBias="Quality"/>
+                    </Expander.Effect>
+                    <Expander.Triggers>
+                        
+                    </Expander.Triggers>
+
+                    <Grid FlowDirection="LeftToRight" Margin="0,0,0,10">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="20"/>
+                            <ColumnDefinition/>
+                            <ColumnDefinition Width="20"/>
+                            <ColumnDefinition/>
+                            <ColumnDefinition Width="20"/>
+                            <ColumnDefinition/>
+                            <ColumnDefinition Width="20"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition />
+                            <RowDefinition />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+
+                        <Label Content="Ciclo:" HorizontalAlignment="Left" VerticalAlignment="Bottom" Grid.Column="1" Grid.Row="0"/>
+                        <Grid Grid.Column="1" Grid.Row="1" VerticalAlignment="Top">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition />
+                                <ColumnDefinition />
+                            </Grid.ColumnDefinitions>
+                            <Button  x:Name="startCycle_btn" Click="StartCycle_btn_Click" Style="{StaticResource BaseButton}" Content="Iniciar" Grid.Column="0"/>
+                            <Button x:Name="stopCycle_btn" Click="StopCycle_btn_Click" Style="{StaticResource BaseButton}" Content="Finalizar"  Grid.Column="1"/>
+                        </Grid>
+
+
+                        <Label Content="Tiempo (s):" HorizontalAlignment="Left" VerticalAlignment="Bottom" Grid.Column="3" Grid.Row="0"/>
+                        <TextBox x:Name="cycletime" Style="{StaticResource BaseTextBox}" Text="00.00" VerticalAlignment="Top" Grid.Column="3" Grid.Row="1"/>
+                        <Button x:Name="Screw_Scrap" Click="Screw_Scrap_Click" Style="{StaticResource BaseButton}" Content="Tornillo descartado" VerticalAlignment="Top" Grid.Column="5" Grid.Row="1"/>
+                        <!--Click="Button_Click"-->
+
+                        <Label Content="FIS:" HorizontalAlignment="Left" VerticalAlignment="Bottom" Grid.Column="1" Grid.Row="2"/>
+                        <Ellipse x:Name="Fis_enabled_display" Fill="Lime" Stroke="Gray" Width="20" Height="20" HorizontalAlignment="Left" VerticalAlignment="Top" Grid.Column="1" Grid.Row="3"/>
+
+                        <Label x:Name="from_fis_lbl" Content="From:" HorizontalAlignment="Left" VerticalAlignment="Bottom" Grid.Column="3" Grid.Row="2"/>
+                        <TextBox x:Name="from_fis_textblock" Style="{StaticResource BaseTextBox}" VerticalAlignment="Top" Height="auto" Grid.Column="3" Grid.Row="3" />
+                        <Label x:Name="to_fis_lbl" Content="To:" HorizontalAlignment="Left" VerticalAlignment="Bottom" Grid.Column="5" Grid.Row="2"/>
+                        <TextBox x:Name="to_fis_textblock" Style="{StaticResource BaseTextBox}" VerticalAlignment="Top" Height="auto" Grid.Column="5" Grid.Row="3" />
+                    </Grid>
+                </Expander>
+
+                <!--FIS Content-->
+
+                <!--Content-->
+                <Frame x:Name="mainContent" NavigationUIVisibility="Hidden" Grid.Row="1" Margin="15,5,15,15" Background="{StaticResource BaseBackgroundLight}">
+                    <Frame.Effect>
+                        <DropShadowEffect Color="Black" ShadowDepth="1" RenderingBias="Quality"/>
+                    </Frame.Effect>
+
+                </Frame>
+            </Grid>
+            
+            
+        </Grid>
+    </Viewbox>
 </Window>

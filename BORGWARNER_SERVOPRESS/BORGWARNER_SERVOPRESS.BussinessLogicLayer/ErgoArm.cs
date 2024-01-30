@@ -1,11 +1,13 @@
 ﻿using BORGWARNER_SERVOPRESS.DataModel;
+using BORGWARNER_SERVOPRESS.DataAccessLayer;
 using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Diagnostics;
 using System.Linq;
+using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
@@ -13,96 +15,48 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
     public class ErgoArm
     {
         SessionApp sessionApp;
-        CommunicationRobot communicationRobot;
-        Socket connection;
-        
-        private bool connectedRobot;
+        TcpClient tcpClient;
+
+        CancellationTokenSource cancellationToken_ErgoArm;
+        CommunicationErgoArm communicationErgoArm;
+
         public ErgoArm(SessionApp _sessionApp)
         {
             sessionApp = _sessionApp;
-            communicationRobot = new CommunicationRobot();            
-        }        
-        public void initializeModels()
-        {
-         
+            tcpClient = new TcpClient();
+            communicationErgoArm = new CommunicationErgoArm(sessionApp);
         }
-        public void runRobot()
+        public void startReadPositionRespectScrew(Screw screw)
         {
-            //Conectamos el robot
-        }
-        public void connectingRobot()
-        {           
-            connection = communicationRobot.connectRobot("::1", 5000);
-            connectedRobot= connection.Connected;
-        }
-        public bool isRobotConnected()
-        {
-            return connectedRobot;
-        }
-
-        public void disconnectingRobot()
-        {
-            communicationRobot.disconnectRobot(connection);
-        }
-        public string controllerConnectionInitation()
-        {
-            if (connection.Connected)
+            cancellationToken_ErgoArm = new CancellationTokenSource();
+            Task.Run(async () =>
             {
-                communicationRobot.sendCodesRobot(connection, @"00200001001000000000\0");
-                string response = communicationRobot.responseRobot(connection, 4, 4);
-                Debug.WriteLine(response);    
-                return response;
-            }
-            return string.Empty;
+                communicationErgoArm.getDataPosition(cancellationToken_ErgoArm.Token, screw);
+            }).Wait();
         }
-        public string enableScrewdriver()
+        public void endReadPostion()
         {
-            communicationRobot.sendCodesRobot(connection, @"00200043000000000000\0");
-            string response = communicationRobot.responseRobot(connection, 4, 4);
-            Debug.WriteLine(response);
-            return response;
+            cancellationToken_ErgoArm.Cancel();
+            communicationErgoArm.Disconnect();
+            Debug.WriteLine("Termine de leer la posicion del ErgoArm");
         }
-        public string screwingSubscription()
+        public bool isInHome()
         {
-            communicationRobot.sendCodesRobot(connection, @"00200060000000000000\0");
-            string response = communicationRobot.responseRobot(connection, 4, 4);
-            Debug.WriteLine(response);
-            return response;
-        }
-        public void ScrewingProgram_by_Model(string model,bool rework, bool debug)
-        {
-            string ScrewingProgram = string.Empty;
-            if (model == "modelo1")
+            if ((sessionApp.positionErgoArm.encoder1 > 105) && (sessionApp.positionErgoArm.encoder1 < 120) && (sessionApp.positionErgoArm.encoder2 > -40) && (sessionApp.positionErgoArm.encoder2 < -30))
             {
-                if (!rework && !debug)
-                {
-                    ScrewingProgram = "01";
-                }
-                else if (rework)
-                {
-                    ScrewingProgram = "05";
-                }
-                else if (debug)
-                {
-                    ScrewingProgram = "25";
-                }
+                return true;
             }
-            else if (model == "modelo2")
+            return false;
+        }
+        public void WaitingResponse(bool sensorToCheck)
+        {
+            while (!sensorToCheck)
             {
-                if (!rework && !debug)
+                Task.Run(async () =>
                 {
-                    ScrewingProgram = "11";
-                }
-                else if (rework)
-                {
-                    ScrewingProgram = "15";
-                }
-                else if (debug)
-                {
-                    ScrewingProgram = "25";
-                }
+                    await Task.Delay(5);
+                }).Wait();
             }
-            communicationRobot.sendCodesRobot(connection, @"002300180010000000000" + ScrewingProgram + @"\0");
         }
     }
 }
