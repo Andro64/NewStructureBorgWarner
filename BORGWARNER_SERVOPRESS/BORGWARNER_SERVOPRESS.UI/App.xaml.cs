@@ -28,18 +28,12 @@ namespace BORGWARNER_SERVOPRESS.UI
             sessionApp.settings = settingsGeneral.getSettings();
             sessionApp.connectionsWorkStation = settingsGeneral.getConnections();
             
-            //Inicial la ventana Main
-            MainWindow mainWindow = new MainWindow(sessionApp);
-            mainWindow.Title = "BORGWARNER SERVOPRENSA";
-            mainWindow.Show();
+            //Inicial la ventana Login
             sessionApp.connStr = ConfigurationManager.ConnectionStrings["conn_str"].ToString();            
-            sessionApp.settings = new BussinessLogicLayer.Settings(sessionApp).getSettings();
             string occupation = ConfigurationManager.AppSettings["occupation"];
             LoginWindow _loginWindow = new LoginWindow(sessionApp);
             _loginWindow.Show();
-            //MainWindow mainWindow = new MainWindow(sessionApp);
-            //mainWindow.Title = "BORGWARNER SERVOPRENSA";
-            //mainWindow.Show();
+
         }
     }
 }
