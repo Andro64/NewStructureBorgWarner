@@ -79,7 +79,7 @@
 
                 <Border Grid.Column="0" Background="LightGray" Width="1" Margin="0,5,0,5" HorizontalAlignment="Right" />
                 <Image Source="/Resources/Images/BorgWarner Dark.png" HorizontalAlignment="Left" Grid.Column="1" Margin="15,15,0,15" />
-                <Label x:Name="timestamp_lbl" Style="{StaticResource Font_Bold}" FontSize="14" Content="03:44:16 p.m." Grid.Column="2" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Foreground="#FF0E8086"/>
+                <Label x:Name="timestamp_lbl" Style="{StaticResource Font_Bold}" FontSize="14" Content="{Binding Timestamp}" Grid.Column="2" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Foreground="#FF0E8086"/>
                 <Button x:Name="home_option_btn" VerticalAlignment="Center"  Grid.Column="3" BorderThickness="0" Background="{StaticResource BaseBackgroundDark}" Click="home_option_btn_Click">
                     <Image Source="/Resources/Images/home.png" Margin="15,15,15,15" />
                 </Button>
@@ -135,7 +135,7 @@
                         <DropShadowEffect Color="Black" ShadowDepth="1" RenderingBias="Quality"/>
                     </Expander.Effect>
                     <Expander.Triggers>
-                        
+
                     </Expander.Triggers>
 
                     <Grid FlowDirection="LeftToRight" Margin="0,0,0,10">
@@ -190,9 +190,10 @@
                     </Frame.Effect>
 
                 </Frame>
+                <Label x:Name="lblRunCycle" Content="{Binding MessageProcess, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Grid.Row="1" Margin="31,0,0,375.8" Width="597"/>
             </Grid>
-            
-            
+
+
         </Grid>
     </Viewbox>
 </Window>

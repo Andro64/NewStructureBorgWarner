@@ -26,6 +26,7 @@ namespace BORGWARNER_SERVOPRESS.UI
     public partial class MainWindow : Window
     {
         private SessionApp sessionApp;
+        private ViewMain viewMain;
 
         homeDashboard _homeDashboard;
         LoginWindow loginWindow;
@@ -33,6 +34,14 @@ namespace BORGWARNER_SERVOPRESS.UI
         {
             sessionApp = _sessionApp;
             InitializeComponent();
+            initialize();
+        }
+
+        public void initialize()
+        {
+            viewMain = new ViewMain(sessionApp);
+            DataContext = viewMain.GetModel();
+            viewMain.ShowDate();
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
@@ -92,7 +101,16 @@ namespace BORGWARNER_SERVOPRESS.UI
 
         private void StartCycle_btn_Click(object sender, RoutedEventArgs e)
         {
-
+            try
+            {
+                WorkStation_Manual_Type1 workStation_Manual_Type1 = new WorkStation_Manual_Type1(sessionApp);
+                //workStation_Manual_Type1.start();
+                 workStation_Manual_Type1.MensajesPantalla();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error: " + ex.Message + "\nSource: " + ex.Source + "\nInner: " + ex.InnerException, "Error", System.Windows.MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         private void StopCycle_btn_Click(object sender, RoutedEventArgs e)

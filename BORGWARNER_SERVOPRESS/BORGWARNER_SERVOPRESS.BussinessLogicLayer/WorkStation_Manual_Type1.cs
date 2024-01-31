@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Threading;
 
 namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
 {
@@ -18,6 +19,90 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
             sessionApp = _sessionApp;
             sensorsIO = new SensorsIO(sessionApp);
         }
+
+        public async Task MensajesPantalla()
+        {
+            await Task.Run(() =>
+            {
+                sessionApp.MessageOfProcess = "Inicia Proceso de atornillado";
+                Thread.Sleep(3000);
+                sessionApp.MessageOfProcess = "Esperamos pallet en Pre-Stopper";
+                Thread.Sleep(3000);
+                sessionApp.MessageOfProcess = "Esperamos CLAMP DE PALLET EXTENDIDO";
+                Thread.Sleep(3000);
+                sessionApp.MessageOfProcess = "Esperamos que el OPERADOR COLOCAQUE EL HOUSING";
+                Thread.Sleep(3000);
+                sessionApp.MessageOfProcess = $"SCANNER 1 LEE CODIGO SERIAL: ";
+                Thread.Sleep(3000);
+
+                sessionApp.MessageOfProcess = "PIDE A OPERADOR COLOCAR ULTRA CAP BOARD PAD Y ACTIVAR OPTO";
+                Thread.Sleep(3000);
+                sessionApp.MessageOfProcess = "ESPERA ACTIVACION DE OPTO ";
+                Thread.Sleep(3000);
+                sessionApp.MessageOfProcess = "Fallo primer intento ESPERA ACTIVACION DE OPTO ";
+                Thread.Sleep(3000);
+                sessionApp.MessageOfProcess = "Fallo segundo intento ESPERA ACTIVACION DE OPTO ";
+                Thread.Sleep(3000);
+                sessionApp.MessageOfProcess = "Fallaron los 3 intentos ";
+                Thread.Sleep(3000);  ///Falta poner que hace en este caso
+
+                sessionApp.MessageOfProcess = "PIDE A OPERADOR TOMAR ULTRA CAP BOARD Y COLOCAR EN NIDO";
+                Thread.Sleep(3000);
+                sessionApp.MessageOfProcess = "ESPERA ULTRA CAP BOARD SE COLOQUE EN NIDO ";
+                Thread.Sleep(3000);
+                sessionApp.MessageOfProcess = $"SCANNER 1 LEE CODIGO SERIAL: ";
+                Thread.Sleep(5);
+
+                sessionApp.MessageOfProcess = "PIDE A OPERADOR TOMAR HARNESS, CONECTAR A ULTRA CAP BOARD, COLOCAR EN HOUSING, REALIZAR RUTEO DE HARNESS SOBRE HOUSING Y PRESIONAR OPTO";
+                Thread.Sleep(3000);
+                sessionApp.MessageOfProcess = "ESPERA ACTIVACION DE OPTO ";
+                Thread.Sleep(3000);
+                sessionApp.MessageOfProcess = "Fallo primer intento ESPERA ACTIVACION DE OPTO ";
+                Thread.Sleep(3000);
+                sessionApp.MessageOfProcess = "Fallo segundo intento ESPERA ACTIVACION DE OPTO ";
+                Thread.Sleep(3000);
+                sessionApp.MessageOfProcess = "Fallaron los 3 intentos ";
+                Thread.Sleep(3000);  ///Falta poner que hace en este caso
+                sessionApp.MessageOfProcess = "2 PIDE A OPERADOR TOMAR TOMAR MASCARA Y COLOCAR SOBRE HOUSING";
+                Thread.Sleep(3000);
+                sessionApp.MessageOfProcess = "Esperamos que el OPERADOR COLOCAQUE MASCARA SOBRE HOUSING";
+                Thread.Sleep(3000);
+                sessionApp.MessageOfProcess = "PIDE A OPERADOR TOMAR ATORNILLADOR Y REALIZAR ATORNILLADO CORRESPONDIENTE";
+                Thread.Sleep(3000);
+                sessionApp.MessageOfProcess = "BRAZO ERGONOMICO EN POSICION";
+                Thread.Sleep(3000);
+                sessionApp.MessageOfProcess = "Fallo primer intento de atornillado  ESPERA ACTIVACION DE OPTO ";
+                Thread.Sleep(3000);
+                sessionApp.MessageOfProcess = "Fallo segundo intento de atornillado ESPERA ACTIVACION DE OPTO ";
+                Thread.Sleep(3000);
+                sessionApp.MessageOfProcess = "Fallaron los 3 intentos de atornillado";
+                Thread.Sleep(3000);  ///Falta poner que hace en este caso
+                sessionApp.MessageOfProcess = "PIDE A OPERADOR COLOCAR BRAZO EN HOME Y RETIRAR MASCARA";
+                Thread.Sleep(3000);
+                sessionApp.MessageOfProcess = "PIDE A OPERADOR TOMAR INSULADOR, COLOCAR SOBRE ULTRA CAP BOARD Y ACTIVAR OPTO";
+                Thread.Sleep(3000);
+                sessionApp.MessageOfProcess = "OPTO ACTIVADO";
+                Thread.Sleep(3000);
+                sessionApp.MessageOfProcess = "Fallo primer intento ESPERA ACTIVACION DE OPTO ";
+                Thread.Sleep(3000);
+
+                sessionApp.MessageOfProcess = "Fallo segundo intento ESPERA ACTIVACION DE OPTO ";
+                Thread.Sleep(3000);
+                sessionApp.MessageOfProcess = "Fallaron los 3 intentos ";
+                Thread.Sleep(3000);  ///Falta poner que hace en este caso
+                sessionApp.MessageOfProcess = "INSPECCION OK ENVIA BCMP A FIS";
+                Thread.Sleep(3000);
+                sessionApp.MessageOfProcess = "DETECTA CLAMP DE PALLET RETRAIDO";
+                Thread.Sleep(3000);
+                sessionApp.MessageOfProcess = "LIBERA PALLET";
+                Thread.Sleep(3000);
+
+                sessionApp.MessageOfProcess = "La informacion correspondiente a los tornillos esta incompleta";
+                Thread.Sleep(3000);
+                sessionApp.MessageOfProcess = "Finaliza Proceso de atornillado";
+        });
+        }
+
         public void start()
         {
             Scanner scanner;
