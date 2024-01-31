@@ -44,16 +44,16 @@ namespace BORGWARNER_SERVOPRESS.DataModel.Views
             }
         }
 
-        private string _messageScrew;
-        public string MessageScrew
+        private string _messageProcess;
+        public string MessageProcess
         {
-            get { return _messageScrew; }
+            get { return _messageProcess; }
             set
             {
-                if (_messageScrew != value)
+                if (_messageProcess != value)
                 {
-                    _messageScrew = value;
-                    OnPropertyChanged(nameof(MessageScrew));
+                    _messageProcess = value;
+                    OnPropertyChanged(nameof(MessageProcess));
                 }
             }
         }

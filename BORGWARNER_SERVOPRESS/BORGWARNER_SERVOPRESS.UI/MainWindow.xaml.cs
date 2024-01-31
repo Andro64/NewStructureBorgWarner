@@ -39,7 +39,7 @@ namespace BORGWARNER_SERVOPRESS.UI
 
         public void initialize()
         {
-            viewMain = new ViewMain();
+            viewMain = new ViewMain(sessionApp);
             DataContext = viewMain.GetModel();
             viewMain.ShowDate();
         }
@@ -104,7 +104,8 @@ namespace BORGWARNER_SERVOPRESS.UI
             try
             {
                 WorkStation_Manual_Type1 workStation_Manual_Type1 = new WorkStation_Manual_Type1(sessionApp);
-                workStation_Manual_Type1.start();
+                //workStation_Manual_Type1.start();
+                 workStation_Manual_Type1.MensajesPantalla();
             }
             catch (Exception ex)
             {
