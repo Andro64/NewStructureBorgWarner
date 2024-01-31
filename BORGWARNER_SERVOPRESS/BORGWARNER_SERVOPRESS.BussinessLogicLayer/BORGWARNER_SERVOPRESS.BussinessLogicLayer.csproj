@@ -98,21 +98,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ADUS.cs" />
-    <Compile Include="CtrlErgoArms.cs" />
-    <Compile Include="DevicesBL.cs" />
     <Compile Include="ErgoArm.cs" />
-    <Compile Include="ErgoArmOLD.cs" />
-    <Compile Include="Fis.cs" />
     <Compile Include="IOCards.cs" />
-    <Compile Include="IOCard_Type1.cs" />
-    <Compile Include="IOCard_Type2.cs" />
-    <Compile Include="IOCard_Type3.cs" />
     <Compile Include="ObserverPatternSensor\ISensorObserver.cs" />
     <Compile Include="ObserverPatternSensor\SensorSubject.cs" />
     <Compile Include="Pallet.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Robot.cs" />
     <Compile Include="Scanner.cs" />
     <Compile Include="Screws.cs" />
     <Compile Include="ScrewDriver.cs" />
@@ -121,10 +112,7 @@
     <Compile Include="Settings.cs" />
     <Compile Include="UsersAdmin.cs" />
     <Compile Include="Views\ViewMain.cs" />
-    <Compile Include="Views\ViewManual.cs" />
     <Compile Include="VisionSystem.cs" />
-    <Compile Include="WorkStation_Automatic.cs" />
-    <Compile Include="WorkStation_Manual.cs" />
     <Compile Include="WorkStation_Manual_Type1.cs" />
   </ItemGroup>
   <ItemGroup>
