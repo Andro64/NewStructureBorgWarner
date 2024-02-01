@@ -89,8 +89,8 @@
                 </Button>
                 <Border Grid.Column="4" Background="LightGray" Width="1" Margin="0,5,0,5" HorizontalAlignment="Right" />
                 <Image Source="/Resources/Images/user.png" VerticalAlignment="Center" Grid.Column="5" Margin="15,15,15,15"/>
-                <Label x:Name="lblUsername" Style="{StaticResource Font_Bold}" Grid.Column="6" VerticalContentAlignment="Top" FontSize="16" Margin="0,5,0,5" Foreground="#FF0E8086"/>
-                <Label x:Name="lblProfile" Grid.Column="6" VerticalContentAlignment="Bottom" FontSize="16" Margin="0,5,0,5" Foreground="#FF0E8086"/>
+                <Label x:Name="lblUsername" Content="{Binding UserName}" Style="{StaticResource Font_Bold}" Grid.Column="6" VerticalContentAlignment="Top" FontSize="16" Margin="0,5,0,5" Foreground="#FF0E8086"/>
+                <Label x:Name="lblProfile" Content="{Binding Profile}" Grid.Column="6" VerticalContentAlignment="Bottom" FontSize="16" Margin="0,5,0,5" Foreground="#FF0E8086"/>
                 <Button x:Name="exit_btn" VerticalAlignment="Center" BorderThickness="0" Background="{StaticResource BaseBackgroundDark}" Grid.Column="7" Click="Btn_exit_click">
                     <Image Source="/Resources/Images/exit.png" Margin="15,15,15,15" />
                 </Button>
@@ -108,17 +108,17 @@
                         </ItemsPanelTemplate>
                     </Menu.ItemsPanel>
                     <MenuItem x:Name="run_btn" Header=" Run" Height="25" Click="run_btn_Click"  />
-                    <Separator Background="LightGray" Width="auto" Margin="-25,5,5,5" Height="1" />
+                    <Separator x:Name="run_separator" Background="LightGray" Width="auto" Margin="-25,5,5,5" Height="1" />
                     <MenuItem x:Name="fis_btn" Header=" FIS" Height="25" Click="fis_btn_Click"/>
-                    <Separator Background="LightGray" Width="auto" Margin="-25,5,5,5" Height="1" />
+                    <Separator x:Name="fis_separator" Background="LightGray" Width="auto" Margin="-25,5,5,5" Height="1" />
                     <MenuItem x:Name="history_btn" Header=" Historial" Height="25" Click="history_btn_Click"/>
-                    <Separator Background="LightGray" Width="auto" Margin="-25,5,5,5" Height="1" />
-                    <MenuItem x:Name="export_btn" Header=" Modelos" Height="25" Click="export_btn_Click"/>
-                    <Separator Background="LightGray" Width="auto" Margin="-25,5,5,5" Height="1" />
+                    <Separator x:Name="history_separator" Background="LightGray" Width="auto" Margin="-25,5,5,5" Height="1" />
+                    <MenuItem x:Name="modelos_btn" Header=" Modelos" Height="25" Click="export_btn_Click"/>
+                    <Separator x:Name="modelos_separator" Background="LightGray" Width="auto" Margin="-25,5,5,5" Height="1" />
                     <MenuItem x:Name="manual_btn" Header=" Manual" Height="25" Click="manual_btn_Click"/>
-                    <Separator Background="LightGray" Width="auto" Margin="-25,5,5,5" Height="1" />
+                    <Separator x:Name="manual_separator" Background="LightGray" Width="auto" Margin="-25,5,5,5" Height="1" />
                     <MenuItem x:Name="positions_btn" Header=" Posiciones" Height="25" Click="positions_btn_Click"/>
-                    <Separator Background="LightGray" Width="auto" Margin="-25,5,5,5" Height="1" />
+                    <Separator x:Name="positions_separator" Background="LightGray" Width="auto" Margin="-25,5,5,5" Height="1" />
                 </Menu>
             </StackPanel>
             <Grid x:Name="contentgrid" Grid.Column="1" Grid.Row="1">
@@ -130,7 +130,7 @@
                     <RowDefinition Height="300*" />
                 </Grid.RowDefinitions>
 
-                <Expander Style="{DynamicResource ExpanderStyle}" IsExpanded="True" Header="FIS" Width="auto" FlowDirection="RightToLeft" VerticalAlignment="Stretch" Height="auto" ExpandDirection="Down" FontSize="16" >
+                <Expander Style="{DynamicResource ExpanderStyle}" IsExpanded="True" Header="RUN" Width="auto" FlowDirection="RightToLeft" VerticalAlignment="Stretch" Height="auto" ExpandDirection="Down" FontSize="16" >
                     <Expander.Effect>
                         <DropShadowEffect Color="Black" ShadowDepth="1" RenderingBias="Quality"/>
                     </Expander.Effect>
@@ -141,11 +141,12 @@
                     <Grid FlowDirection="LeftToRight" Margin="0,0,0,10">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="20"/>
-                            <ColumnDefinition/>
+                            <ColumnDefinition Width="34*"/>
+                            <ColumnDefinition Width="305*"/>
                             <ColumnDefinition Width="20"/>
-                            <ColumnDefinition/>
+                            <ColumnDefinition Width="339*"/>
                             <ColumnDefinition Width="20"/>
-                            <ColumnDefinition/>
+                            <ColumnDefinition Width="339*"/>
                             <ColumnDefinition Width="20"/>
                         </Grid.ColumnDefinitions>
                         <Grid.RowDefinitions>
@@ -155,8 +156,8 @@
                             <RowDefinition />
                         </Grid.RowDefinitions>
 
-                        <Label Content="Ciclo:" HorizontalAlignment="Left" VerticalAlignment="Bottom" Grid.Column="1" Grid.Row="0"/>
-                        <Grid Grid.Column="1" Grid.Row="1" VerticalAlignment="Top">
+                        <Label Content="Ciclo:" HorizontalAlignment="Left" VerticalAlignment="Bottom" Grid.Column="1" Grid.Row="0" Grid.ColumnSpan="2" Margin="0,0,0,0.2"/>
+                        <Grid Grid.Column="1" VerticalAlignment="Top" Grid.ColumnSpan="2" Margin="0,39,0.2,0" Grid.RowSpan="2">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition />
                                 <ColumnDefinition />
@@ -166,31 +167,30 @@
                         </Grid>
 
 
-                        <Label Content="Tiempo (s):" HorizontalAlignment="Left" VerticalAlignment="Bottom" Grid.Column="3" Grid.Row="0"/>
-                        <TextBox x:Name="cycletime" Style="{StaticResource BaseTextBox}" Text="00.00" VerticalAlignment="Top" Grid.Column="3" Grid.Row="1"/>
-                        <Button x:Name="Screw_Scrap" Click="Screw_Scrap_Click" Style="{StaticResource BaseButton}" Content="Tornillo descartado" VerticalAlignment="Top" Grid.Column="5" Grid.Row="1"/>
-                        <!--Click="Button_Click"-->
+                        <Label Content="Tiempo (s):" HorizontalAlignment="Left" VerticalAlignment="Bottom" Grid.Column="3" Grid.Row="0" Grid.ColumnSpan="2" Margin="19.8,0,0,0.2"/>
+                        <TextBox x:Name="cycletime" Style="{StaticResource BaseTextBox}" Text="00.00" VerticalAlignment="Top" Grid.Column="3" Grid.ColumnSpan="3" Margin="19.8,39,19.4,0" Grid.RowSpan="2"/>
+                        <Button x:Name="Screw_Scrap" Click="Screw_Scrap_Click" Style="{StaticResource BaseButton}" Content="Tornillo descartado" VerticalAlignment="Top" Grid.Column="5" Grid.ColumnSpan="3" Margin="19.6,39,19.6,0" Grid.RowSpan="2"/>
+                        
+                        <Label Content="FIS:" HorizontalAlignment="Left" VerticalAlignment="Bottom" Grid.Column="1" Grid.Row="2" Grid.ColumnSpan="2" Margin="0,0,0,38.2" Grid.RowSpan="2"/>
+                        <Ellipse x:Name="Fis_enabled_display" Fill="Lime" Stroke="Gray" Width="20" Height="20" HorizontalAlignment="Left" VerticalAlignment="Top" Grid.Column="1" Grid.Row="3" Margin="0,0.2,0,0"/>
 
-                        <Label Content="FIS:" HorizontalAlignment="Left" VerticalAlignment="Bottom" Grid.Column="1" Grid.Row="2"/>
-                        <Ellipse x:Name="Fis_enabled_display" Fill="Lime" Stroke="Gray" Width="20" Height="20" HorizontalAlignment="Left" VerticalAlignment="Top" Grid.Column="1" Grid.Row="3"/>
-
-                        <Label x:Name="from_fis_lbl" Content="From:" HorizontalAlignment="Left" VerticalAlignment="Bottom" Grid.Column="3" Grid.Row="2"/>
-                        <TextBox x:Name="from_fis_textblock" Style="{StaticResource BaseTextBox}" VerticalAlignment="Top" Height="auto" Grid.Column="3" Grid.Row="3" />
-                        <Label x:Name="to_fis_lbl" Content="To:" HorizontalAlignment="Left" VerticalAlignment="Bottom" Grid.Column="5" Grid.Row="2"/>
-                        <TextBox x:Name="to_fis_textblock" Style="{StaticResource BaseTextBox}" VerticalAlignment="Top" Height="auto" Grid.Column="5" Grid.Row="3" />
+                        <Label x:Name="from_fis_lbl" Content="From:" HorizontalAlignment="Left" VerticalAlignment="Bottom" Grid.Column="3" Grid.Row="2" Grid.ColumnSpan="2" Margin="19.8,0,0,38.2" Grid.RowSpan="2"/>
+                        <TextBox x:Name="from_fis_textblock" Style="{StaticResource BaseTextBox}" VerticalAlignment="Top" Height="auto" Grid.Column="3" Grid.Row="3" Grid.ColumnSpan="3" Margin="19.8,0.2,19.4,0" />
+                        <Label x:Name="to_fis_lbl" Content="To:" HorizontalAlignment="Left" VerticalAlignment="Bottom" Grid.Column="5" Grid.Row="2" Grid.ColumnSpan="2" Margin="19.6,0,0,38.2" Grid.RowSpan="2"/>
+                        <TextBox x:Name="to_fis_textblock" Style="{StaticResource BaseTextBox}" VerticalAlignment="Top" Height="auto" Grid.Column="5" Grid.Row="3" Grid.ColumnSpan="3" Margin="19.6,0.2,19.6,0" />
                     </Grid>
                 </Expander>
 
-                <!--FIS Content-->
-
-                <!--Content-->
+             
                 <Frame x:Name="mainContent" NavigationUIVisibility="Hidden" Grid.Row="1" Margin="15,5,15,15" Background="{StaticResource BaseBackgroundLight}">
                     <Frame.Effect>
                         <DropShadowEffect Color="Black" ShadowDepth="1" RenderingBias="Quality"/>
                     </Frame.Effect>
 
                 </Frame>
-                <Label x:Name="lblRunCycle" Content="{Binding MessageProcess, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Grid.Row="1" Margin="31,0,0,375.8" Width="597"/>
+                <Label x:Name="lblRunCycle" Content="{Binding MessageProcess, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Grid.Row="1" Margin="63,0,0,413" Width="597"/>
+                <Image x:Name="imgImageOfProcess" Source="{Binding ImageOfProcess, UpdateSourceTrigger=PropertyChanged}"   Width="1013" Margin="63,48,54,50" Grid.Row="1" Stretch="Uniform" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+
             </Grid>
 
 

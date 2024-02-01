@@ -25,11 +25,10 @@ namespace BORGWARNER_SERVOPRESS.UI
     /// </summary>
     public partial class MainWindow : Window
     {
-        private SessionApp sessionApp;
+        private SessionApp sessionApp;        
+        private PageManager pageManager;
         private ViewMain viewMain;
-
-        homeDashboard _homeDashboard;
-        LoginWindow loginWindow;
+        List<string> controlNames;
         public MainWindow(SessionApp _sessionApp)
         {
             sessionApp = _sessionApp;
@@ -41,15 +40,19 @@ namespace BORGWARNER_SERVOPRESS.UI
         {
             viewMain = new ViewMain(sessionApp);
             DataContext = viewMain.GetModel();
+            pageManager = new PageManager(this);
+
+            viewMain.ShowData();
             viewMain.ShowDate();
+
+            controlNames = new List<string> { "startCycle_btn",  "export_btn", "positions_btn", "positions_separator", "from_fis_textblock" };           
         }
+
+        
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            showMenu(sessionApp.user.profile);
-
-            lblUsername.Content = sessionApp.user.userName;
-            lblProfile.Content = sessionApp.user.profile;
+            
         }
 
         private void home_option_btn_Click(object sender, RoutedEventArgs e)
@@ -64,7 +67,7 @@ namespace BORGWARNER_SERVOPRESS.UI
 
         private void Btn_exit_click(object sender, RoutedEventArgs e)
         {
-            loginWindow = new LoginWindow(sessionApp);
+            LoginWindow loginWindow = new LoginWindow(sessionApp);
             loginWindow.Show();
             this.Close();
         }
@@ -115,24 +118,18 @@ namespace BORGWARNER_SERVOPRESS.UI
 
         private void StopCycle_btn_Click(object sender, RoutedEventArgs e)
         {
-
+            pageManager.DisableControls(controlNames);            
+            MessageBox.Show("Cerrando ciclos...");
         }
 
         private void Screw_Scrap_Click(object sender, RoutedEventArgs e)
         {
-
+            pageManager.HideControls(controlNames);
         }
 
         private void showMenu(string profile)
         {
-            if(profile == "Operario")
-            {
-                fis_btn.Visibility = Visibility.Hidden;
-                history_btn.Visibility = Visibility.Hidden;
-                export_btn.Visibility = Visibility.Hidden;
-                manual_btn.Visibility = Visibility.Hidden;
-                positions_btn.Visibility = Visibility.Hidden;
-            }
+           
         }
 
         
