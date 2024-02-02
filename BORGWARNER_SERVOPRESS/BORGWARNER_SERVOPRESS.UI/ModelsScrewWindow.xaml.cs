@@ -70,12 +70,12 @@ namespace BORGWARNER_SERVOPRESS.UI
 
         private void run_btn_Click(object sender, RoutedEventArgs e)
         {
-
+            pageManager.HideControls(new List<string> { "btnToAdd", "btnToEdit"});
         }
 
         private void fis_btn_Click(object sender, RoutedEventArgs e)
         {
-
+            pageManager.VisibleControls(new List<string> { "btnToAdd" , "btnToCancel" });
         }
 
         private void history_btn_Click(object sender, RoutedEventArgs e)
