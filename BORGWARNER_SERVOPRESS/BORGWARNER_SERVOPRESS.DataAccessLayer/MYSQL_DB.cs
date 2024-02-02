@@ -126,6 +126,42 @@ namespace BORGWARNER_SERVOPRESS.DataAccessLayer
             }           
             return returnv;
         }
+
+        public void ExecuteNonQuerySP(string procedimiento, params MySqlParameter[] datos)
+        {            
+            try
+            {
+                using (MySqlConnection conn = new MySqlConnection(connStr))
+                {
+                    try
+                    {
+                        using (MySqlCommand cmd = new MySqlCommand(procedimiento, conn))
+                        {
+                            cmd.CommandType = CommandType.StoredProcedure;
+                            cmd.Parameters.AddRange(datos);                                                        
+                            conn.Open();
+                            cmd.ExecuteNonQuery();
+                            
+                        }
+                    }
+                    catch (MySqlException ex)
+                    {
+                        Debug.WriteLine(ex.Message);
+                        throw;
+                    }
+                    finally
+                    {
+                        conn.Close();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+                throw;
+            }
+            
+        }
         public DataTable ExecuteSP(string procedimiento, params MySqlParameter[] datos)
         {
             DataTable dt = new DataTable();

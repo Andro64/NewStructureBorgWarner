@@ -110,8 +110,11 @@
     <Compile Include="ObserverPatternSensor\SensorLogic.cs" />
     <Compile Include="SensorsIO.cs" />
     <Compile Include="Settings.cs" />
+    <Compile Include="TryDevices.cs" />
     <Compile Include="UsersAdmin.cs" />
+    <Compile Include="Views\RelayCommand.cs" />
     <Compile Include="Views\ViewMain.cs" />
+    <Compile Include="Views\ViewModelsScrew.cs" />
     <Compile Include="VisionSystem.cs" />
     <Compile Include="WorkStation_Manual_Type1.cs" />
   </ItemGroup>
