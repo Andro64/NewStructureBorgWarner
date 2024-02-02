@@ -17,6 +17,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using System.ComponentModel;
 using System.Threading;
+using BORGWARNER_SERVOPRESS.DataModel.Views;
 
 namespace BORGWARNER_SERVOPRESS.UI
 {
@@ -25,9 +26,9 @@ namespace BORGWARNER_SERVOPRESS.UI
     /// </summary>
     public partial class ModelsScrewWindow : Window
     {
-        private SessionApp sessionApp;        
-        private PageManager pageManager;
+        private SessionApp sessionApp;
         private ViewModelsScrew viewModelsScrew;
+        private PageManager pageManager;        
         List<string> controlNames;
         public ModelsScrewWindow(SessionApp _sessionApp)
         {
@@ -35,18 +36,16 @@ namespace BORGWARNER_SERVOPRESS.UI
             InitializeComponent();
             initialize();
         }
-
         public void initialize()
-        {
+        {   
             viewModelsScrew = new ViewModelsScrew(sessionApp);
-            DataContext = viewModelsScrew.GetModel();
+            //Se carga el modelo
+            DataContext = viewModelsScrew;
             pageManager = new PageManager(this);          
             controlNames = new List<string> { "startCycle_btn",  "export_btn", "positions_btn", "positions_separator", "from_fis_textblock" };           
 
-        }
-
-        
-
+        }        
+       
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             

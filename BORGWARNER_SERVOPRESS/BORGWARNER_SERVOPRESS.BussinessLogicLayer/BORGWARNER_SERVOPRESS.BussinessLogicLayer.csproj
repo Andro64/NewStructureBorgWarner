@@ -112,6 +112,7 @@
     <Compile Include="Settings.cs" />
     <Compile Include="TryDevices.cs" />
     <Compile Include="UsersAdmin.cs" />
+    <Compile Include="Views\RelayCommand.cs" />
     <Compile Include="Views\ViewMain.cs" />
     <Compile Include="Views\ViewModelsScrew.cs" />
     <Compile Include="VisionSystem.cs" />
