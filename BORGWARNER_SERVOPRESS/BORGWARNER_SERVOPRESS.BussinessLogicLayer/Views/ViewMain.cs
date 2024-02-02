@@ -1,4 +1,5 @@
-﻿using BORGWARNER_SERVOPRESS.DataModel.Views;
+﻿using BORGWARNER_SERVOPRESS.DataModel;
+using BORGWARNER_SERVOPRESS.DataModel.Views;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,8 +12,10 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.Views
     public class ViewMain
     {
         private ModelViewMain _modelViewMain;
-        public ViewMain()
+        SessionApp sessionApp;
+        public ViewMain(SessionApp _sessionApp)
         {
+            sessionApp = _sessionApp;
             _modelViewMain = new ModelViewMain();
         }
         public ModelViewMain GetModel()
@@ -27,14 +30,21 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.Views
             };
             timer.Tick += (sender, args) =>
             {
-                _modelViewMain.Timestamp = DateTime.Now.ToString();   
-                _modelViewMain.NumeroAleatorio = new Random().Next(1, 1000000);
+                _modelViewMain.Timestamp = DateTime.Now.ToString();
+                //_modelViewMain.NumeroAleatorio = new Random().Next(1, 1000000);
+                _modelViewMain.MessageProcess = sessionApp.MessageOfProcess;
+                _modelViewMain.ImageOfProcess = sessionApp.ImageOfProcess;
             };
             timer.Start();
         }
         public async Task getStatusScrew(string messageScrew)
-        {            
-            _modelViewMain.MessageScrew = messageScrew;                                
+        {
+            _modelViewMain.MessageProcess = messageScrew;
+        }
+        public void ShowData()
+        {
+            _modelViewMain.UserName = sessionApp.user.userName;
+            _modelViewMain.Profile = sessionApp.user.profile;
         }
     }
 }

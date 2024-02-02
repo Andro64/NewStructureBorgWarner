@@ -7,7 +7,8 @@ using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
-
+using System.Reflection;
+using System.IO;
 
 namespace BORGWARNER_SERVOPRESS.UI
 {
@@ -27,11 +28,34 @@ namespace BORGWARNER_SERVOPRESS.UI
             BussinessLogicLayer.Settings settingsGeneral = new BussinessLogicLayer.Settings(sessionApp);
             sessionApp.settings = settingsGeneral.getSettings();
             sessionApp.connectionsWorkStation = settingsGeneral.getConnections();
-            
-            //Inicial la ventana Login          
-            LoginWindow _loginWindow = new LoginWindow(sessionApp);
-            _loginWindow.Show();
 
+            Assembly exec = Assembly.GetExecutingAssembly();
+            string pathExec = exec.Location;
+            sessionApp.PathDirectoryResourcesOfThisProyect = Path.GetDirectoryName(pathExec) + @"\Resources\";
+            sessionApp.PathOperationalImages = sessionApp.PathDirectoryResourcesOfThisProyect + @"Operational_Images\";
+            sessionApp.user = new User();
+
+            //Inicial la ventana Login
+            //LoginWindow _loginWindow = new LoginWindow(sessionApp);
+            //_loginWindow.Show();
+
+            //Inicial la ventana Main
+            //MainWindow mainWindow = new MainWindow(sessionApp);
+            //mainWindow.Title = "BORGWARNER SERVOPRENSA";
+            //mainWindow.Show();
+
+
+            //FISWindow fisWindow = new FISWindow(sessionApp);
+            //fisWindow.Title = "BORGWARNER SERVOPRENSA";
+            //fisWindow.Show();
+
+            //HistoryWindow historyWindow = new HistoryWindow(sessionApp);
+            //historyWindow.Title = "BORGWARNER SERVOPRENSA";
+            //historyWindow.Show();
+
+            ModelsScrewWindow modelsScrewWindow = new ModelsScrewWindow(sessionApp);
+            modelsScrewWindow.Title = "BORGWARNER SERVOPRENSA";
+            modelsScrewWindow.Show();
         }
     }
 }

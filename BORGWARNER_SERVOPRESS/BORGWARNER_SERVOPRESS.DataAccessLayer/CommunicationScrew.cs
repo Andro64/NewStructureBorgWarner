@@ -1,4 +1,6 @@
 ﻿using BORGWARNER_SERVOPRESS.DataModel;
+using BORGWARNER_SERVOPRESS.DataModel.Views;
+using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -69,6 +71,70 @@ namespace BORGWARNER_SERVOPRESS.DataAccessLayer
                 throw;
             }
             return lstScrews;
+        }
+        public List<ModelViewModelsScrew> getModelViewModelsScrew()
+        {
+            List<ModelViewModelsScrew> lstScrews = new List<ModelViewModelsScrew>();
+            try
+            {
+                MYSQL_DB mYSQL = new MYSQL_DB(sessionApp.connStr);
+                DataTable resultData = mYSQL.ExecuteSP("SP_GET_MODELS_SCREWS");
+                lstScrews = resultData.AsEnumerable().Select(row =>
+                new ModelViewModelsScrew
+                {
+                    id = row.Field<int>("id"),
+                    partNumber = row.Field<string>("partNumber"),
+                    serial = row.Field<string>("serial"),
+                    name_model = row.Field<string>("name_model"),
+                    description = row.Field<string>("description"),
+                    quantity_screws = row.Field<int>("quantity_screws")
+                }).ToList();
+
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+                throw;
+            }
+            return lstScrews;
+        }
+
+        public void Ins_Upd_ModelViewModelsScrew(ModelViewModelsScrew modelViewModelsScrew)
+        {            
+            try
+            {
+                MYSQL_DB mySQL = new MYSQL_DB(sessionApp.connStr);               
+
+                 mySQL.ExecuteNonQuerySP("SP_INS_UPD_MODELS_SCREWS", new MySqlParameter[] {
+                    new MySqlParameter("p_id", MySqlDbType.Int32) { Value = modelViewModelsScrew.id },
+                    new MySqlParameter("p_partNumber", MySqlDbType.VarChar) { Value = modelViewModelsScrew.partNumber },
+                    new MySqlParameter("p_serial", MySqlDbType.VarChar) { Value = modelViewModelsScrew.serial },
+                    new MySqlParameter("p_name_model", MySqlDbType.VarChar) { Value = modelViewModelsScrew.name_model },
+                    new MySqlParameter("p_description", MySqlDbType.VarChar) { Value = modelViewModelsScrew.description },
+                    new MySqlParameter("p_quantity_screws", MySqlDbType.Int32) { Value = modelViewModelsScrew.quantity_screws }
+                });
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+                throw;
+            }            
+        }
+        public void Del_ModelViewModelsScrew(ModelViewModelsScrew modelViewModelsScrew)
+        {
+            try
+            {
+                MYSQL_DB mySQL = new MYSQL_DB(sessionApp.connStr);
+
+                mySQL.ExecuteNonQuerySP("SP_DEL_MODELS_SCREWS", new MySqlParameter[] {
+                    new MySqlParameter("p_id", MySqlDbType.Int32) { Value = modelViewModelsScrew.id }                    
+                });
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+                throw;
+            }
         }
     }
 }
