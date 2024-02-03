@@ -63,6 +63,7 @@
     <Compile Include="SessionApp.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="TighteningProcess.cs" />
+    <Compile Include="TotalRegistersByTables.cs" />
     <Compile Include="User.cs" />
     <Compile Include="Views\ModelViewMain.cs" />
     <Compile Include="Views\ModelViewModelsScrew.cs" />

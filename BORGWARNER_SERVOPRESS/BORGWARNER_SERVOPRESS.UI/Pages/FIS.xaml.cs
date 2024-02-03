@@ -25,7 +25,7 @@ namespace BORGWARNER_SERVOPRESS.UI.Pages
             InitializeComponent();
         }
 
-        private void testFIS_btn_Click(object sender, RoutedEventArgs e)
+        private void testmn_btn_fis_Click(object sender, RoutedEventArgs e)
         {
 
         }

@@ -11,19 +11,23 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
     public class Settings
     {
         SessionApp sessionApp;
+        CommunicationGeneral communication;
         public Settings(SessionApp _sessionApp)
         {
             sessionApp = _sessionApp;
+            communication = new CommunicationGeneral(sessionApp);
         }
         public List<DataModel.Settings> getSettings()
-        {
-            CommunicationGeneral communication = new CommunicationGeneral(sessionApp);
+        {            
             return communication.getSettings();
         }
         public List<ConnectionWorkStation> getConnections()
-        {
-            CommunicationGeneral communication = new CommunicationGeneral(sessionApp);
+        {         
             return communication.getConnectionsDevices();
+        }
+        public List<TotalRegistersByTables> getTotalRegByTables()
+        {         
+            return communication.getTotalRegByTables();
         }
     }
 }

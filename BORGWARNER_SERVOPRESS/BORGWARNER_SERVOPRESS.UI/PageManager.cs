@@ -16,7 +16,22 @@ namespace BORGWARNER_SERVOPRESS.UI
         {
             this.parent = parent;
         }
+        public void CleanControls(List<string> controlNames)
+        {
+            foreach (var controlName in controlNames)
+            {
+                UIElement control = GetControl(controlName);
 
+                if (control is TextBox)
+                {
+                    ((TextBox)control).Clear();
+                }
+                else if (control is ComboBox)
+                {                    
+                    ((ComboBox)control).SelectedIndex = -1;
+                }
+            }
+        }
         public void DisableControls(List<string> controlNames)
         {
             foreach (var controlName in controlNames)

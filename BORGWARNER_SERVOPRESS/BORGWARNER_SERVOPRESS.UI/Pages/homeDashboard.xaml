@@ -11,13 +11,13 @@
 
     <Grid Height="auto" Width="auto" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">                                                                                                                                                                      
         <!--<Label x:Name="currentePage_lbl" Content="Interfaz principal" Visibility="Hidden"/>
-        <Button x:Name="home_run_btn" Content="Run" Click="home_run_btn_Click" Visibility="Hidden"/>
-        <Button x:Name="home_history_btn" Content="Historial" Click="home_history_btn_Click" Visibility="Hidden"/>
-        <Button x:Name="home_fis_btn" Content="FIS" Click="home_fis_btn_Click" Visibility="Hidden"/>
+        <Button x:Name="home_mn_btn_run" Content="Run" Click="home_mn_btn_run_Click" Visibility="Hidden"/>
+        <Button x:Name="home_mn_btn_history" Content="Historial" Click="home_mn_btn_history_Click" Visibility="Hidden"/>
+        <Button x:Name="home_mn_btn_fis" Content="FIS" Click="home_mn_btn_fis_Click" Visibility="Hidden"/>
         <Button x:Name="home_Export_btn" Content="Modelos" Click="home_Export_btn_Click" Visibility="Hidden"/>
-        <Button x:Name="home_Manual_btn" Content="Manual" Click="home_Manual_btn_Click" Visibility="Hidden"/>
+        <Button x:Name="home_mn_btn_manual" Content="Manual" Click="home_mn_btn_manual_Click" Visibility="Hidden"/>
         <Button x:Name="home_Manual2_btn" Content="Manual 2" Click="home_Manual2_btn_Click" Visibility="Hidden"/>
-        <Button x:Name="home_Positions_btn" Content="Posiciones" Click="home_Positions_btn_Click" Visibility="Hidden"/>-->
+        <Button x:Name="home_mn_btn_positions" Content="Posiciones" Click="home_mn_btn_positions_Click" Visibility="Hidden"/>-->
         <Frame x:Name="mainFrame" NavigationUIVisibility="Hidden" Height="auto" Width="auto" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
     </Grid>
 </Page>

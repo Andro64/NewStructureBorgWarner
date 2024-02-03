@@ -48,6 +48,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="connections\connections.sql" />
+    <Content Include="General\general_scripts.sql" />
     <Content Include="models_screw\models_screw.sql" />
     <Content Include="screws\screws.sql" />
     <Content Include="settings\settings.sql" />

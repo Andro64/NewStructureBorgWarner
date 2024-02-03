@@ -37,9 +37,9 @@
             <Label x:Name="fis_status_lbl" Visibility="Hidden" Content="Status" Grid.Column="0" Grid.ColumnSpan="3"/>
 
             <!--<Button x:Name="clean_data_btn" Style="{StaticResource BaseButton}" Content="Limpiar" Visibility="Hidden" Click="clean_data_btn_Click" Grid.Column="4"/>-->
-            <Button x:Name="testFIS_btn" Style="{StaticResource BaseButton}" Content="Test" Click="testFIS_btn_Click" Grid.Column="5"/>
-            <!--<Button x:Name="test_fis_btn" Style="{StaticResource BaseButton}" Content="Test" Visibility="Visible" Click="test_fis_btn_Click" Grid.Column="5"/>-->
-            <!--<Button x:Name="delete_fis_btn" Style="{StaticResource BaseButton}" Content="Eliminar" Click="select_model_btn_Click" Grid.Column="6"/>-->
+            <Button x:Name="testmn_btn_fis" Style="{StaticResource BaseButton}" Content="Test" Click="testmn_btn_fis_Click" Grid.Column="5"/>
+            <!--<Button x:Name="test_mn_btn_fis" Style="{StaticResource BaseButton}" Content="Test" Visibility="Visible" Click="test_mn_btn_fis_Click" Grid.Column="5"/>-->
+            <!--<Button x:Name="delete_mn_btn_fis" Style="{StaticResource BaseButton}" Content="Eliminar" Click="select_model_btn_Click" Grid.Column="6"/>-->
             <Button x:Name="send_btn" Style="{StaticResource BaseButton}" Content="Enviar BREQ" Click="send_btn_Click" Grid.Column="6"/>
         </Grid>
 

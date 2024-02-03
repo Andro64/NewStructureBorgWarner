@@ -45,7 +45,7 @@ namespace BORGWARNER_SERVOPRESS.UI
             viewMain.ShowData();
             viewMain.ShowDate();
 
-            controlNames = new List<string> { "startCycle_btn",  "export_btn", "positions_btn", "positions_separator", "from_fis_textblock" };
+            controlNames = new List<string> { "startCycle_btn",  "export_btn", "mn_btn_positions", "positions_separator", "from_fis_textblock" };
             //pageManager.DisableControls(controlNames);
             //pageManager.HideControls(controlNames);
 
@@ -75,35 +75,42 @@ namespace BORGWARNER_SERVOPRESS.UI
             this.Close();
         }
 
-        private void run_btn_Click(object sender, RoutedEventArgs e)
+        #region Menu
+        private void mn_btn_run_Click(object sender, RoutedEventArgs e)
+        {
+            new MainWindow(sessionApp).ShowDialog();
+            this.Close();
+        }
+
+        private void mn_btn_fis_Click(object sender, RoutedEventArgs e)
+        {
+            new FISWindow(sessionApp).ShowDialog();
+            this.Close();
+        }
+
+        private void mn_btn_history_Click(object sender, RoutedEventArgs e)
+        {
+            new HistoryWindow(sessionApp).ShowDialog();
+            this.Close();
+        }
+
+        private void mn_btn_modelos_screw_Click(object sender, RoutedEventArgs e)
+        {
+            new ModelsScrewWindow(sessionApp).ShowDialog();
+            this.Close();
+        }
+
+        private void mn_btn_manual_Click(object sender, RoutedEventArgs e)
+        {
+            new ManualWindow(sessionApp).ShowDialog();
+            this.Close();
+        }
+
+        private void mn_btn_positions_Click(object sender, RoutedEventArgs e)
         {
 
         }
-
-        private void fis_btn_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
-
-        private void history_btn_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
-
-        private void export_btn_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
-
-        private void manual_btn_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
-
-        private void positions_btn_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
+        #endregion
 
         private void StartCycle_btn_Click(object sender, RoutedEventArgs e)
         {

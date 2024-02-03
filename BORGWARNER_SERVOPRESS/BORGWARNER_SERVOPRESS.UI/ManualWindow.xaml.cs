@@ -17,35 +17,39 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using System.ComponentModel;
 using System.Threading;
-using BORGWARNER_SERVOPRESS.DataModel.Views;
 
 namespace BORGWARNER_SERVOPRESS.UI
 {
     /// <summary>
-    /// Interaction logic for FISWindow.xaml
+    /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class ModelsScrewWindow : Window
+    public partial class ManualWindow : Window
     {
-        private SessionApp sessionApp;
-        private ViewModelsScrew viewModelsScrew;
-        private PageManager pageManager;        
+        private SessionApp sessionApp;        
+        private PageManager pageManager;
+        private ViewMain viewMain;
         List<string> controlNames;
-        public ModelsScrewWindow(SessionApp _sessionApp)
+        public ManualWindow(SessionApp _sessionApp)
         {
             sessionApp = _sessionApp;
             InitializeComponent();
             initialize();
         }
-        public void initialize()
-        {   
-            viewModelsScrew = new ViewModelsScrew(sessionApp);
-            //Se carga el modelo
-            DataContext = viewModelsScrew;
-            pageManager = new PageManager(this);          
-            controlNames = new List<string> { "startCycle_btn",  "export_btn", "mn_btn_positions", "positions_separator", "from_fis_textblock" };           
 
-        }        
-       
+        public void initialize()
+        {
+            viewMain = new ViewMain(sessionApp);
+            DataContext = viewMain.GetModel();
+            pageManager = new PageManager(this);
+
+            viewMain.ShowData();
+            viewMain.ShowDate();
+
+            controlNames = new List<string> { "startCycle_btn",  "export_btn", "mn_btn_positions", "positions_separator", "from_fis_textblock" };           
+        }
+
+        
+
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             
@@ -67,6 +71,7 @@ namespace BORGWARNER_SERVOPRESS.UI
             loginWindow.Show();
             this.Close();
         }
+
         #region Menu
         private void mn_btn_run_Click(object sender, RoutedEventArgs e)
         {
@@ -104,23 +109,36 @@ namespace BORGWARNER_SERVOPRESS.UI
         }
         #endregion
 
-
-        private void cboPage_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        private void StartCycle_btn_Click(object sender, RoutedEventArgs e)
         {
-            if (sender is ComboBox comboBox)
-            {   
-                (DataContext as ViewModelsScrew)?.SelectComboPageCommand.Execute(comboBox.SelectedItem);                
+            try
+            {
+                WorkStation_Manual_Type1 workStation_Manual_Type1 = new WorkStation_Manual_Type1(sessionApp);
+                //workStation_Manual_Type1.start();
+                 workStation_Manual_Type1.MensajesPantalla();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error: " + ex.Message + "\nSource: " + ex.Source + "\nInner: " + ex.InnerException, "Error", System.Windows.MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
-        private void btnToAdd_Click(object sender, RoutedEventArgs e)
+        private void StopCycle_btn_Click(object sender, RoutedEventArgs e)
         {
-            pageManager.CleanControls(new List<string> { "txtPartNumber", "txtSerial", "txtNamemodel", "txtDescription", "txtQuantityScrews" });
+            pageManager.DisableControls(controlNames);            
+            MessageBox.Show("Cerrando ciclos...");
         }
 
-        private void btnToCancel_Click(object sender, RoutedEventArgs e)
+        private void Screw_Scrap_Click(object sender, RoutedEventArgs e)
         {
-            pageManager.CleanControls(new List<string> { "txtPartNumber", "txtSerial", "txtNamemodel", "txtDescription", "txtQuantityScrews" });
+            pageManager.HideControls(controlNames);
         }
+
+        private void showMenu(string profile)
+        {
+           
+        }
+
+        
     }
 }

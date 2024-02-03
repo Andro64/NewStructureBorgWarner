@@ -28,6 +28,7 @@ namespace BORGWARNER_SERVOPRESS.UI
             BussinessLogicLayer.Settings settingsGeneral = new BussinessLogicLayer.Settings(sessionApp);
             sessionApp.settings = settingsGeneral.getSettings();
             sessionApp.connectionsWorkStation = settingsGeneral.getConnections();
+            
 
             Assembly exec = Assembly.GetExecutingAssembly();
             string pathExec = exec.Location;

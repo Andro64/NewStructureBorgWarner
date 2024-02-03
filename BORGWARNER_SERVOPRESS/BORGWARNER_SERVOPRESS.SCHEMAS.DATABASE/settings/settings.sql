@@ -18,6 +18,7 @@ INSERT INTO settings (setting, value_setting) VALUES ('Cognex_Camara_Path','C:\\
 
 INSERT INTO settings (setting, value_setting) VALUES ('Number_Screws_Process','3'); 
 INSERT INTO settings (setting, value_setting) VALUES ('Model_Screw','2'); 
+INSERT INTO settings (setting, value_setting) VALUES ('GRID_Number_Reg_by_Page','2'); 
 
 DELIMITER ||
 CREATE PROCEDURE SP_GET_SETTINGS()

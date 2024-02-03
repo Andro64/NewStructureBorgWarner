@@ -37,7 +37,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
                 Thread.Sleep(3000);
                 showMessageAndImage("Esperamos CLAMP DE PALLET EXTENDIDO","button.jpg");
                 Thread.Sleep(3000);
-                showMessageAndImage("Esperamos que el OPERADOR COLOCAQUE EL HOUSING","pressure.jpg");
+                /*showMessageAndImage("Esperamos que el OPERADOR COLOCAQUE EL HOUSING","pressure.jpg");
                 Thread.Sleep(3000);
                 showMessageAndImage("SCANNER 1 LEE CODIGO SERIAL: ","part.jpg");
                 Thread.Sleep(3000);
@@ -51,7 +51,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
                 Thread.Sleep(3000);
                 showMessageAndImage("Fallaron los 3 intentos ");
                 Thread.Sleep(3000);  ///Falta poner que hace en este caso
-                /*
+                
                 sessionApp.MessageOfProcess = "PIDE A OPERADOR TOMAR ULTRA CAP BOARD Y COLOCAR EN NIDO";
                 sessionApp.ImageOfProcess = sessionApp.PathOperationalImages + "pressure.jpg";
                 Thread.Sleep(3000);
@@ -123,6 +123,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
                 showMessageAndImage("La informacion correspondiente a los tornillos esta incompleta");
                 Thread.Sleep(3000);
                 showMessageAndImage("Finaliza Proceso de atornillado",@"C:\Users\bas1s\OneDrive\Imágenes\Trabajo\CONINTEC\Success.gif",true);
+                sessionApp.TaksRunExecuting = false;
             });
         }
 
