@@ -191,9 +191,9 @@
                                 <Ellipse x:Name="Card1_Input_7"  Fill="Gray" Width="20" Height="20" Grid.Column="2" Grid.Row="3"/>
                                 <Label Content="Señal E-Stop " Grid.Column="3" Grid.Row="3"/>
                                 <Button x:Name="Card1_ouput0" Style="{StaticResource BaseButton}" Content="Opto verde" Click="Card1_ouput0_Click_1" Grid.Column="4" Grid.Row="0"/>
-                                <Button x:Name="Card1_ouput1" Style="{StaticResource BaseButton}" Content="Opto amarillo" Click="Card1_ouput1_Click" Grid.Column="4" Grid.Row="1"/>
+                                <Button x:Name="Card1_ouput1" Style="{StaticResource BaseButton}" Content="Opto amarillo" Click="Card1_ouput1_Click" Grid.Column="4" Grid.Row="1" Height="26" VerticalAlignment="Bottom"/>
                                 <Button x:Name="Card1_ouput2" Style="{StaticResource BaseButton}" Content="Opto rojo" Click="Card1_ouput2_Click" Grid.Column="4" Grid.Row="2"/>
-                                <Button x:Name="Card1_ouput3" Style="{StaticResource BaseButton}" Content="Restablecer" Click="Card1_ouput3_Click" Grid.Column="4" Grid.Row="3"/>
+                                <Button x:Name="Card1_ouput3" Style="{StaticResource BaseButton}" Content="Restablecer" Click="Card1_ouput3_Click" Grid.Column="4" Grid.Row="3" Height="26" VerticalAlignment="Top"/>
                                 <Button x:Name="Card1_ouput4" Style="{StaticResource BaseButton}" Content="Aspiradora de punta" Click="Card1_ouput4_Click" Grid.Column="5" Grid.Row="0"/>
                                 <Button x:Name="Card1_ouput5" Style="{StaticResource BaseButton}" Content="Vacuum Disposal" Click="Card1_ouput5_Click" Grid.Column="5" Grid.Row="1"/>
                                 <Button x:Name="Card1_ouput6" Style="{StaticResource BaseButton}" Content="Dispensador tornillo " Click="Card1_ouput6_Click" Grid.Column="5" Grid.Row="2"/>
@@ -240,7 +240,7 @@
                                 <Button x:Name="Card2_ouput4" Style="{StaticResource BaseButton}" Content="K4" Click="Card2_ouput4_Click" Grid.Column="5" Grid.Row="0"/>
                                 <Button x:Name="Card2_ouput5" Style="{StaticResource BaseButton}" Content="K5" Click="Card2_ouput5_Click" Grid.Column="5" Grid.Row="1"/>
                                 <Button x:Name="Card2_ouput6" Style="{StaticResource BaseButton}" Content="K6" Click="Card2_ouput6_Click" Grid.Column="5" Grid.Row="2"/>
-                                <Button x:Name="Card2_ouput7" Style="{StaticResource BaseButton}" Content="K7" Click="Card2_ouput7_Click" Grid.Column="5" Grid.Row="3"/>
+                                <Button x:Name="Card2_ouput7" Style="{StaticResource BaseButton}" Content="K7" Click="Card2_ouput7_Click" Grid.Column="5" Grid.Row="3" Height="26" VerticalAlignment="Top"/>
                             </Grid>
                         </GroupBox>
 
@@ -280,7 +280,7 @@
                                 <Button x:Name="Card3_ouput0" Style="{StaticResource BaseButton}" Grid.Column="4" Grid.Row="0" Content="ST01 Disponible" Click="Card3_ouput0_Click"/>
                                 <Button x:Name="Card3_ouput1" Style="{StaticResource BaseButton}" Grid.Column="4" Grid.Row="1" Content="K1" Click="Card3_ouput1_Click"/>
                                 <Button x:Name="Card3_ouput2" Style="{StaticResource BaseButton}" Grid.Column="4" Grid.Row="2" Content="K2" Click="Card3_ouput2_Click"/>
-                                <Button x:Name="Card3_ouput3" Style="{StaticResource BaseButton}" Grid.Column="4" Grid.Row="3" Content="K3" Click="Card3_ouput3_Click"/>
+                                <Button x:Name="Card3_ouput3" Style="{StaticResource BaseButton}" Grid.Column="4" Grid.Row="3" Content="K3" Click="Card3_ouput3_Click" Height="26" VerticalAlignment="Top"/>
                                 <Button x:Name="Card3_ouput4" Style="{StaticResource BaseButton}" Grid.Column="5" Grid.Row="0" Content="K4" Click="Card3_ouput4_Click"/>
                                 <Button x:Name="Card3_ouput5" Style="{StaticResource BaseButton}" Grid.Column="5" Grid.Row="1" Content="K5" Click="Card3_ouput5_Click"/>
                                 <Button x:Name="Card3_ouput6" Style="{StaticResource BaseButton}" Grid.Column="5" Grid.Row="2" Content="Reset sensor scrap" Click="Card3_ouput6_Click"/>

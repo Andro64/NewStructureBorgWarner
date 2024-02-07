@@ -62,7 +62,8 @@ namespace BORGWARNER_SERVOPRESS.UI
 
         private void settings_option_btn_Click(object sender, RoutedEventArgs e)
         {
-
+            new SettingsWindow(sessionApp).ShowDialog();
+            this.Close();
         }
 
         private void Btn_exit_click(object sender, RoutedEventArgs e)
@@ -87,7 +88,7 @@ namespace BORGWARNER_SERVOPRESS.UI
 
         private void mn_btn_history_Click(object sender, RoutedEventArgs e)
         {
-            new HistoryWindow(sessionApp).ShowDialog();
+            new RunHistoryWindow(sessionApp).ShowDialog();
             this.Close();
         }
 
@@ -139,6 +140,154 @@ namespace BORGWARNER_SERVOPRESS.UI
            
         }
 
-        
+        private void Card3_ouput4_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void Card3_ouput5_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void Card3_ouput7_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void Card3_ouput3_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void Card1_ouput0_Click_1(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void Card1_ouput5_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void Card1_ouput6_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void Card1_ouput2_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void Card1_ouput7_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void Card2_ouput0_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void Card2_ouput4_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void Card2_ouput1_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void Card2_ouput5_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void Card2_ouput2_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void Card2_ouput6_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void Card2_ouput3_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void Card2_ouput7_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void Card3_ouput0_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void Card3_ouput1_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void Card3_ouput2_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void Card3_ouput6_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void Card1_ouput1_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void Scanner_1_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void Scanner_2_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void Screwdriver_Btn_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void Camara_1_Btn_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void TestScrewdriver_Btn_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void Card1_ouput4_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void Card1_ouput3_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }

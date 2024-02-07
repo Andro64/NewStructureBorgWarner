@@ -50,6 +50,7 @@
     <Content Include="connections\connections.sql" />
     <Content Include="General\general_scripts.sql" />
     <Content Include="models_screw\models_screw.sql" />
+    <Content Include="runs\runs.sql" />
     <Content Include="screws\screws.sql" />
     <Content Include="settings\settings.sql" />
     <Content Include="type_connection\type_connection.sql" />

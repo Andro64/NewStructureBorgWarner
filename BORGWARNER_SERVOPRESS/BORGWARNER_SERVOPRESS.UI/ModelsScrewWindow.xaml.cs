@@ -58,7 +58,8 @@ namespace BORGWARNER_SERVOPRESS.UI
 
         private void settings_option_btn_Click(object sender, RoutedEventArgs e)
         {
-
+            new SettingsWindow(sessionApp).ShowDialog();
+            this.Close();
         }
 
         private void Btn_exit_click(object sender, RoutedEventArgs e)
@@ -82,7 +83,7 @@ namespace BORGWARNER_SERVOPRESS.UI
 
         private void mn_btn_history_Click(object sender, RoutedEventArgs e)
         {
-            new HistoryWindow(sessionApp).ShowDialog();
+            new RunHistoryWindow(sessionApp).ShowDialog();
             this.Close();
         }
 

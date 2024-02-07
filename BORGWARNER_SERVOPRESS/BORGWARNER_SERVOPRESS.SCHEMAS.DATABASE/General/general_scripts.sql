@@ -7,6 +7,13 @@ CREATE TEMPORARY TABLE totalreg_by_tables_temp (
     name_table VARCHAR(50),
     total_reg INT    
 );
+
+DROP TEMPORARY TABLE IF EXISTS totalreg_by_tables_temp2;
+CREATE TEMPORARY TABLE totalreg_by_tables_temp2 (    
+    name_table VARCHAR(50),
+    total_reg INT,
+    pages INT
+);
 SELECT CAST( value_setting as SIGNED) INTO num_reg_by_page FROM settings WHERE setting = 'GRID_Number_Reg_by_Page';
 
 INSERT INTO totalreg_by_tables_temp (name_table,total_reg) SELECT 'connections',COUNT(*) as 'TotalReg'  FROM connections;
@@ -17,11 +24,15 @@ INSERT INTO totalreg_by_tables_temp (name_table,total_reg) SELECT 'settings',COU
 INSERT INTO totalreg_by_tables_temp (name_table,total_reg) SELECT 'type_connection',COUNT(*) as 'TotalReg'  FROM type_connection;
 INSERT INTO totalreg_by_tables_temp (name_table,total_reg) SELECT 'type_device',COUNT(*) as 'TotalReg'  FROM type_device;
 INSERT INTO totalreg_by_tables_temp (name_table,total_reg) SELECT 'users',COUNT(*) as 'TotalReg'  FROM users;
+INSERT INTO totalreg_by_tables_temp (name_table,total_reg) SELECT 'runs',COUNT(*) as 'TotalReg'  FROM runs;
 
-SELECT name_table, total_reg,CEIL( total_reg / num_reg_by_page) as pages FROM totalreg_by_tables_temp;
+INSERT INTO totalreg_by_tables_temp2 (name_table,total_reg,pages)
+SELECT name_table, total_reg,CAST(CEIL( total_reg / num_reg_by_page) as SIGNED) as pages FROM totalreg_by_tables_temp;
 
+SELECT name_table, total_reg,pages FROM totalreg_by_tables_temp2;
  END
  || 
  DELIMITER ;
+ 
  
  CALL SP_GET_TOTALREG_BY_TABLES();

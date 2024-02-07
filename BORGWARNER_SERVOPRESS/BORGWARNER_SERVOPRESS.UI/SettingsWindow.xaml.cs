@@ -17,41 +17,35 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using System.ComponentModel;
 using System.Threading;
+using BORGWARNER_SERVOPRESS.DataModel.Views;
 
 namespace BORGWARNER_SERVOPRESS.UI
 {
     /// <summary>
-    /// Interaction logic for FISWindow.xaml
+    /// Interaction logic for SettingsWindow.xaml
     /// </summary>
-    public partial class HistoryWindow : Window
+    public partial class SettingsWindow : Window
     {
-        private SessionApp sessionApp;        
-        private PageManager pageManager;
-        private ViewMain viewMain;
+        private SessionApp sessionApp;
+        private ViewSettings viewSettings;
+        private PageManager pageManager;        
         List<string> controlNames;
-        public HistoryWindow(SessionApp _sessionApp)
+        public SettingsWindow(SessionApp _sessionApp)
         {
             sessionApp = _sessionApp;
             InitializeComponent();
             initialize();
         }
-
         public void initialize()
         {
-            viewMain = new ViewMain(sessionApp);
-            DataContext = viewMain.GetModel();
-            pageManager = new PageManager(this);
+            viewSettings = new ViewSettings(sessionApp);            
+            DataContext = viewSettings;
+            pageManager = new PageManager(this);   
+            
+            controlNames = new List<string> { "startCycle_btn",  "export_btn", "mn_btn_positions", "positions_separator", "from_fis_textblock" };           
 
-            viewMain.ShowData();
-            viewMain.ShowDate();
-
-            controlNames = new List<string> { "startCycle_btn",  "export_btn", "mn_btn_positions", "positions_separator", "from_fis_textblock" };
-           
-
-        }
-
-        
-
+        }        
+       
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             
@@ -64,7 +58,8 @@ namespace BORGWARNER_SERVOPRESS.UI
 
         private void settings_option_btn_Click(object sender, RoutedEventArgs e)
         {
-
+            new SettingsWindow(sessionApp).ShowDialog();
+            this.Close();
         }
 
         private void Btn_exit_click(object sender, RoutedEventArgs e)
@@ -73,7 +68,6 @@ namespace BORGWARNER_SERVOPRESS.UI
             loginWindow.Show();
             this.Close();
         }
-
         #region Menu
         private void mn_btn_run_Click(object sender, RoutedEventArgs e)
         {
@@ -89,7 +83,7 @@ namespace BORGWARNER_SERVOPRESS.UI
 
         private void mn_btn_history_Click(object sender, RoutedEventArgs e)
         {
-            new HistoryWindow(sessionApp).ShowDialog();
+            new RunHistoryWindow(sessionApp).ShowDialog();
             this.Close();
         }
 
@@ -112,5 +106,22 @@ namespace BORGWARNER_SERVOPRESS.UI
         #endregion
 
 
+        private void cboPage_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        {
+            if (sender is ComboBox comboBox)
+            {   
+                (DataContext as ViewSettings)?.SelectComboPageCommand.Execute(comboBox.SelectedItem);                
+            }
+        }
+
+        private void btnToAdd_Click(object sender, RoutedEventArgs e)
+        {
+            pageManager.CleanControls(new List<string> { "txtPartNumber", "txtSerial", "txtNamemodel", "txtDescription", "txtQuantityScrews" });
+        }
+
+        private void btnToCancel_Click(object sender, RoutedEventArgs e)
+        {
+            pageManager.CleanControls(new List<string> { "txtPartNumber", "txtSerial", "txtNamemodel", "txtDescription", "txtQuantityScrews" });
+        }
     }
 }

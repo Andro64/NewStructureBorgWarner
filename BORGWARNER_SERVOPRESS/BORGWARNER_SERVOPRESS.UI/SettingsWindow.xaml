@@ -1,4 +1,4 @@
-﻿<Window x:Class="BORGWARNER_SERVOPRESS.UI.HistoryWindow"
+﻿<Window x:Class="BORGWARNER_SERVOPRESS.UI.SettingsWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:BORGWARNER_SERVOPRESS.UI"
         xmlns:localPages="clr-namespace:BORGWARNER_SERVOPRESS.UI.Pages"
         mc:Ignorable="d"
-        Title="HistoryWindow" WindowStartupLocation="Manual" WindowState="Maximized" WindowStyle="None" Height="720" Width="1280" Icon="Resources/Images/BW.png" Loaded="Window_Loaded">
+        Title="SettingsWindow" WindowStartupLocation="Manual" WindowState="Maximized" WindowStyle="None" Height="720" Width="1280" Icon="Resources/Images/BW.png" Loaded="Window_Loaded">
     <Window.Background>
         <ImageBrush ImageSource="/Resources/Images/technologies-new.jpg" Stretch="UniformToFill" />
     </Window.Background>
@@ -125,24 +125,58 @@
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition />
                 </Grid.ColumnDefinitions>
-                <Grid.RowDefinitions>
+                <!--<Grid.RowDefinitions>
                     <RowDefinition Height="150*" x:Name="expanderpanel" />
-                    <RowDefinition Height="300*" />
-                </Grid.RowDefinitions>
+                    <RowDefinition Height="80*" />
+                </Grid.RowDefinitions>-->
 
-                <Expander Style="{DynamicResource ExpanderStyle}" IsExpanded="True" Header="Historial" Width="auto" FlowDirection="RightToLeft" VerticalAlignment="Stretch" Height="auto" ExpandDirection="Down" FontSize="16" Margin="15,15,14.6,168.6" >
+                <Expander Style="{DynamicResource ExpanderStyle}" IsExpanded="True" Header="Configuración" Width="auto" FlowDirection="RightToLeft" VerticalAlignment="Stretch" Height="auto" ExpandDirection="Down" FontSize="16" Margin="15,15,14.6,380.6" >
                 </Expander>
-
-              
                 <Frame x:Name="mainContent" NavigationUIVisibility="Hidden" Margin="15,0,14.6,14.8" Background="{StaticResource BaseBackgroundLight}" Height="592" VerticalAlignment="Bottom" Grid.RowSpan="2">
-                   
-
                 </Frame>
-                
+                <DataGrid x:Name="dg_Data" 
+                          ItemsSource ="{Binding ResultSettings}"  
+                          SelectedItem="{Binding RegisterSelected}" 
+                          AutoGenerateColumns="True"   HorizontalAlignment="Left" Height="342" Margin="45,69,0,0" VerticalAlignment="Top" Width="692" Background="#FF2D425B"/>
+                <Label x:Name="lblIdSetting" Content="Nombre clave:" HorizontalAlignment="Left" Margin="780,124,0,0" VerticalAlignment="Top"/>
+                <TextBox x:Name="txtPartNumber" 
+                         Text="{Binding RegisterSelected.setting, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                         Style="{StaticResource BaseTextBox}" 
+                         HorizontalAlignment="Left" Height="23" Margin="908,124,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="176"/>
+                <Label x:Name="lblValor" Content="Valor:" HorizontalAlignment="Left" Margin="780,163,0,0" VerticalAlignment="Top"/>
+                <TextBox x:Name="txtSerial" 
+                         Text="{Binding RegisterSelected.valueSetting, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                         Style="{StaticResource BaseTextBox}" 
+                         HorizontalAlignment="Left" Height="196" Margin="908,163,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="176"/>
+                <Button x:Name="btnToSave" 
+                        Command="{Binding SaveCommand}" Content="Guardar cambios" 
+                        Style="{StaticResource BaseButton}" HorizontalAlignment="Left" Height="31" Margin="780,380,0,0" VerticalAlignment="Top" Width="304"/>
+                <Button x:Name="btnToCancel" 
+                        Command="{Binding CreateCommand}" Content="Cancelar" 
+                        Style="{StaticResource BaseButton}" 
+                        HorizontalAlignment="Left" Height="31" Margin="780,425,0,0" VerticalAlignment="Top" Width="304" Grid.RowSpan="2" Click="btnToCancel_Click"/>
+                <Label Content="Registra un nueva configuración" HorizontalAlignment="Left" Margin="780,60,0,0" VerticalAlignment="Top" FontSize="18"/>
+                <Button x:Name="btnToAdd" 
+                        Command="{Binding CreateCommand}" Content="Limpiar"  
+                        Style="{StaticResource BaseButton}" 
+                        HorizontalAlignment="Left" Height="31" Margin="45,428,0,0" VerticalAlignment="Top" Width="131" Grid.RowSpan="2" Click="btnToAdd_Click"/>
+                <Button x:Name="btnToDelete" 
+                        Command="{Binding DeleteCommand}" Content="Eliminar" 
+                        Style="{StaticResource BaseButton}" 
+                        HorizontalAlignment="Left" Height="31" Margin="187,428,0,0" VerticalAlignment="Top" Width="131" Grid.RowSpan="2"/>
+                <Label x:Name="lblPage" Content="Página" HorizontalAlignment="Left" Margin="485,429,0,0" VerticalAlignment="Top" Grid.RowSpan="2"/>
+                <TextBox x:Name="txtAllPages" 
+                         Text="{Binding total_pages_grid}" Style="{StaticResource BaseTextBox}" 
+                         HorizontalAlignment="Left" Height="23" Margin="684,429,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="53" Grid.RowSpan="2"/>
+                <Label x:Name="lblAllPages" Content="De" HorizontalAlignment="Left" Margin="656,428,0,0" VerticalAlignment="Top" RenderTransformOrigin="-5.508,0.613" Grid.RowSpan="2"/>
+                <ComboBox x:Name="cboPage" 
+                          ItemsSource="{Binding lstComboPages}" 
+                          SelectedItem="{Binding PageSelected, Mode=TwoWay}" 
+                          SelectionChanged="cboPage_SelectionChanged"
+                          Style="{StaticResource BaseComboBox}" 
+                          HorizontalAlignment="Left" Margin="535,430,0,0" VerticalAlignment="Top" Width="79" Height="23" Grid.RowSpan="2"/>
 
             </Grid>
-
-
         </Grid>
     </Viewbox>
 </Window>

@@ -17,20 +17,19 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using System.ComponentModel;
 using System.Threading;
-using System.Diagnostics;
 
 namespace BORGWARNER_SERVOPRESS.UI
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// Interaction logic for FISWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class RunHistoryWindow : Window
     {
-        private SessionApp sessionApp;
+        private SessionApp sessionApp;        
         private PageManager pageManager;
-        private ViewMain viewMain;
+        private ViewRunHistory ViewRunHistory;
         List<string> controlNames;
-        public MainWindow(SessionApp _sessionApp)
+        public RunHistoryWindow(SessionApp _sessionApp)
         {
             sessionApp = _sessionApp;
             InitializeComponent();
@@ -39,21 +38,22 @@ namespace BORGWARNER_SERVOPRESS.UI
 
         public void initialize()
         {
-            viewMain = new ViewMain(sessionApp);
-            DataContext = viewMain.GetModel();
+            ViewRunHistory = new ViewRunHistory(sessionApp);
+            DataContext = ViewRunHistory;
             pageManager = new PageManager(this);
 
-            viewMain.ShowData();
-            viewMain.ShowDate();
+          
 
-            controlNames = new List<string> { "startCycle_btn", "export_btn", "mn_btn_positions", "positions_separator", "from_fis_textblock" };
+            controlNames = new List<string> { "startCycle_btn",  "export_btn", "mn_btn_positions", "positions_separator", "from_fis_textblock" };
+           
+
         }
 
-
+        
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-
+            
         }
 
         private void home_option_btn_Click(object sender, RoutedEventArgs e)
@@ -109,59 +109,26 @@ namespace BORGWARNER_SERVOPRESS.UI
         {
 
         }
+
         #endregion
 
-        public async void EneableControlsWhenEndTaskRun()
+        private void btnToCancel_Click(object sender, RoutedEventArgs e)
         {
-            await Task.Run(async () =>
-            {
-                while (sessionApp.TaksRunExecuting)
-                {                    
-                    await Task.Delay(100); 
-                }
-            });
 
-            pageManager.EnableControls(new List<string> { "mn_btn_run", "mn_btn_fis", "mn_btn_history", "mn_btn_modelos_screw", "mn_btn_manual", "mn_btn_positions" });
         }
-        
-        private void StartCycle_btn_Click(object sender, RoutedEventArgs e)
+
+        private void btnToAdd_Click(object sender, RoutedEventArgs e)
         {
-            pageManager.DisableControls(new List<string> { "mn_btn_run", "mn_btn_fis", "mn_btn_history", "mn_btn_modelos_screw", "mn_btn_manual", "mn_btn_positions" });
-            sessionApp.TaksRunExecuting = true;
-            try
+
+        }
+
+        private void cboPage_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        {
+            if (sender is ComboBox comboBox)
             {
-                WorkStation_Manual_Type1 workStation_Manual_Type1 = new WorkStation_Manual_Type1(sessionApp);
-                //workStation_Manual_Type1.start();
-                workStation_Manual_Type1.MensajesPantalla();
-                EneableControlsWhenEndTaskRun();
-                //Task.Run(() => WaitingEndTaskRun().GetAwaiter().GetResult());
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error: " + ex.Message + "\nSource: " + ex.Source + "\nInner: " + ex.InnerException, "Error", System.Windows.MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-            finally
-            {
-                //pageManager.EnableControls(new List<string> { "mn_btn_run", "mn_btn_fis", "mn_btn_history", "mn_btn_modelos_screw", "mn_btn_manual", "mn_btn_positions" });
+                (DataContext as ViewRunHistory)?.SelectComboPageCommand.Execute(comboBox.SelectedItem);
             }
         }
-
-        private void StopCycle_btn_Click(object sender, RoutedEventArgs e)
-        {
-            pageManager.DisableControls(controlNames);
-            MessageBox.Show("Cerrando ciclos...");
-        }
-
-        private void Screw_Scrap_Click(object sender, RoutedEventArgs e)
-        {
-            pageManager.HideControls(controlNames);
-        }
-
-        private void showMenu(string profile)
-        {
-
-        }
-
-
+       
     }
 }

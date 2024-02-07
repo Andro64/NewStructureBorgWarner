@@ -36,3 +36,98 @@ FROM settings;
   CALL SP_GET_SETTINGS();
 
 
+  DELIMITER ||
+CREATE PROCEDURE SP_GET_SETTINGS_PAG(IN page_p INT, IN size_p INT)
+BEGIN
+set @page = page_p;
+set @_size = size_p;
+
+set @qry_string = concat("
+SELECT 	id,
+		setting, 
+        value_setting
+FROM settings
+as s limit ",(@page - 1) * @_size,",",@_size);
+prepare qry from @qry_string;
+ execute qry;
+ 
+ END
+ || 
+ DELIMITER ;
+
+
+  CALL SP_GET_SETTINGS_PAG(1,10);
+
+
+  DELIMITER //
+
+CREATE PROCEDURE SP_INS_UPD_SETTINGS(
+	  IN p_id INT,
+	  IN p_setting VARCHAR(50),
+	  IN p_value_setting VARCHAR(50)
+)
+BEGIN
+	DECLARE settings_exist INT;
+	SELECT COUNT(*) INTO settings_exist FROM settings WHERE id = p_id;
+	
+    IF settings_exist > 0 THEN
+		UPDATE settings 
+        SET setting = p_setting,
+			value_setting = p_value_setting
+        WHERE id = p_id;		
+    ELSE
+        INSERT INTO models_screw (setting,value_setting) 
+		VALUES (p_setting,
+				p_value_setting);
+    END IF;
+END //
+
+DELIMITER ;
+
+
+ DELIMITER //
+
+CREATE PROCEDURE SP_INS_UPD_SETTINGS(
+	  IN p_id INT,
+	  IN p_setting VARCHAR(50),
+	  IN p_value_setting VARCHAR(50)
+)
+BEGIN
+	DECLARE settings_exist INT;
+	SELECT COUNT(*) INTO settings_exist FROM settings WHERE id = p_id;
+	
+    IF settings_exist > 0 THEN
+		UPDATE settings 
+        SET setting = p_setting,
+			value_setting = p_value_setting
+        WHERE id = p_id;		
+    ELSE
+        INSERT INTO settings (setting,value_setting) 
+		VALUES (p_setting,
+				p_value_setting);
+    END IF;
+END //
+
+DELIMITER ;
+  
+  
+  CALL SP_INS_UPD_SETTINGS(0,'prueba','1');
+  CALL SP_INS_UPD_SETTINGS(11,'GRID_Number_Reg_by_Page','10');
+
+
+
+    DELIMITER //
+
+CREATE PROCEDURE SP_DEL_SETTINGS(
+    IN p_id INT
+)
+BEGIN
+    DELETE FROM settings WHERE id = p_id;
+END //
+
+DELIMITER ;
+
+
+CALL SP_DEL_SETTINGS(12);
+
+
