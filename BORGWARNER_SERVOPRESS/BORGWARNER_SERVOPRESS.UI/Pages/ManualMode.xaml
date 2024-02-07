@@ -253,7 +253,7 @@
                     <ColumnDefinition/>
                 </Grid.ColumnDefinitions>
 
-                <!--<Button x:Name="Camara_1_Manual_Btn" Style="{StaticResource BaseButton}" Visibility="Hidden" Content="Result" Grid.Column="2"/>
+                <!--<Button x:Name="Camara_1_mn_btn_manual" Style="{StaticResource BaseButton}" Visibility="Hidden" Content="Result" Grid.Column="2"/>
                 <Button x:Name="Camara_1_triggerPad_Btn" Style="{StaticResource BaseButton}" Visibility="Hidden" Content="Pad" Click="Camara_1_triggerPad_Btn_Click" Grid.Column="3"/>
                 <Button x:Name="Camara_1_triggerCable_Btn" Style="{StaticResource BaseButton}" Visibility="Hidden" Content="Cable" Click="Camara_1_triggerCable_Btn_Click" Grid.Column="4"/>
                 <Button x:Name="Camara_1_triggerInsulator_Btn" Style="{StaticResource BaseButton}" Visibility="Hidden" Content="Insulador" Click="Camara_1_triggerInsulator_Btn_Click" Grid.Column="5"/>

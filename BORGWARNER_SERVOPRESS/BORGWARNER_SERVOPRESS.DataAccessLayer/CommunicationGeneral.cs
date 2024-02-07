@@ -70,5 +70,39 @@ namespace BORGWARNER_SERVOPRESS.DataAccessLayer
             return lstconnectionsRobots;
 
         }
+        public int[] getNumsPages(double top)
+        {
+            int[] arrayIntegers = new int[(int)top];
+            for (int i = 1; i <= top; i++)
+            {
+                arrayIntegers[i - 1] = i;
+            }
+            return arrayIntegers;
+        }
+        public List<TotalRegistersByTables> getTotalRegByTables()
+        {            
+            List<TotalRegistersByTables> lstSettings = new List<TotalRegistersByTables>();
+            try
+            {
+                MYSQL_DB mYSQL = new MYSQL_DB(sessionApp.connStr);
+                DataTable resultData = mYSQL.ExecuteSP("SP_GET_TOTALREG_BY_TABLES");
+                lstSettings = resultData.AsEnumerable().Select(row =>
+                new TotalRegistersByTables
+                {
+                    NameTable = row.Field<string>("name_table"),
+                    TotalRegisters = row.Field<int>("total_reg"),
+                    NumPages = row.Field<int>("pages"),
+                    Pages = getNumsPages(row.Field<int>("pages"))
+                }).ToList();
+
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+                throw;
+            }
+            return lstSettings;
+
+        }
     }
 }

@@ -107,17 +107,17 @@
                             <VirtualizingStackPanel Orientation="Vertical"/>
                         </ItemsPanelTemplate>
                     </Menu.ItemsPanel>
-                    <MenuItem x:Name="run_btn" Header=" Run" Height="25" Click="run_btn_Click"  />
+                    <MenuItem x:Name="mn_btn_run" Header=" Run" Height="25" Click="mn_btn_run_Click"  />
                     <Separator Background="LightGray" Width="auto" Margin="-25,5,5,5" Height="1" />
-                    <MenuItem x:Name="fis_btn" Header=" FIS" Height="25" Click="fis_btn_Click"/>
+                    <MenuItem x:Name="mn_btn_fis" Header=" FIS" Height="25" Click="mn_btn_fis_Click"/>
                     <Separator Background="LightGray" Width="auto" Margin="-25,5,5,5" Height="1" />
-                    <MenuItem x:Name="history_btn" Header=" Historial" Height="25" Click="history_btn_Click"/>
+                    <MenuItem x:Name="mn_btn_history" Header=" Historial" Height="25" Click="mn_btn_history_Click"/>
                     <Separator Background="LightGray" Width="auto" Margin="-25,5,5,5" Height="1" />
-                    <MenuItem x:Name="export_btn" Header=" Modelos" Height="25" Click="export_btn_Click"/>
+                    <MenuItem x:Name="mn_btn_modelos_screw" Header=" Modelos" Height="25" Click="mn_btn_modelos_screw_Click"/>
                     <Separator Background="LightGray" Width="auto" Margin="-25,5,5,5" Height="1" />
-                    <MenuItem x:Name="manual_btn" Header=" Manual" Height="25" Click="manual_btn_Click"/>
+                    <MenuItem x:Name="mn_btn_manual" Header=" Manual" Height="25" Click="mn_btn_manual_Click"/>
                     <Separator Background="LightGray" Width="auto" Margin="-25,5,5,5" Height="1" />
-                    <MenuItem x:Name="positions_btn" Header=" Posiciones" Height="25" Click="positions_btn_Click"/>
+                    <MenuItem x:Name="mn_btn_positions" Header=" Posiciones" Height="25" Click="mn_btn_positions_Click"/>
                     <Separator x:Name="positions_separator" Background="LightGray" Width="auto" Margin="-25,5,5,5" Height="1" />
                 </Menu>
             </StackPanel>
@@ -125,10 +125,10 @@
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition />
                 </Grid.ColumnDefinitions>
-                <Grid.RowDefinitions>
+                <!--<Grid.RowDefinitions>
                     <RowDefinition Height="150*" x:Name="expanderpanel" />
                     <RowDefinition Height="300*" />
-                </Grid.RowDefinitions>
+                </Grid.RowDefinitions>-->
 
                 <Expander Style="{DynamicResource ExpanderStyle}" IsExpanded="True" Header="FIS" Width="auto" FlowDirection="RightToLeft" VerticalAlignment="Stretch" Height="auto" ExpandDirection="Down" FontSize="16" Margin="15,15,14.6,168.6" >
                 </Expander>
@@ -142,8 +142,17 @@
                     </Frame.Effect>
 
                 </Frame>
-                <Label x:Name="lblRunCycle" Content="{Binding MessageProcess, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Grid.Row="1" Margin="63,0,0,413" Width="597"/>
-                <Image x:Name="imgImageOfProcess" Source="{Binding ImageOfProcess, UpdateSourceTrigger=PropertyChanged}"   Width="1013" Margin="63,48,54,50" Grid.Row="1" Stretch="Uniform" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+                <Button Background="{StaticResource BaseBackgroundDark}"  HorizontalAlignment="Left" Margin="528,86,0,0" VerticalAlignment="Top" Width="75" Height="98">
+                    <Image Source="/Resources/Images/sendimage.png" Height="50" Width="60" />
+                </Button>
+                <TextBox HorizontalAlignment="Left" Height="23" Margin="30,86,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="450"/>
+                <TextBox HorizontalAlignment="Left" Height="23" Margin="636,87,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="450"/>
+                <TextBox HorizontalAlignment="Left" Height="23" Margin="30,160,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="450"/>
+                <TextBox HorizontalAlignment="Left" Height="23" Margin="636,161,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="450"/>
+                <Label Content="BREQ enviado a FIS" HorizontalAlignment="Left" Margin="30,55,0,0" VerticalAlignment="Top" Width="450"/>
+                <Label Content="BCMP enviado a FIS" HorizontalAlignment="Left" Margin="30,129,0,0" VerticalAlignment="Top" Width="450"/>
+                <Label Content="BCNF recivido de FIS" HorizontalAlignment="Left" Margin="636,59,0,0" VerticalAlignment="Top" Width="450"/>
+                <Label Content="BACK recibido de FIS" HorizontalAlignment="Left" Margin="636,135,0,0" VerticalAlignment="Top" Width="450"/>
 
             </Grid>
 

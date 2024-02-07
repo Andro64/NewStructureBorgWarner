@@ -50,17 +50,17 @@ namespace BORGWARNER_SERVOPRESS.UI.Pages
 
         }
 
-        private void view_run_btn_Click(object sender, RoutedEventArgs e)
+        private void view_mn_btn_run_Click(object sender, RoutedEventArgs e)
         {
 
         }
 
-        private void delete_run_btn_Click(object sender, RoutedEventArgs e)
+        private void delete_mn_btn_run_Click(object sender, RoutedEventArgs e)
         {
 
         }
 
-        private void close_run_btn_Click(object sender, RoutedEventArgs e)
+        private void close_mn_btn_run_Click(object sender, RoutedEventArgs e)
         {
 
         }

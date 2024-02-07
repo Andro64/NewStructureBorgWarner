@@ -63,7 +63,7 @@
                             <ColumnDefinition/>
                         </Grid.ColumnDefinitions>
                         <Button x:Name="save_settings_btn1" Style="{StaticResource BaseButton}" Content="Guardar" Click="save_settings_btn_Click" Grid.Column="6"/>
-                        <Button x:Name="disable_fis_btn" Style="{StaticResource BaseButton}" Content="Desactivar FIS" Click="disable_fis_btn_Click" Grid.Column="4"/>
+                        <Button x:Name="disable_mn_btn_fis" Style="{StaticResource BaseButton}" Content="Desactivar FIS" Click="disable_mn_btn_fis_Click" Grid.Column="4"/>
                         <Button x:Name="Debug_Mode_btn" Style="{StaticResource BaseButton}" Content="Debug Mode" Click="Debug_Mode_btn_Click" Grid.Column="5"/>
                     </Grid>
 

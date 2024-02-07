@@ -17,42 +17,35 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using System.ComponentModel;
 using System.Threading;
+using BORGWARNER_SERVOPRESS.DataModel.Views;
 
 namespace BORGWARNER_SERVOPRESS.UI
 {
     /// <summary>
-    /// Interaction logic for FISWindow.xaml
+    /// Interaction logic for SettingsWindow.xaml
     /// </summary>
-    public partial class FISWindow : Window
+    public partial class SettingsWindow : Window
     {
-        private SessionApp sessionApp;        
-        private PageManager pageManager;
-        private ViewMain viewMain;
+        private SessionApp sessionApp;
+        private ViewSettings viewSettings;
+        private PageManager pageManager;        
         List<string> controlNames;
-        public FISWindow(SessionApp _sessionApp)
+        public SettingsWindow(SessionApp _sessionApp)
         {
             sessionApp = _sessionApp;
             InitializeComponent();
             initialize();
         }
-
         public void initialize()
         {
-            viewMain = new ViewMain(sessionApp);
-            DataContext = viewMain.GetModel();
-            pageManager = new PageManager(this);
+            viewSettings = new ViewSettings(sessionApp);            
+            DataContext = viewSettings;
+            pageManager = new PageManager(this);   
+            
+            controlNames = new List<string> { "startCycle_btn",  "export_btn", "mn_btn_positions", "positions_separator", "from_fis_textblock" };           
 
-            viewMain.ShowData();
-            viewMain.ShowDate();
-
-            controlNames = new List<string> { "startCycle_btn",  "export_btn", "mn_btn_positions", "positions_separator", "from_fis_textblock" };
-            //pageManager.DisableControls(controlNames);
-            //pageManager.HideControls(controlNames);
-
-        }
-
-        
-
+        }        
+       
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             
@@ -75,7 +68,6 @@ namespace BORGWARNER_SERVOPRESS.UI
             loginWindow.Show();
             this.Close();
         }
-
         #region Menu
         private void mn_btn_run_Click(object sender, RoutedEventArgs e)
         {
@@ -113,36 +105,23 @@ namespace BORGWARNER_SERVOPRESS.UI
         }
         #endregion
 
-        private void StartCycle_btn_Click(object sender, RoutedEventArgs e)
+
+        private void cboPage_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
-            try
-            {
-                WorkStation_Manual_Type1 workStation_Manual_Type1 = new WorkStation_Manual_Type1(sessionApp);
-                //workStation_Manual_Type1.start();
-                 workStation_Manual_Type1.MensajesPantalla();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error: " + ex.Message + "\nSource: " + ex.Source + "\nInner: " + ex.InnerException, "Error", System.Windows.MessageBoxButton.OK, MessageBoxImage.Error);
+            if (sender is ComboBox comboBox)
+            {   
+                (DataContext as ViewSettings)?.SelectComboPageCommand.Execute(comboBox.SelectedItem);                
             }
         }
 
-        private void StopCycle_btn_Click(object sender, RoutedEventArgs e)
+        private void btnToAdd_Click(object sender, RoutedEventArgs e)
         {
-            pageManager.DisableControls(controlNames);            
-            MessageBox.Show("Cerrando ciclos...");
+            pageManager.CleanControls(new List<string> { "txtPartNumber", "txtSerial", "txtNamemodel", "txtDescription", "txtQuantityScrews" });
         }
 
-        private void Screw_Scrap_Click(object sender, RoutedEventArgs e)
+        private void btnToCancel_Click(object sender, RoutedEventArgs e)
         {
-            pageManager.HideControls(controlNames);
+            pageManager.CleanControls(new List<string> { "txtPartNumber", "txtSerial", "txtNamemodel", "txtDescription", "txtQuantityScrews" });
         }
-
-        private void showMenu(string profile)
-        {
-            
-        }
-
-        
     }
 }

@@ -16,6 +16,8 @@ namespace BORGWARNER_SERVOPRESS.DataModel.Views
         private string _name_model;
         private string _description;
         private int _quantity_screws;
+        private int _page_selected;
+      
         public int id
         {
             get { return _id; }
@@ -88,7 +90,20 @@ namespace BORGWARNER_SERVOPRESS.DataModel.Views
                 }
             }
         }
-       
+
+        public int page_selected
+        {
+            get { return _page_selected; }
+            set
+            {
+                if (_page_selected != value)
+                {
+                    _page_selected = value;
+                    OnPropertyChanged(nameof(page_selected));
+                }
+            }
+        }
+
 
         public bool IsValid()
         {

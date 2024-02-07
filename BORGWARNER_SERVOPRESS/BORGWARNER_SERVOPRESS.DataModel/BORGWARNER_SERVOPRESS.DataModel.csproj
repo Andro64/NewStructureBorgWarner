@@ -57,15 +57,19 @@
     <Compile Include="PositionErgoArm.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="QRs.cs" />
+    <Compile Include="RunHistory.cs" />
     <Compile Include="ScannerDataProcessedEventArgs.cs" />
     <Compile Include="Screw.cs" />
     <Compile Include="Screwdriver.cs" />
     <Compile Include="SessionApp.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="TighteningProcess.cs" />
+    <Compile Include="TotalRegistersByTables.cs" />
     <Compile Include="User.cs" />
     <Compile Include="Views\ModelViewMain.cs" />
     <Compile Include="Views\ModelViewModelsScrew.cs" />
+    <Compile Include="Views\ModelViewRunHistory.cs" />
+    <Compile Include="Views\ModelViewSettings.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

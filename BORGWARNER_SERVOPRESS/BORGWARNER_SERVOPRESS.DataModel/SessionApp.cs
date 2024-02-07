@@ -25,5 +25,7 @@ namespace BORGWARNER_SERVOPRESS.DataModel
         public string ImageOfProcess { get; set; }
         public string PathDirectoryResourcesOfThisProyect { get; set; }
         public string PathOperationalImages { get; set; }
+        public List<TotalRegistersByTables> lstTotalRegistersByTables { get; set; }
+        public bool TaksRunExecuting { get; set; }
     }
 }

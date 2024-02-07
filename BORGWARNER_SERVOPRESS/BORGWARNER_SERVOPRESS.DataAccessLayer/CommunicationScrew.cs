@@ -14,10 +14,12 @@ namespace BORGWARNER_SERVOPRESS.DataAccessLayer
 {
     public class CommunicationScrew
     {
-        SessionApp sessionApp;
+        private SessionApp sessionApp;
+        private int numRegbyPages;
         public CommunicationScrew(SessionApp _sessionApp)
         {
             sessionApp = _sessionApp;
+            numRegbyPages = int.Parse(sessionApp.settings.FirstOrDefault(x=>x.setting.Equals("GRID_Number_Reg_by_Page")).valueSetting);
         }
         public List<Screw> getScrews()
         {
@@ -72,13 +74,15 @@ namespace BORGWARNER_SERVOPRESS.DataAccessLayer
             }
             return lstScrews;
         }
-        public List<ModelViewModelsScrew> getModelViewModelsScrew()
+        public List<ModelViewModelsScrew> getModelViewModelsScrew(int indexPage)
         {
             List<ModelViewModelsScrew> lstScrews = new List<ModelViewModelsScrew>();
             try
             {
                 MYSQL_DB mYSQL = new MYSQL_DB(sessionApp.connStr);
-                DataTable resultData = mYSQL.ExecuteSP("SP_GET_MODELS_SCREWS");
+                DataTable resultData = mYSQL.ExecuteSP("SP_GET_MODELS_SCREWS", new MySqlParameter[] {
+                    new MySqlParameter("page_p", MySqlDbType.Int32) { Value = indexPage },
+                    new MySqlParameter("size_p", MySqlDbType.Int32) { Value = numRegbyPages } });
                 lstScrews = resultData.AsEnumerable().Select(row =>
                 new ModelViewModelsScrew
                 {

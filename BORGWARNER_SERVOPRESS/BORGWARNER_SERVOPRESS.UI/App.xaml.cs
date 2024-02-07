@@ -28,6 +28,7 @@ namespace BORGWARNER_SERVOPRESS.UI
             BussinessLogicLayer.Settings settingsGeneral = new BussinessLogicLayer.Settings(sessionApp);
             sessionApp.settings = settingsGeneral.getSettings();
             sessionApp.connectionsWorkStation = settingsGeneral.getConnections();
+            
 
             Assembly exec = Assembly.GetExecutingAssembly();
             string pathExec = exec.Location;
@@ -49,9 +50,9 @@ namespace BORGWARNER_SERVOPRESS.UI
             //fisWindow.Title = "BORGWARNER SERVOPRENSA";
             //fisWindow.Show();
 
-            //HistoryWindow historyWindow = new HistoryWindow(sessionApp);
-            //historyWindow.Title = "BORGWARNER SERVOPRENSA";
-            //historyWindow.Show();
+            //RunHistoryWindow RunHistoryWindow = new RunHistoryWindow(sessionApp);
+            //RunHistoryWindow.Title = "BORGWARNER SERVOPRENSA";
+            //RunHistoryWindow.Show();
 
             ModelsScrewWindow modelsScrewWindow = new ModelsScrewWindow(sessionApp);
             modelsScrewWindow.Title = "BORGWARNER SERVOPRENSA";

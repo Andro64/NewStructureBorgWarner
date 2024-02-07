@@ -42,7 +42,7 @@ namespace BORGWARNER_SERVOPRESS.UI
             //Se carga el modelo
             DataContext = viewModelsScrew;
             pageManager = new PageManager(this);          
-            controlNames = new List<string> { "startCycle_btn",  "export_btn", "positions_btn", "positions_separator", "from_fis_textblock" };           
+            controlNames = new List<string> { "startCycle_btn",  "export_btn", "mn_btn_positions", "positions_separator", "from_fis_textblock" };           
 
         }        
        
@@ -58,7 +58,8 @@ namespace BORGWARNER_SERVOPRESS.UI
 
         private void settings_option_btn_Click(object sender, RoutedEventArgs e)
         {
-
+            new SettingsWindow(sessionApp).ShowDialog();
+            this.Close();
         }
 
         private void Btn_exit_click(object sender, RoutedEventArgs e)
@@ -67,42 +68,60 @@ namespace BORGWARNER_SERVOPRESS.UI
             loginWindow.Show();
             this.Close();
         }
-
-        private void run_btn_Click(object sender, RoutedEventArgs e)
+        #region Menu
+        private void mn_btn_run_Click(object sender, RoutedEventArgs e)
         {
-            pageManager.HideControls(new List<string> { "btnToAdd", "btnToEdit"});
+            new MainWindow(sessionApp).ShowDialog();
+            this.Close();
         }
 
-        private void fis_btn_Click(object sender, RoutedEventArgs e)
+        private void mn_btn_fis_Click(object sender, RoutedEventArgs e)
         {
-            pageManager.VisibleControls(new List<string> { "btnToAdd" , "btnToCancel" });
+            new FISWindow(sessionApp).ShowDialog();
+            this.Close();
         }
 
-        private void history_btn_Click(object sender, RoutedEventArgs e)
+        private void mn_btn_history_Click(object sender, RoutedEventArgs e)
+        {
+            new RunHistoryWindow(sessionApp).ShowDialog();
+            this.Close();
+        }
+
+        private void mn_btn_modelos_screw_Click(object sender, RoutedEventArgs e)
+        {
+            new ModelsScrewWindow(sessionApp).ShowDialog();
+            this.Close();
+        }
+
+        private void mn_btn_manual_Click(object sender, RoutedEventArgs e)
+        {
+            new ManualWindow(sessionApp).ShowDialog();
+            this.Close();
+        }
+
+        private void mn_btn_positions_Click(object sender, RoutedEventArgs e)
         {
 
         }
+        #endregion
 
-        private void export_btn_Click(object sender, RoutedEventArgs e)
+
+        private void cboPage_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
-
+            if (sender is ComboBox comboBox)
+            {   
+                (DataContext as ViewModelsScrew)?.SelectComboPageCommand.Execute(comboBox.SelectedItem);                
+            }
         }
 
-        private void manual_btn_Click(object sender, RoutedEventArgs e)
+        private void btnToAdd_Click(object sender, RoutedEventArgs e)
         {
-
+            pageManager.CleanControls(new List<string> { "txtPartNumber", "txtSerial", "txtNamemodel", "txtDescription", "txtQuantityScrews" });
         }
 
-        private void positions_btn_Click(object sender, RoutedEventArgs e)
+        private void btnToCancel_Click(object sender, RoutedEventArgs e)
         {
-
+            pageManager.CleanControls(new List<string> { "txtPartNumber", "txtSerial", "txtNamemodel", "txtDescription", "txtQuantityScrews" });
         }
-
-        private void showMenu(string profile)
-        {
-            
-        }
-
-        
     }
 }

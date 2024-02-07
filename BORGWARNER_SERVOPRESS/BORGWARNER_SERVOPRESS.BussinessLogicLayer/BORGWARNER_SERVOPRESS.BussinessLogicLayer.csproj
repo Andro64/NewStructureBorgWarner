@@ -115,6 +115,8 @@
     <Compile Include="Views\RelayCommand.cs" />
     <Compile Include="Views\ViewMain.cs" />
     <Compile Include="Views\ViewModelsScrew.cs" />
+    <Compile Include="Views\ViewRunHistory.cs" />
+    <Compile Include="Views\ViewSettings.cs" />
     <Compile Include="VisionSystem.cs" />
     <Compile Include="WorkStation_Manual_Type1.cs" />
   </ItemGroup>
