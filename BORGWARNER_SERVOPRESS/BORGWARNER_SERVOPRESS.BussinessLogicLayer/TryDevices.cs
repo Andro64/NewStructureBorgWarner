@@ -45,6 +45,21 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
                 Debug.WriteLine("Si paso");
             }
         }
+        public string TryFIS(string numSerial)
+        {
+            string ResultFIS = string.Empty;
+            try
+            {
+                ResultFIS = new CommunicationFIS(sessionApp).SendBREQToFIS(numSerial);
+            }
+            catch(Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+            }
+            
+            return ResultFIS;           
+        }
+
         public void TryErgoArm()
         {
             screws = new Screws(sessionApp);
