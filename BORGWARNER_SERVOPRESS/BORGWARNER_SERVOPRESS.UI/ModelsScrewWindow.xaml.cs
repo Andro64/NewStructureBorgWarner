@@ -101,7 +101,8 @@ namespace BORGWARNER_SERVOPRESS.UI
 
         private void mn_btn_positions_Click(object sender, RoutedEventArgs e)
         {
-
+            new PositionScrewWindow(sessionApp).ShowDialog();
+            this.Close();
         }
         #endregion
 
@@ -123,5 +124,32 @@ namespace BORGWARNER_SERVOPRESS.UI
         {
             pageManager.CleanControls(new List<string> { "txtPartNumber", "txtSerial", "txtNamemodel", "txtDescription", "txtQuantityScrews" });
         }
+
+        private void TextBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            TextBox textBox = sender as TextBox;
+
+            // Permite solo dígitos, el símbolo "-" (solo al inicio) y el símbolo "."
+            if (!char.IsDigit(e.Text, e.Text.Length - 1) &&
+                e.Text != "-" && e.Text != "." ||
+                e.Text == "-" && textBox.Text.Contains("-") ||
+                e.Text == "." && textBox.Text.Contains("."))
+            {
+                e.Handled = true;
+            }
+
+            // Permitir solo un "-" al inicio de la cadena
+            if (e.Text == "-" && textBox.SelectionStart != 0)
+            {
+                e.Handled = true;
+            }
+
+            // Permitir solo un "." y asegurarse de que no haya más de un "." en la cadena
+            if (e.Text == "." && (textBox.SelectionStart == 0 || textBox.Text.Contains(".")))
+            {
+                e.Handled = true;
+            }
+        }
+
     }
 }

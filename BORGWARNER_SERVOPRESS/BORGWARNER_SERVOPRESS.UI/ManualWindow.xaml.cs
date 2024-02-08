@@ -106,7 +106,8 @@ namespace BORGWARNER_SERVOPRESS.UI
 
         private void mn_btn_positions_Click(object sender, RoutedEventArgs e)
         {
-
+            new PositionScrewWindow(sessionApp).ShowDialog();
+            this.Close();
         }
         #endregion
 

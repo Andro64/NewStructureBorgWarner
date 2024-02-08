@@ -54,9 +54,12 @@ namespace BORGWARNER_SERVOPRESS.UI
             //RunHistoryWindow.Title = "BORGWARNER SERVOPRENSA";
             //RunHistoryWindow.Show();
 
-            ModelsScrewWindow modelsScrewWindow = new ModelsScrewWindow(sessionApp);
-            modelsScrewWindow.Title = "BORGWARNER SERVOPRENSA";
-            modelsScrewWindow.Show();
+            //ModelsScrewWindow modelsScrewWindow = new ModelsScrewWindow(sessionApp);
+            //modelsScrewWindow.Title = "BORGWARNER SERVOPRENSA";
+            //modelsScrewWindow.Show();
+
+            PositionScrewWindow positionScrewWindow = new PositionScrewWindow(sessionApp);
+            positionScrewWindow.Show();
         }
     }
 }

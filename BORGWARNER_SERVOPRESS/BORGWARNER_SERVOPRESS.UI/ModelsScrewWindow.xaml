@@ -143,33 +143,34 @@
                          Text="{Binding RegisterSelected.partNumber, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
                          Style="{StaticResource BaseTextBox}" 
                          HorizontalAlignment="Left" Height="23" Margin="908,124,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="176"/>
-                <Label x:Name="lblSerial" Content="Número de serie:" HorizontalAlignment="Left" Margin="780,163,0,0" VerticalAlignment="Top"/>
+                <Label x:Name="lblSerial" Content="Número de serie:" HorizontalAlignment="Left" Margin="780,201,0,0" VerticalAlignment="Top"/>
                 <TextBox x:Name="txtSerial" 
                          Text="{Binding RegisterSelected.serial, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
                          Style="{StaticResource BaseTextBox}" 
-                         HorizontalAlignment="Left" Height="23" Margin="908,163,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="176"/>
-                <Label x:Name="lblNamemodel" Content="Nombre del modelo:" HorizontalAlignment="Left" Margin="780,201,0,0" VerticalAlignment="Top"/>
+                         HorizontalAlignment="Left" Height="23" Margin="908,201,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="176"/>
+                <Label x:Name="lblNamemodel" Content="Nombre del modelo:" HorizontalAlignment="Left" Margin="780,239,0,0" VerticalAlignment="Top"/>
                 <TextBox x:Name="txtNamemodel" 
                          Text="{Binding RegisterSelected.name_model, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
                          Style="{StaticResource BaseTextBox}" 
-                         HorizontalAlignment="Left" Height="23" Margin="908,201,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="176"/>
-                <Label x:Name="lblDescription" Content="Descripción:" HorizontalAlignment="Left" Margin="780,243,0,0" VerticalAlignment="Top"/>
+                         HorizontalAlignment="Left" Height="23" Margin="908,239,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="176"/>
+                <Label x:Name="lblDescription" Content="Descripción:" HorizontalAlignment="Left" Margin="780,281,0,0" VerticalAlignment="Top"/>
                 <TextBox x:Name="txtDescription" 
                          Text="{Binding RegisterSelected.description, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
                          Style="{StaticResource BaseTextBox}" 
-                         HorizontalAlignment="Left" Height="79" Margin="908,242,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="176"/>
-                <Label x:Name="lblQuantityScrews" Content="Cantidad de tornillos:" HorizontalAlignment="Left" Margin="780,339,0,0" VerticalAlignment="Top"/>
+                         HorizontalAlignment="Left" Height="79" Margin="908,280,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="176"/>
+                <Label x:Name="lblQuantityScrews" Content="Cantidad de tornillos:" HorizontalAlignment="Left" Margin="780,377,0,0" VerticalAlignment="Top"/>
                 <TextBox x:Name="txtQuantityScrews" 
+                         PreviewTextInput="TextBox_PreviewTextInput"
                          Text="{Binding RegisterSelected.quantity_screws, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
                          Style="{StaticResource BaseTextBox}" 
-                         HorizontalAlignment="Left" Height="23" Margin="908,339,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="176"/>
+                         HorizontalAlignment="Left" Height="23" Margin="908,377,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="176"/>
                 <Button x:Name="btnToSave" 
                         Command="{Binding SaveCommand}" Content="Guardar cambios" 
-                        Style="{StaticResource BaseButton}" HorizontalAlignment="Left" Height="31" Margin="780,380,0,0" VerticalAlignment="Top" Width="304"/>
+                        Style="{StaticResource BaseButton}" HorizontalAlignment="Left" Height="31" Margin="780,418,0,0" VerticalAlignment="Top" Width="304" Grid.RowSpan="2"/>
                 <Button x:Name="btnToCancel" 
                         Command="{Binding CreateCommand}" Content="Cancelar" 
                         Style="{StaticResource BaseButton}" 
-                        HorizontalAlignment="Left" Height="31" Margin="780,425,0,0" VerticalAlignment="Top" Width="304" Grid.RowSpan="2" Click="btnToCancel_Click"/>
+                        HorizontalAlignment="Left" Height="31" Margin="780,29.4,0,0" VerticalAlignment="Top" Width="304" Click="btnToCancel_Click" Grid.Row="1"/>
                 <Label Content="Registra un nuevo modelo de tornillo" HorizontalAlignment="Left" Margin="780,60,0,0" VerticalAlignment="Top" FontSize="18"/>
                 <Button x:Name="btnToAdd" 
                         Command="{Binding CreateCommand}" Content="Limpiar"  
@@ -180,7 +181,7 @@
                         Style="{StaticResource BaseButton}" 
                         HorizontalAlignment="Left" Height="31" Margin="187,428,0,0" VerticalAlignment="Top" Width="131" Grid.RowSpan="2"/>
                 <Label x:Name="lblPage" Content="Página" HorizontalAlignment="Left" Margin="485,429,0,0" VerticalAlignment="Top" Grid.RowSpan="2"/>
-                <TextBox x:Name="txtAllPages" 
+                <TextBox x:Name="txtAllPages" IsReadOnly="True"
                          Text="{Binding total_pages_grid}" Style="{StaticResource BaseTextBox}" 
                          HorizontalAlignment="Left" Height="23" Margin="684,429,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="53" Grid.RowSpan="2"/>
                 <Label x:Name="lblAllPages" Content="De" HorizontalAlignment="Left" Margin="656,428,0,0" VerticalAlignment="Top" RenderTransformOrigin="-5.508,0.613" Grid.RowSpan="2"/>
@@ -190,6 +191,22 @@
                           SelectionChanged="cboPage_SelectionChanged"
                           Style="{StaticResource BaseComboBox}" 
                           HorizontalAlignment="Left" Margin="535,430,0,0" VerticalAlignment="Top" Width="79" Height="23" Grid.RowSpan="2"/>
+                <ComboBox x:Name="cboScanners" 
+                          ItemsSource="{Binding lstScanners}" 
+                          SelectedItem="{Binding ScannerSelected}"                           
+                          Style="{StaticResource BaseComboBox}" 
+                          HorizontalAlignment="Left" Margin="964,161,0,0" VerticalAlignment="Top" Width="79"  Height="23"/>
+                <Button x:Name="btnScan" Content="..."                           
+                          Style="{StaticResource BaseButton}"
+                          HorizontalAlignment="Left" Margin="1086,201,0,0" VerticalAlignment="Top" Width="26" Height="23">
+                    <Button.ToolTip>
+                        <ToolTip>
+                            <StackPanel>
+                                <TextBlock>Escanear número de serie.</TextBlock>                                
+                            </StackPanel>
+                        </ToolTip>
+                    </Button.ToolTip>
+                </Button>
 
             </Grid>
         </Grid>

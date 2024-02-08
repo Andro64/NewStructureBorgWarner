@@ -80,9 +80,35 @@ namespace BORGWARNER_SERVOPRESS.DataAccessLayer
             try
             {
                 MYSQL_DB mYSQL = new MYSQL_DB(sessionApp.connStr);
-                DataTable resultData = mYSQL.ExecuteSP("SP_GET_MODELS_SCREWS", new MySqlParameter[] {
+                DataTable resultData = mYSQL.ExecuteSP("SP_GET_MODELS_SCREWS_PAG", new MySqlParameter[] {
                     new MySqlParameter("page_p", MySqlDbType.Int32) { Value = indexPage },
                     new MySqlParameter("size_p", MySqlDbType.Int32) { Value = numRegbyPages } });
+                lstScrews = resultData.AsEnumerable().Select(row =>
+                new ModelViewModelsScrew
+                {
+                    id = row.Field<int>("id"),
+                    partNumber = row.Field<string>("partNumber"),
+                    serial = row.Field<string>("serial"),
+                    name_model = row.Field<string>("name_model"),
+                    description = row.Field<string>("description"),
+                    quantity_screws = row.Field<int>("quantity_screws")
+                }).ToList();
+
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+                throw;
+            }
+            return lstScrews;
+        }
+        public List<ModelViewModelsScrew> getModelViewModelsScrew()
+        {
+            List<ModelViewModelsScrew> lstScrews = new List<ModelViewModelsScrew>();
+            try
+            {
+                MYSQL_DB mYSQL = new MYSQL_DB(sessionApp.connStr);
+                DataTable resultData = mYSQL.ExecuteSP("SP_GET_MODELS_SCREWS");
                 lstScrews = resultData.AsEnumerable().Select(row =>
                 new ModelViewModelsScrew
                 {
@@ -132,6 +158,73 @@ namespace BORGWARNER_SERVOPRESS.DataAccessLayer
 
                 mySQL.ExecuteNonQuerySP("SP_DEL_MODELS_SCREWS", new MySqlParameter[] {
                     new MySqlParameter("p_id", MySqlDbType.Int32) { Value = modelViewModelsScrew.id }                    
+                });
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+                throw;
+            }
+        }
+
+        public List<ModelViewPositionScrew> getModelViewPositionScrew(int indexPage)
+        {
+            List<ModelViewPositionScrew> lstScrews = new List<ModelViewPositionScrew>();
+            try
+            {
+                MYSQL_DB mYSQL = new MYSQL_DB(sessionApp.connStr);
+                DataTable resultData = mYSQL.ExecuteSP("SP_GET_SCREWS_PAG", new MySqlParameter[] {
+                    new MySqlParameter("page_p", MySqlDbType.Int32) { Value = indexPage },
+                    new MySqlParameter("size_p", MySqlDbType.Int32) { Value = numRegbyPages } });
+                lstScrews = resultData.AsEnumerable().Select(row =>
+                new ModelViewPositionScrew
+                {
+                    id = row.Field<int>("id"),
+                    id_screw = row.Field<int>("id_screw"),
+                    encoder1 = row.Field<double>("encoder1"),
+                    encoder2 = row.Field<double>("encoder2"),
+                    tolerance = row.Field<double>("tolerance"),
+                    id_model_screw = row.Field<int>("id_model_screw")
+                }).ToList();
+
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+                throw;
+            }
+            return lstScrews;
+        }
+
+        public void Ins_Upd_ModelViewPositionScrew(ModelViewPositionScrew ModelViewPositionScrew)
+        {
+            try
+            {
+                MYSQL_DB mySQL = new MYSQL_DB(sessionApp.connStr);
+
+                mySQL.ExecuteNonQuerySP("SP_INS_UPD_SCREWS", new MySqlParameter[] {
+                    new MySqlParameter("p_id", MySqlDbType.Int32) { Value = ModelViewPositionScrew.id },
+                    new MySqlParameter("p_id_screw", MySqlDbType.Int32) { Value = ModelViewPositionScrew.id_screw },
+                    new MySqlParameter("p_encoder1", MySqlDbType.Double) { Value = ModelViewPositionScrew.encoder1 },
+                    new MySqlParameter("p_encoder2", MySqlDbType.Double) { Value = ModelViewPositionScrew.encoder2 },
+                    new MySqlParameter("p_tolerance", MySqlDbType.Double) { Value = ModelViewPositionScrew.tolerance },
+                    new MySqlParameter("p_id_model_screw", MySqlDbType.Int32) { Value = ModelViewPositionScrew.id_model_screw }
+                });
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+                throw;
+            }
+        }
+        public void Del_ModelViewPositionScrew(ModelViewPositionScrew ModelViewPositionScrew)
+        {
+            try
+            {
+                MYSQL_DB mySQL = new MYSQL_DB(sessionApp.connStr);
+
+                mySQL.ExecuteNonQuerySP("SP_DEL_SCREWS", new MySqlParameter[] {
+                    new MySqlParameter("p_id", MySqlDbType.Int32) { Value = ModelViewPositionScrew.id }
                 });
             }
             catch (Exception ex)

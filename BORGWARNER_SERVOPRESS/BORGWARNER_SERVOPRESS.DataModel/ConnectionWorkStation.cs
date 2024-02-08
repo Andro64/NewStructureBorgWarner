@@ -14,7 +14,7 @@ namespace BORGWARNER_SERVOPRESS.DataModel
         public string IP { get; set; }             
         public int Port { get; set; }
         public int idTypeConnection { get; set; }
-        public string TypeConnection { get; set; }
+        public string TypeConnection { get; set; }        
 
     }
 }

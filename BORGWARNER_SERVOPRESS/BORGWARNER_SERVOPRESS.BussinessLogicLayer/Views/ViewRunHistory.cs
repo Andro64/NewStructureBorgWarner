@@ -5,10 +5,12 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using System.Windows.Threading;
 
 namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.Views
 {
@@ -31,7 +33,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.Views
                 }
             }
         }
-        public ObservableCollection<int> lstComboPages { get; } = new ObservableCollection<int>();
+        public ObservableCollection<int> lstComboPages { get; set; } = new ObservableCollection<int>();
         public ModelViewRunHistory RegisterSelected
         {
             get { return _registerSelected; }
@@ -69,6 +71,20 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.Views
             }
         }
 
+        private string _timestamp;
+        public string Timestamp
+        {
+            get { return _timestamp; }
+            set
+            {
+                if (_timestamp != value)
+                {
+                    _timestamp = value;
+                    OnPropertyChanged(nameof(Timestamp));
+                }
+            }
+        }
+
         public ICommand SaveCommand { get; private set; }
         public ICommand CreateCommand { get; private set; }
         public ICommand UpdateCommand { get; private set; }
@@ -93,7 +109,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.Views
             RegisterSelected = new ModelViewRunHistory();
             CommunicationRunHistory = new CommunicationRunHistory(sessionApp);
 
-
+            ShowDate();
             InitializeGrid();
             Read(null);
 
@@ -102,13 +118,25 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.Views
         private void InitializeGrid()
         {
             sessionApp.lstTotalRegistersByTables = settingsGeneral.getTotalRegByTables();
-            foreach (var page in sessionApp.lstTotalRegistersByTables.FirstOrDefault(x => x.NameTable.Equals("runs")).Pages)
+            populatePages();
+        }
+        private void populatePages()
+        {
+            try
             {
-                lstComboPages.Add(page);
-            }
+                lstComboPages = new ObservableCollection<int>();
+                foreach (var page in sessionApp.lstTotalRegistersByTables.FirstOrDefault(x => x.NameTable.Equals("runs")).Pages)
+                {
+                    lstComboPages.Add(page);
+                }
 
-            total_pages_grid = sessionApp.lstTotalRegistersByTables.FirstOrDefault(x => x.NameTable.Equals("runs")).NumPages;
-            PageSelected = 1;
+                total_pages_grid = sessionApp.lstTotalRegistersByTables.FirstOrDefault(x => x.NameTable.Equals("runs")).NumPages;
+                PageSelected = 1;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+            }
         }
         private void cleanControls()
         {
@@ -178,6 +206,18 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.Views
             return true;
         }
 
+        public void ShowDate()
+        {
+            var timer = new DispatcherTimer
+            {
+                Interval = TimeSpan.FromSeconds(1)
+            };
+            timer.Tick += (sender, args) =>
+            {
+                Timestamp = DateTime.Now.ToString();
+            };
+            timer.Start();
+        }
 
         public event PropertyChangedEventHandler PropertyChanged;
 

@@ -68,6 +68,7 @@
     <Compile Include="User.cs" />
     <Compile Include="Views\ModelViewMain.cs" />
     <Compile Include="Views\ModelViewModelsScrew.cs" />
+    <Compile Include="Views\ModelViewPositionScrew.cs" />
     <Compile Include="Views\ModelViewRunHistory.cs" />
     <Compile Include="Views\ModelViewSettings.cs" />
   </ItemGroup>

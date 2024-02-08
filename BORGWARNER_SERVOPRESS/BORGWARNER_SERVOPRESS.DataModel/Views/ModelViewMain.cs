@@ -83,5 +83,27 @@ namespace BORGWARNER_SERVOPRESS.DataModel.Views
             get { return _profile; }
             set { _profile = value; }
         }
+
+        private int milliseconds;
+        public int Milliseconds
+        {
+            get { return milliseconds; }
+            set
+            {
+                milliseconds = value;
+                OnPropertyChanged(nameof(Milliseconds));
+            }
+        }
+        private double seconds;
+
+        public double Seconds
+        {
+            get { return seconds; }
+            set
+            {
+                seconds = value;
+                OnPropertyChanged(nameof(Seconds));
+            }
+        }
     }
 }

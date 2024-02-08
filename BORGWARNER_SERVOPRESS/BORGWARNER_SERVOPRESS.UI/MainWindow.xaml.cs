@@ -43,6 +43,7 @@ namespace BORGWARNER_SERVOPRESS.UI
             DataContext = viewMain.GetModel();
             pageManager = new PageManager(this);
 
+            
             viewMain.ShowData();
             viewMain.ShowDate();
 
@@ -107,7 +108,8 @@ namespace BORGWARNER_SERVOPRESS.UI
 
         private void mn_btn_positions_Click(object sender, RoutedEventArgs e)
         {
-
+            new PositionScrewWindow(sessionApp).ShowDialog();
+            this.Close();
         }
         #endregion
 
@@ -121,6 +123,7 @@ namespace BORGWARNER_SERVOPRESS.UI
                 }
             });
 
+            viewMain.StopTimer();
             pageManager.EnableControls(new List<string> { "mn_btn_run", "mn_btn_fis", "mn_btn_history", "mn_btn_modelos_screw", "mn_btn_manual", "mn_btn_positions" });
         }
         
@@ -131,6 +134,7 @@ namespace BORGWARNER_SERVOPRESS.UI
             try
             {
                 WorkStation_Manual_Type1 workStation_Manual_Type1 = new WorkStation_Manual_Type1(sessionApp);
+                viewMain.StartTimer();
                 //workStation_Manual_Type1.start();
                 workStation_Manual_Type1.MensajesPantalla();
                 EneableControlsWhenEndTaskRun();

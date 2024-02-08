@@ -12,7 +12,23 @@
 INSERT INTO models_screw VALUES (1,'modelo1','FUSION\r','modelo1','Model for testing cycle with FIS','3'),(2,'modelo2','serial','modelo2','Model for testing program with model selection with all the sensors in false.','2');
 
 DELIMITER ||
-CREATE PROCEDURE SP_GET_MODELS_SCREWS(IN page_p INT, IN size_p INT)
+CREATE PROCEDURE SP_GET_MODELS_SCREWS()
+BEGIN
+SELECT 	 	id,
+			partNumber,
+			serial,
+			name_model,
+			description,
+			quantity_screws  
+FROM models_screw;
+ 
+ END
+ || 
+ DELIMITER ;
+
+
+DELIMITER ||
+CREATE PROCEDURE SP_GET_MODELS_SCREWS_PAG(IN page_p INT, IN size_p INT)
 BEGIN
 set @page = page_p;
 set @_size = size_p;
@@ -32,7 +48,6 @@ prepare qry from @qry_string;
  END
  || 
  DELIMITER ;
-
 
 CALL SP_GET_MODELS_SCREWS();
 
