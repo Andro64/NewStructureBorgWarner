@@ -11,17 +11,18 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Threading;
 
+
 namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.Views
 {
-    public class ViewPositionScrew : INotifyPropertyChanged
+    public class ViewUsers : INotifyPropertyChanged
     {
         private SessionApp sessionApp;
         private Settings settingsGeneral;
-        private ObservableCollection<ModelViewPositionScrew> _ResultData;
-        private ModelViewPositionScrew _registerSelected;
-        private CommunicationScrew CommunicationScrew;
+        private ObservableCollection<ModelViewUsers> _ResultData;
+        private ModelViewUsers _registerSelected;
+        private CommunicationUsers CommunicationUsers;
         private IMessageBoxService messageBoxService;
-        public ObservableCollection<ModelViewPositionScrew> ResultData
+        public ObservableCollection<ModelViewUsers> ResultData
         {
             get { return _ResultData; }
             set
@@ -34,9 +35,9 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.Views
             }
         }
         public ObservableCollection<int> lstComboPages { get; set; } = new ObservableCollection<int>();
-        public ObservableCollection<ModelViewModelsScrew> lstModelScrew { get; set; } = new ObservableCollection<ModelViewModelsScrew>();
-        
-        public ModelViewPositionScrew RegisterSelected
+        public ObservableCollection<ModelViewProfile> lstProfiles { get; set; } = new ObservableCollection<ModelViewProfile>();
+
+        public ModelViewUsers RegisterSelected
         {
             get { return _registerSelected; }
             set
@@ -73,14 +74,14 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.Views
             }
         }
 
-        private int ModelScrewSelected;
-        public int _modelScrewSelected
+        private int ModelProfileSelected;
+        public int _modelProfileSelected
         {
-            get { return _modelScrewSelected; }
+            get { return _modelProfileSelected; }
             set
             {
-                _modelScrewSelected = value;
-                OnPropertyChanged(nameof(ModelScrewSelected));
+                _modelProfileSelected = value;
+                OnPropertyChanged(nameof(ModelProfileSelected));
             }
         }
 
@@ -97,7 +98,6 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.Views
                 }
             }
         }
-
         private string _userName;
         public string UserName
         {
@@ -116,11 +116,11 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.Views
         public ICommand DeleteCommand { get; private set; }
         public ICommand ReadCommand { get; private set; }
         public ICommand SelectComboPageCommand { get; }
-        public ICommand SelectChangedModelScrew  { get; private set; }
-        
+        public ICommand SelectChangedModelScrew { get; private set; }
 
 
-        public ViewPositionScrew(SessionApp _sessionApp, IMessageBoxService messageBoxService)
+
+        public ViewUsers(SessionApp _sessionApp, IMessageBoxService messageBoxService)
         {
             sessionApp = _sessionApp;
             settingsGeneral = new Settings(sessionApp);
@@ -132,11 +132,11 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.Views
             DeleteCommand = new RelayCommand<object>(Delete, CanYouDelete);
             SelectComboPageCommand = new RelayCommand<int>(Page_SelectionChanged);
             SelectChangedModelScrew = new RelayCommand<int>(ModelScrew_SelectionChanged);
-            
 
-            ResultData = new ObservableCollection<ModelViewPositionScrew>();
-            RegisterSelected = new ModelViewPositionScrew();
-            CommunicationScrew = new CommunicationScrew(sessionApp);
+
+            ResultData = new ObservableCollection<ModelViewUsers>();
+            RegisterSelected = new ModelViewUsers();
+            CommunicationUsers = new CommunicationUsers(sessionApp);
 
             this.messageBoxService = messageBoxService;
 
@@ -151,7 +151,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.Views
         {
             sessionApp.lstTotalRegistersByTables = settingsGeneral.getTotalRegByTables();
             populatePages();
-            populateModelScrew();
+            populateProfiles();
         }
         public void ShowData()
         {
@@ -169,33 +169,33 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.Views
                 }
 
                 total_pages_grid = sessionApp.lstTotalRegistersByTables.FirstOrDefault(x => x.NameTable.Equals("screws")).NumPages;
-                PageSelected = 1;                
+                PageSelected = 1;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Debug.WriteLine(ex.Message);
             }
         }
-        private void populateModelScrew()
+        private void populateProfiles()
         {
-            lstModelScrew = new ObservableCollection<ModelViewModelsScrew>();
-            List<ModelViewModelsScrew> lst_modelScrew =  CommunicationScrew.getModelViewModelsScrew();            
-            foreach (var item in lst_modelScrew)
+            lstProfiles = new ObservableCollection<ModelViewProfile>();
+            List<ModelViewProfile> lst_profiles = CommunicationUsers.getModelViewProfile();
+            foreach (var item in lst_profiles)
             {
-                lstModelScrew.Add(item);
+                lstProfiles.Add(item);
             }
-            ModelScrewSelected = lstModelScrew.FirstOrDefault().id;
+            ModelProfileSelected = lstProfiles.FirstOrDefault().id;
         }
         private void cleanControls()
         {
             if (RegisterSelected != null)
             {
                 RegisterSelected.id = 0;
-                RegisterSelected.id_screw = 0;
-                RegisterSelected.encoder1 = 0;
-                RegisterSelected.encoder2 = 0;
-                RegisterSelected.tolerance = 0;
-                RegisterSelected.id_model_screw = 0;
+                RegisterSelected.name = string.Empty;
+                RegisterSelected.lastName = string.Empty;
+                RegisterSelected.username = string.Empty;
+                RegisterSelected.password = string.Empty;
+                RegisterSelected.id_profile = 0;
             }
             InitializeGrid();
         }
@@ -212,7 +212,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.Views
             MessageBoxResult result = messageBoxService.Show("¿Está seguro de guardar la información?", "Confirmación", MessageBoxButton.OKCancel, eMessageBoxIcon.Information);
             if (result == MessageBoxResult.OK)
             {
-                CommunicationScrew.Ins_Upd_ModelViewPositionScrew(RegisterSelected);
+                CommunicationUsers.Ins_Upd_ModelViewUsers(RegisterSelected);
                 cleanControls();
                 Read(PageSelected);
             }
@@ -238,7 +238,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.Views
             MessageBoxResult result = messageBoxService.Show("¿Está seguro de actualizar la información?", "Confirmación", MessageBoxButton.OKCancel, eMessageBoxIcon.Information);
             if (result == MessageBoxResult.OK)
             {
-                CommunicationScrew.Ins_Upd_ModelViewPositionScrew(RegisterSelected);
+                CommunicationUsers.Ins_Upd_ModelViewUsers(RegisterSelected);
                 cleanControls();
                 Read(PageSelected);
             }
@@ -254,7 +254,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.Views
             MessageBoxResult result = messageBoxService.Show("¿Está seguro de borrar la información?", "Confirmación", MessageBoxButton.OKCancel, eMessageBoxIcon.Information);
             if (result == MessageBoxResult.OK)
             {
-                CommunicationScrew.Del_ModelViewPositionScrew(RegisterSelected);
+                CommunicationUsers.Del_ModelViewUsers(RegisterSelected);
                 cleanControls();
                 Read(PageSelected);
             }
@@ -268,7 +268,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.Views
         private void Read(object parameter)
         {
             ResultData.Clear();
-            ResultData = new ObservableCollection<ModelViewPositionScrew>(CommunicationScrew.getModelViewPositionScrew(PageSelected));
+            ResultData = new ObservableCollection<ModelViewUsers>(CommunicationUsers.getModelViewUsers(PageSelected));
         }
 
         private bool CanYouRead(object parameter)

@@ -3,20 +3,7 @@ using BORGWARNER_SERVOPRESS.BussinessLogicLayer.Views;
 using BORGWARNER_SERVOPRESS.DataModel;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using BORGWARNER_SERVOPRESS.UI.Pages;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
-using System.ComponentModel;
-using System.Threading;
 
 namespace BORGWARNER_SERVOPRESS.UI
 {
@@ -55,11 +42,7 @@ namespace BORGWARNER_SERVOPRESS.UI
             
         }
 
-        private void home_option_btn_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
-
+       
         private void settings_option_btn_Click(object sender, RoutedEventArgs e)
         {
             new SettingsWindow(sessionApp).ShowDialog();
@@ -107,6 +90,18 @@ namespace BORGWARNER_SERVOPRESS.UI
         private void mn_btn_positions_Click(object sender, RoutedEventArgs e)
         {
             new PositionScrewWindow(sessionApp).ShowDialog();
+            this.Close();
+        }
+
+        private void users_option_btn_Click(object sender, RoutedEventArgs e)
+        {
+            new UsersWindow(sessionApp).ShowDialog();
+            this.Close();
+        }
+
+        private void home_option_btn_Click(object sender, RoutedEventArgs e)
+        {
+            new MainWindow(sessionApp).ShowDialog();
             this.Close();
         }
         #endregion

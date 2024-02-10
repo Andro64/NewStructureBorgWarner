@@ -108,6 +108,7 @@
     <Compile Include="CommunicationScrew.cs" />
     <Compile Include="CommunicationScrewDriver.cs" />
     <Compile Include="CommunicationSettings.cs" />
+    <Compile Include="CommunicationUsers.cs" />
     <Compile Include="ModuleADUImport.cs" />
     <Compile Include="MYSQL_DB.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

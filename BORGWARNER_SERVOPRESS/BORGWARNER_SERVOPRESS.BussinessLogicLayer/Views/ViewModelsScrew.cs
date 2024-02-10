@@ -8,8 +8,10 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Input;
 using System.Windows.Threading;
+
 
 namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.Views
 {
@@ -20,6 +22,8 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.Views
         private ObservableCollection<ModelViewModelsScrew> _ResultModelsScrews;
         private ModelViewModelsScrew _registerSelected;
         private CommunicationScrew communicationScrew;
+        private IMessageBoxService messageBoxService;
+
         public ObservableCollection<ModelViewModelsScrew> ResultModelsScrews
         {
             get { return _ResultModelsScrews; }
@@ -33,7 +37,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.Views
             }
         }
         public ObservableCollection<int> lstComboPages { get; set; } = new ObservableCollection<int>();
-        public ObservableCollection<string> lstScanners { get; } = new ObservableCollection<string>();
+        public ObservableCollection<string> lstScanners { get; set; } = new ObservableCollection<string>();
         public ModelViewModelsScrew RegisterSelected
         {
             get { return _registerSelected; }
@@ -94,6 +98,19 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.Views
                 }
             }
         }
+        private string _userName;
+        public string UserName
+        {
+            get { return _userName; }
+            set { _userName = value; }
+        }
+        private string _profile;
+        public string Profile
+        {
+            get { return _profile; }
+            set { _profile = value; }
+        }
+
         public ICommand SaveCommand { get; private set; }
         public ICommand CreateCommand { get; private set; }
         public ICommand UpdateCommand { get; private set; }
@@ -102,7 +119,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.Views
         public ICommand SelectComboPageCommand { get; }
         
 
-        public ViewModelsScrew(SessionApp _sessionApp)
+        public ViewModelsScrew(SessionApp _sessionApp, IMessageBoxService messageBoxService)
         {
             sessionApp = _sessionApp;
             settingsGeneral = new Settings(sessionApp);
@@ -113,13 +130,16 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.Views
             UpdateCommand = new RelayCommand<object>(Update, CanYouUpdate);
             DeleteCommand = new RelayCommand<object>(Delete, CanYouDelete);
             SelectComboPageCommand = new RelayCommand<int>(Page_SelectionChanged);
-
+            
 
             ResultModelsScrews = new ObservableCollection<ModelViewModelsScrew>();            
             RegisterSelected = new ModelViewModelsScrew();
             communicationScrew = new CommunicationScrew(sessionApp);
 
+            this.messageBoxService = messageBoxService;
+
             ShowDate();
+            ShowData();
             InitializeGrid();            
             Read(null);
             
@@ -130,6 +150,11 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.Views
             sessionApp.lstTotalRegistersByTables = settingsGeneral.getTotalRegByTables();
             populatePages();
             populateScanners();
+        }
+        public void ShowData()
+        {
+            UserName = sessionApp.user.userName;
+            Profile = sessionApp.user.profile_description;
         }
         private void populatePages()
         {
@@ -143,7 +168,8 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.Views
             PageSelected = 1;
         }
         private void populateScanners()
-        {            
+        {
+            lstScanners = new ObservableCollection<string>();
             foreach (var item in sessionApp.connectionsWorkStation.Where(x => x.idTypeDevice.Equals(5)).ToList())
             {
                 lstScanners.Add(item.TypeConnection);
@@ -152,12 +178,15 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.Views
         }
         private void cleanControls()
         {
-            RegisterSelected.id = 0;
-            RegisterSelected.partNumber = string.Empty;
-            RegisterSelected.serial = string.Empty;
-            RegisterSelected.name_model = string.Empty;
-            RegisterSelected.description = string.Empty;
-            RegisterSelected.quantity_screws = 0;
+            if (RegisterSelected != null)
+            {
+                RegisterSelected.id = 0;
+                RegisterSelected.partNumber = string.Empty;
+                RegisterSelected.serial = string.Empty;
+                RegisterSelected.name_model = string.Empty;
+                RegisterSelected.description = string.Empty;
+                RegisterSelected.quantity_screws = 0;
+            }
             InitializeGrid();
         }
         private void Page_SelectionChanged(int pageSelected)
@@ -166,9 +195,13 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.Views
         }
         private void Save(object parameter)
         {
-            communicationScrew.Ins_Upd_ModelViewModelsScrew(RegisterSelected);
-            cleanControls();
-            Read(PageSelected);
+            MessageBoxResult result = messageBoxService.Show("¿Está seguro de guardar la información?", "Confirmación", MessageBoxButton.OKCancel,eMessageBoxIcon.Information);
+            if (result == MessageBoxResult.OK)
+            {
+                communicationScrew.Ins_Upd_ModelViewModelsScrew(RegisterSelected);
+                cleanControls();
+                Read(PageSelected);
+            }
         }
 
         private bool CanYouSave(object parameter)
@@ -177,7 +210,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.Views
         }
         private void Create(object parameter)
         {
-            //cleanControls();
+            cleanControls();
             Read(1);
         }
 
@@ -187,10 +220,14 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.Views
             //return RegisterSelected != null && RegisterSelected.IsValid(); // Agrega lógica de validación si es necesario
         }
         private void Update(object parameter)
-        {            
-            communicationScrew.Ins_Upd_ModelViewModelsScrew(RegisterSelected);
-            cleanControls();
-            Read(PageSelected);
+        {
+            MessageBoxResult result = messageBoxService.Show("¿Está seguro de actualizar la información?", "Confirmación", MessageBoxButton.OKCancel, eMessageBoxIcon.Information);
+            if (result == MessageBoxResult.OK)
+            {
+                communicationScrew.Ins_Upd_ModelViewModelsScrew(RegisterSelected);
+                cleanControls();
+                Read(PageSelected);
+            }
         }
 
         private bool CanYouUpdate(object parameter)
@@ -200,9 +237,13 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.Views
 
         private void Delete(object parameter)
         {
-            communicationScrew.Del_ModelViewModelsScrew(RegisterSelected);
-            cleanControls();
-            Read(PageSelected);
+            MessageBoxResult result = messageBoxService.Show("¿Está seguro de borrar la información?", "Confirmación", MessageBoxButton.OKCancel, eMessageBoxIcon.Information);
+            if (result == MessageBoxResult.OK)
+            {
+                communicationScrew.Del_ModelViewModelsScrew(RegisterSelected);
+                cleanControls();
+                Read(PageSelected);
+            }
         }
 
         private bool CanYouDelete(object parameter)
@@ -220,7 +261,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.Views
         {
             return true; 
         }
-
+       
         public void ShowDate()
         {
             var timer = new DispatcherTimer

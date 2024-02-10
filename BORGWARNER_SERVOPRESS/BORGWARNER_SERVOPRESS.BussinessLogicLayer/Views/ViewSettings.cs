@@ -6,6 +6,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
+using System.Windows;
 using System.Windows.Input;
 using System.Windows.Threading;
 
@@ -18,6 +19,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.Views
         private ObservableCollection<ModelViewSettings> _ResultSettings;
         private ModelViewSettings _registerSelected;
         private CommunicationSettings CommunicationSettings;
+        private IMessageBoxService messageBoxService;
         public ObservableCollection<ModelViewSettings> ResultSettings
         {
             get { return _ResultSettings; }
@@ -82,6 +84,18 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.Views
             }
         }
 
+        private string _userName;
+        public string UserName
+        {
+            get { return _userName; }
+            set { _userName = value; }
+        }
+        private string _profile;
+        public string Profile
+        {
+            get { return _profile; }
+            set { _profile = value; }
+        }
         public ICommand SaveCommand { get; private set; }
         public ICommand CreateCommand { get; private set; }
         public ICommand UpdateCommand { get; private set; }
@@ -89,7 +103,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.Views
         public ICommand ReadCommand { get; private set; }
         public ICommand SelectComboPageCommand { get; }
 
-        public ViewSettings(SessionApp _sessionApp)
+        public ViewSettings(SessionApp _sessionApp, IMessageBoxService messageBoxService)
         {
             sessionApp = _sessionApp;
             settingsGeneral = new Settings(sessionApp);
@@ -106,6 +120,9 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.Views
             RegisterSelected = new ModelViewSettings();
             CommunicationSettings = new CommunicationSettings(sessionApp);
 
+            this.messageBoxService = messageBoxService;
+
+            ShowData();
             ShowDate();
             InitializeGrid();
             Read(null);
@@ -116,6 +133,11 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.Views
         {
             sessionApp.lstTotalRegistersByTables = settingsGeneral.getTotalRegByTables();
             populatePages();
+        }
+        public void ShowData()
+        {
+            UserName = sessionApp.user.userName;
+            Profile = sessionApp.user.profile_description;
         }
         private void populatePages()
         {
@@ -137,9 +159,12 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.Views
         }
         private void cleanControls()
         {
-            RegisterSelected.id = 0;
-            RegisterSelected.setting = string.Empty;
-            RegisterSelected.valueSetting = string.Empty;            
+            if (RegisterSelected != null)
+            {
+                RegisterSelected.id = 0;
+                RegisterSelected.setting = string.Empty;
+                RegisterSelected.valueSetting = string.Empty;
+            }
             InitializeGrid();
         }
         private void Page_SelectionChanged(int pageSelected)
@@ -148,9 +173,13 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.Views
         }
         private void Save(object parameter)
         {
-            CommunicationSettings.Ins_Upd_ModelViewSettings(RegisterSelected);
-            cleanControls();
-            Read(PageSelected);
+            MessageBoxResult result = messageBoxService.Show("¿Está seguro de guardar la información?", "Confirmación", MessageBoxButton.OKCancel, eMessageBoxIcon.Information);
+            if (result == MessageBoxResult.OK)
+            {
+                CommunicationSettings.Ins_Upd_ModelViewSettings(RegisterSelected);
+                cleanControls();
+                Read(PageSelected);
+            }
         }
 
         private bool CanYouSave(object parameter)
@@ -159,7 +188,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.Views
         }
         private void Create(object parameter)
         {
-            //cleanControls();
+            cleanControls();
             Read(1);
         }
 
@@ -170,9 +199,13 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.Views
         }
         private void Update(object parameter)
         {
-            CommunicationSettings.Ins_Upd_ModelViewSettings(RegisterSelected);
-            cleanControls();
-            Read(PageSelected);
+            MessageBoxResult result = messageBoxService.Show("¿Está seguro de actualizar la información?", "Confirmación", MessageBoxButton.OKCancel, eMessageBoxIcon.Information);
+            if (result == MessageBoxResult.OK)
+            {
+                CommunicationSettings.Ins_Upd_ModelViewSettings(RegisterSelected);
+                cleanControls();
+                Read(PageSelected);
+            }
         }
 
         private bool CanYouUpdate(object parameter)
@@ -182,9 +215,13 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.Views
 
         private void Delete(object parameter)
         {
-            CommunicationSettings.Del_ModelViewSettings(RegisterSelected);
-            cleanControls();
-            Read(PageSelected);
+            MessageBoxResult result = messageBoxService.Show("¿Está seguro de borrar la información?", "Confirmación", MessageBoxButton.OKCancel, eMessageBoxIcon.Information);
+            if (result == MessageBoxResult.OK)
+            {
+                CommunicationSettings.Del_ModelViewSettings(RegisterSelected);
+                cleanControls();
+                Read(PageSelected);
+            }
         }
 
         private bool CanYouDelete(object parameter)

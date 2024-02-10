@@ -64,6 +64,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="UsersWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="PositionScrewWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -98,6 +102,9 @@
     </Compile>
     <Compile Include="ManualWindow.xaml.cs">
       <DependentUpon>ManualWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UsersWindow.xaml.cs">
+      <DependentUpon>UsersWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="PositionScrewWindow.xaml.cs">
       <DependentUpon>PositionScrewWindow.xaml</DependentUpon>

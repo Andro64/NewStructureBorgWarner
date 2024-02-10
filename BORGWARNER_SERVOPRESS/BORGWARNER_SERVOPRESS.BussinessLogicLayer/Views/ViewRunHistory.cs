@@ -9,6 +9,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Input;
 using System.Windows.Threading;
 
@@ -21,6 +22,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.Views
         private ObservableCollection<ModelViewRunHistory> _ResultRunHistory;
         private ModelViewRunHistory _registerSelected;
         private CommunicationRunHistory CommunicationRunHistory;
+        private IMessageBoxService messageBoxService;
         public ObservableCollection<ModelViewRunHistory> ResultRunHistory
         {
             get { return _ResultRunHistory; }
@@ -84,6 +86,18 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.Views
                 }
             }
         }
+        private string _userName;
+        public string UserName
+        {
+            get { return _userName; }
+            set { _userName = value; }
+        }
+        private string _profile;
+        public string Profile
+        {
+            get { return _profile; }
+            set { _profile = value; }
+        }
 
         public ICommand SaveCommand { get; private set; }
         public ICommand CreateCommand { get; private set; }
@@ -92,7 +106,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.Views
         public ICommand ReadCommand { get; private set; }
         public ICommand SelectComboPageCommand { get; }
 
-        public ViewRunHistory(SessionApp _sessionApp)
+        public ViewRunHistory(SessionApp _sessionApp, IMessageBoxService messageBoxService)
         {
             sessionApp = _sessionApp;
             settingsGeneral = new Settings(sessionApp);
@@ -108,7 +122,10 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.Views
             ResultRunHistory = new ObservableCollection<ModelViewRunHistory>();
             RegisterSelected = new ModelViewRunHistory();
             CommunicationRunHistory = new CommunicationRunHistory(sessionApp);
+            
+            this.messageBoxService = messageBoxService;
 
+            ShowData();
             ShowDate();
             InitializeGrid();
             Read(null);
@@ -119,6 +136,11 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.Views
         {
             sessionApp.lstTotalRegistersByTables = settingsGeneral.getTotalRegByTables();
             populatePages();
+        }
+        public void ShowData()
+        {
+            UserName = sessionApp.user.userName;
+            Profile = sessionApp.user.profile_description;
         }
         private void populatePages()
         {
@@ -140,9 +162,12 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.Views
         }
         private void cleanControls()
         {
-            RegisterSelected.id = 0;
-            RegisterSelected.partNumber = string.Empty;
-            RegisterSelected.serial = string.Empty;           
+            if (RegisterSelected != null)
+            {
+                RegisterSelected.id = 0;
+                RegisterSelected.partNumber = string.Empty;
+                RegisterSelected.serial = string.Empty;
+            }
             InitializeGrid();
         }
         private void Page_SelectionChanged(int pageSelected)
@@ -151,9 +176,13 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.Views
         }
         private void Save(object parameter)
         {
-            CommunicationRunHistory.Ins_Upd_ModelViewRunHistory(RegisterSelected);
-            cleanControls();
-            Read(PageSelected);
+            MessageBoxResult result = messageBoxService.Show("¿Está seguro de guardar la información?", "Confirmación", MessageBoxButton.OKCancel, eMessageBoxIcon.Information);
+            if (result == MessageBoxResult.OK)
+            {
+                CommunicationRunHistory.Ins_Upd_ModelViewRunHistory(RegisterSelected);
+                cleanControls();
+                Read(PageSelected);
+            }
         }
 
         private bool CanYouSave(object parameter)
@@ -162,7 +191,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.Views
         }
         private void Create(object parameter)
         {
-            //cleanControls();
+            cleanControls();
             Read(1);
         }
 
@@ -173,9 +202,13 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.Views
         }
         private void Update(object parameter)
         {
-            CommunicationRunHistory.Ins_Upd_ModelViewRunHistory(RegisterSelected);
-            cleanControls();
-            Read(PageSelected);
+            MessageBoxResult result = messageBoxService.Show("¿Está seguro de actualizar la información?", "Confirmación", MessageBoxButton.OKCancel, eMessageBoxIcon.Information);
+            if (result == MessageBoxResult.OK)
+            {
+                CommunicationRunHistory.Ins_Upd_ModelViewRunHistory(RegisterSelected);
+                cleanControls();
+                Read(PageSelected);
+            }
         }
 
         private bool CanYouUpdate(object parameter)
@@ -185,9 +218,13 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.Views
 
         private void Delete(object parameter)
         {
-            CommunicationRunHistory.Del_ModelViewRunHistory(RegisterSelected);
-            cleanControls();
-            Read(PageSelected);
+            MessageBoxResult result = messageBoxService.Show("¿Está seguro de borrar la información?", "Confirmación", MessageBoxButton.OKCancel, eMessageBoxIcon.Information);
+            if (result == MessageBoxResult.OK)
+            {
+                CommunicationRunHistory.Del_ModelViewRunHistory(RegisterSelected);
+                cleanControls();
+                Read(PageSelected);
+            }
         }
 
         private bool CanYouDelete(object parameter)

@@ -1,4 +1,4 @@
-﻿<Window x:Class="BORGWARNER_SERVOPRESS.UI.RunHistoryWindow"
+﻿<Window x:Class="BORGWARNER_SERVOPRESS.UI.UsersWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:BORGWARNER_SERVOPRESS.UI"
         xmlns:localPages="clr-namespace:BORGWARNER_SERVOPRESS.UI.Pages"
         mc:Ignorable="d"
-        Title="RunHistoryWindow" WindowStartupLocation="Manual" WindowState="Maximized" WindowStyle="None" Height="720" Width="1280" Icon="Resources/Images/BW.png" Loaded="Window_Loaded">
+        Title="UsersWindow" WindowStartupLocation="Manual" WindowState="Maximized" WindowStyle="None" Height="720" Width="1280" Icon="Resources/Images/BW.png" Loaded="Window_Loaded">
     <Window.Background>
         <ImageBrush ImageSource="/Resources/Images/technologies-new.jpg" Stretch="UniformToFill" />
     </Window.Background>
@@ -88,9 +88,12 @@
                     <Image Source="/Resources/Images/gears.png" Margin="15,15,15,15" />
                 </Button>
                 <Border Grid.Column="4" Background="LightGray" Width="1" Margin="0,5,0,5" HorizontalAlignment="Right" />
+
                 <Button x:Name="users_option_btn" VerticalAlignment="Center" Grid.Column="5" BorderThickness="0" Background="{StaticResource BaseBackgroundDark}" Click="users_option_btn_Click" >
                     <Image Source="/Resources/Images/user.png" VerticalAlignment="Center" Grid.Column="5" Margin="15,15,15,15"/>
                 </Button>
+
+
                 <Label x:Name="lblUsername" Content="{Binding UserName}" Style="{StaticResource Font_Bold}" Grid.Column="6" VerticalContentAlignment="Top" FontSize="16" Margin="0,5,0,5" Foreground="#FF0E8086"/>
                 <Label x:Name="lblProfile" Content="{Binding Profile}" Grid.Column="6" VerticalContentAlignment="Bottom" FontSize="16" Margin="0,5,0,5" Foreground="#FF0E8086"/>
                 <Button x:Name="exit_btn" VerticalAlignment="Center" BorderThickness="0" Background="{StaticResource BaseBackgroundDark}" Grid.Column="7" Click="Btn_exit_click">
@@ -127,66 +130,63 @@
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition />
                 </Grid.ColumnDefinitions>
-                <!--<Grid.RowDefinitions>
+                <Grid.RowDefinitions>
                     <RowDefinition Height="150*" x:Name="expanderpanel" />
-                    <RowDefinition Height="300*" />
-                </Grid.RowDefinitions>-->
+                    <RowDefinition Height="80*" />
+                </Grid.RowDefinitions>
 
-                <Expander Style="{DynamicResource ExpanderStyle}" IsExpanded="True" Header="Historial" Width="auto" FlowDirection="RightToLeft" VerticalAlignment="Stretch" Height="auto" ExpandDirection="Down" FontSize="16" Margin="15,15,14.6,168.6" >
+                <Expander Style="{DynamicResource ExpanderStyle}" IsExpanded="True" Header="Posición del Tornillo" Width="auto" FlowDirection="RightToLeft" VerticalAlignment="Stretch" Height="auto" ExpandDirection="Down" FontSize="16" Margin="15,15,14.6,380.6" >
                 </Expander>
-
-              
                 <Frame x:Name="mainContent" NavigationUIVisibility="Hidden" Margin="15,0,14.6,14.8" Background="{StaticResource BaseBackgroundLight}" Height="592" VerticalAlignment="Bottom" Grid.RowSpan="2">
-                   
-
                 </Frame>
                 <DataGrid x:Name="dg_Data" 
-                          ItemsSource ="{Binding ResultRunHistory}"  
+                          ItemsSource ="{Binding ResultData}"  
                           SelectedItem="{Binding RegisterSelected}" 
                           AutoGenerateColumns="True"   HorizontalAlignment="Left" Height="342" Margin="45,69,0,0" VerticalAlignment="Top" Width="692" Background="#FF2D425B"/>
-                <!-- <Label x:Name="lblPartNumber" Content="Número de Parte:" HorizontalAlignment="Left" Margin="780,124,0,0" VerticalAlignment="Top"/>
-                <TextBox x:Name="txtPartNumber" 
-                         Text="{Binding RegisterSelected.partNumber, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                <Label x:Name="lblIdScrew" Content="Nombre:" HorizontalAlignment="Left" Margin="780,124,0,0" VerticalAlignment="Top"/>
+                <TextBox x:Name="txtIDScrew"                         
+                         Text="{Binding RegisterSelected.name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
                          Style="{StaticResource BaseTextBox}" 
                          HorizontalAlignment="Left" Height="23" Margin="908,124,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="176"/>
-                <Label x:Name="lblSerial" Content="Número de serie:" HorizontalAlignment="Left" Margin="780,163,0,0" VerticalAlignment="Top"/>
-                <TextBox x:Name="txtSerial" 
-                         Text="{Binding RegisterSelected.serial, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                <Label x:Name="lblEncoder" Content="Apellido:" HorizontalAlignment="Left" Margin="780,161,0,0" VerticalAlignment="Top"/>
+                <TextBox x:Name="txtEncoder1"                          
+                         Text="{Binding RegisterSelected.lastName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged,  StringFormat={}{0:0.000000}}"                          
                          Style="{StaticResource BaseTextBox}" 
-                         HorizontalAlignment="Left" Height="23" Margin="908,163,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="176"/>
-                <Label x:Name="lblNamemodel" Content="Nombre del modelo:" HorizontalAlignment="Left" Margin="780,201,0,0" VerticalAlignment="Top"/>
-                <TextBox x:Name="txtNamemodel" 
-                         Text="{Binding RegisterSelected.name_model, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                         HorizontalAlignment="Left" Height="23" Margin="908,161,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="176"/>
+                <Label x:Name="lblEncoder2" Content="Usuario:" HorizontalAlignment="Left" Margin="780,199,0,0" VerticalAlignment="Top"/>
+                <TextBox x:Name="txtEncoder2"                          
+                         Text="{Binding RegisterSelected.username, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged , StringFormat={}{0:0.000000}}" 
                          Style="{StaticResource BaseTextBox}" 
-                         HorizontalAlignment="Left" Height="23" Margin="908,201,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="176"/>
-                <Label x:Name="lblDescription" Content="Descripción:" HorizontalAlignment="Left" Margin="780,243,0,0" VerticalAlignment="Top"/>
-                <TextBox x:Name="txtDescription" 
-                         Text="{Binding RegisterSelected.description, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                         HorizontalAlignment="Left" Height="23" Margin="908,199,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="176"/>
+                <Label x:Name="lblTolerance" Content="Contraseña:" HorizontalAlignment="Left" Margin="780,238,0,0" VerticalAlignment="Top"/>
+                <TextBox x:Name="txtTolerance"                          
+                         Text="{Binding RegisterSelected.password, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
                          Style="{StaticResource BaseTextBox}" 
-                         HorizontalAlignment="Left" Height="79" Margin="908,242,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="176"/>
-                <Label x:Name="lblQuantityScrews" Content="Cantidad de tornillos:" HorizontalAlignment="Left" Margin="780,339,0,0" VerticalAlignment="Top"/>
-                <TextBox x:Name="txtQuantityScrews" 
+                         HorizontalAlignment="Left" Height="23" Margin="908,237,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="176"/>
+                <Label x:Name="lblModelScrew" Content="Perfil:" HorizontalAlignment="Left" Margin="780,277,0,0" VerticalAlignment="Top"/>
+                <!--<TextBox x:Name="txtModelScrew" 
                          Text="{Binding RegisterSelected.quantity_screws, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
                          Style="{StaticResource BaseTextBox}" 
-                         HorizontalAlignment="Left" Height="23" Margin="908,339,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="176"/>
+                         HorizontalAlignment="Left" Height="23" Margin="908,377,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="176"/>-->
                 <Button x:Name="btnToSave" 
                         Command="{Binding SaveCommand}" Content="Guardar cambios" 
-                        Style="{StaticResource BaseButton}" HorizontalAlignment="Left" Height="31" Margin="780,380,0,0" VerticalAlignment="Top" Width="304"/>
+                        Style="{StaticResource BaseButton}" HorizontalAlignment="Left" Height="31" Margin="780,318,0,0" VerticalAlignment="Top" Width="304"/>
                 <Button x:Name="btnToCancel" 
                         Command="{Binding CreateCommand}" Content="Cancelar" 
                         Style="{StaticResource BaseButton}" 
-                        HorizontalAlignment="Left" Height="31" Margin="780,425,0,0" VerticalAlignment="Top" Width="304" Grid.RowSpan="2" Click="btnToCancel_Click"/>
-                <Label Content="Registra un nuevo modelo de tornillo" HorizontalAlignment="Left" Margin="780,60,0,0" VerticalAlignment="Top" FontSize="18"/>
+                        HorizontalAlignment="Left" Height="31" Margin="780,363,0,0" VerticalAlignment="Top" Width="304" Click="btnToCancel_Click"/>
+                <Label Content="Registra una nueva posición del tornillo" HorizontalAlignment="Left" Margin="780,60,0,0" VerticalAlignment="Top" FontSize="18"/>
                 <Button x:Name="btnToAdd" 
                         Command="{Binding CreateCommand}" Content="Limpiar"  
                         Style="{StaticResource BaseButton}" 
-                        HorizontalAlignment="Left" Height="31" Margin="45,428,0,0" VerticalAlignment="Top" Width="131" Grid.RowSpan="2" Click="btnToAdd_Click"/>-->
+                        HorizontalAlignment="Left" Height="31" Margin="45,428,0,0" VerticalAlignment="Top" Width="131" Grid.RowSpan="2" Click="btnToAdd_Click"/>
                 <Button x:Name="btnToDelete" 
                         Command="{Binding DeleteCommand}" Content="Eliminar" 
                         Style="{StaticResource BaseButton}" 
-                        HorizontalAlignment="Left" Height="31" Margin="45,428,0,0" VerticalAlignment="Top" Width="131" Grid.RowSpan="2"/>
+                        HorizontalAlignment="Left" Height="31" Margin="187,428,0,0" VerticalAlignment="Top" Width="131" Grid.RowSpan="2"/>
                 <Label x:Name="lblPage" Content="Página" HorizontalAlignment="Left" Margin="485,429,0,0" VerticalAlignment="Top" Grid.RowSpan="2"/>
                 <TextBox x:Name="txtAllPages" IsReadOnly="True"
+                         PreviewTextInput="TextBox_PreviewTextInput"
                          Text="{Binding total_pages_grid}" Style="{StaticResource BaseTextBox}" 
                          HorizontalAlignment="Left" Height="23" Margin="684,429,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="53" Grid.RowSpan="2"/>
                 <Label x:Name="lblAllPages" Content="De" HorizontalAlignment="Left" Margin="656,428,0,0" VerticalAlignment="Top" RenderTransformOrigin="-5.508,0.613" Grid.RowSpan="2"/>
@@ -196,11 +196,16 @@
                           SelectionChanged="cboPage_SelectionChanged"
                           Style="{StaticResource BaseComboBox}" 
                           HorizontalAlignment="Left" Margin="535,430,0,0" VerticalAlignment="Top" Width="79" Height="23" Grid.RowSpan="2"/>
-                
+                <ComboBox x:Name="cboModelScrew" 
+                          ItemsSource="{Binding lstProfiles}" 
+                          DisplayMemberPath="description"
+                          SelectedValuePath="id"
+                          SelectedValue="{Binding RegisterSelected.id}"
+                          SelectedItem="{Binding ModelProfileSelected}"                           
+                          Style="{StaticResource BaseComboBox}" 
+                          HorizontalAlignment="Left" Margin="908,277,0,0" VerticalAlignment="Top" Width="176"  Height="23"/>
 
             </Grid>
-
-
         </Grid>
     </Viewbox>
 </Window>
