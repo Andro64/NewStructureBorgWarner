@@ -37,8 +37,8 @@ namespace BORGWARNER_SERVOPRESS.UI
             sessionApp.user = new User();
 
             //Inicial la ventana Login
-            //LoginWindow _loginWindow = new LoginWindow(sessionApp);
-            //_loginWindow.Show();
+            LoginWindow _loginWindow = new LoginWindow(sessionApp);
+            _loginWindow.Show();
 
             //Inicial la ventana Main
             //MainWindow mainWindow = new MainWindow(sessionApp);
@@ -58,8 +58,8 @@ namespace BORGWARNER_SERVOPRESS.UI
             //modelsScrewWindow.Title = "BORGWARNER SERVOPRENSA";
             //modelsScrewWindow.Show();
 
-            PositionScrewWindow positionScrewWindow = new PositionScrewWindow(sessionApp);
-            positionScrewWindow.Show();
+            //PositionScrewWindow positionScrewWindow = new PositionScrewWindow(sessionApp);
+            //positionScrewWindow.Show();
         }
     }
 }

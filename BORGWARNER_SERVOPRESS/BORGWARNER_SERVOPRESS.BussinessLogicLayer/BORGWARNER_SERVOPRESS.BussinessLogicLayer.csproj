@@ -56,6 +56,7 @@
       <HintPath>..\packages\MySql.Data.8.2.0\lib\net462\MySql.Data.dll</HintPath>
     </Reference>
     <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
     <Reference Include="System" />
     <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Buffers.4.5.1\lib\net461\System.Buffers.dll</HintPath>
@@ -111,13 +112,16 @@
     <Compile Include="SensorsIO.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="TryDevices.cs" />
-    <Compile Include="UsersAdmin.cs" />
+    <Compile Include="UserAdmin.cs" />
+    <Compile Include="Views\IMessageBoxService.cs" />
+    <Compile Include="Views\MessageBoxService.cs" />
     <Compile Include="Views\RelayCommand.cs" />
     <Compile Include="Views\ViewMain.cs" />
     <Compile Include="Views\ViewModelsScrew.cs" />
     <Compile Include="Views\ViewPositionScrew.cs" />
     <Compile Include="Views\ViewRunHistory.cs" />
     <Compile Include="Views\ViewSettings.cs" />
+    <Compile Include="Views\ViewUsers.cs" />
     <Compile Include="VisionSystem.cs" />
     <Compile Include="WorkStation_Manual_Type1.cs" />
   </ItemGroup>

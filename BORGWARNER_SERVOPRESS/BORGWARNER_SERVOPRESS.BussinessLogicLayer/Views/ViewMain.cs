@@ -1,10 +1,6 @@
 ﻿using BORGWARNER_SERVOPRESS.DataModel;
 using BORGWARNER_SERVOPRESS.DataModel.Views;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Threading;
 
@@ -22,8 +18,8 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.Views
             _modelViewMain = new ModelViewMain();
 
             timer = new DispatcherTimer();
-            timer.Interval = TimeSpan.FromSeconds(0.01);
-            //timer.Interval = TimeSpan.FromMilliseconds(100); // Actualizar cada milisegundo
+            //timer.Interval = TimeSpan.FromSeconds(1);
+            timer.Interval = TimeSpan.FromMilliseconds(1); // Actualizar cada milisegundo
             timer.Tick += Timer_Tick;
         }
         public ModelViewMain GetModel()
@@ -52,7 +48,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.Views
         public void ShowData()
         {
             _modelViewMain.UserName = sessionApp.user.userName;
-            _modelViewMain.Profile = sessionApp.user.profile;
+            _modelViewMain.Profile = sessionApp.user.profile_description;
         }
 
         private void Timer_Tick(object sender, EventArgs e)
@@ -60,12 +56,12 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.Views
             //_modelViewMain.Milliseconds++;
 
             // Actualiza los segundos y las décimas de segundo
-            _modelViewMain.Seconds += 0.01;
+            //_modelViewMain.Seconds += 0.01;
             //if (_modelViewMain.Seconds >= 60)
             //{
             //    _modelViewMain.Seconds = 0;
             //}
-            //_modelViewMain.Seconds++;
+            _modelViewMain.Seconds++;
         }
 
         public void StartTimer()

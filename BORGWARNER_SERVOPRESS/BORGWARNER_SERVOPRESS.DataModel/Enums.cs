@@ -32,4 +32,19 @@ namespace BORGWARNER_SERVOPRESS.DataModel
         public eTypeConnection e_TypeConnection { get; set; }
         public eTypeDevices e_TypeDevices { get; set; }        
     }
+
+    public enum eMessageBoxResult
+    {
+        OK,
+        Cancel
+    }
+
+    public enum eMessageBoxIcon
+    {
+        None,
+        Information,
+        Question,
+        Warning,
+        Error
+    }
 }

@@ -88,7 +88,9 @@
                     <Image Source="/Resources/Images/gears.png" Margin="15,15,15,15" />
                 </Button>
                 <Border Grid.Column="4" Background="LightGray" Width="1" Margin="0,5,0,5" HorizontalAlignment="Right" />
-                <Image Source="/Resources/Images/user.png" VerticalAlignment="Center" Grid.Column="5" Margin="15,15,15,15"/>
+                <Button x:Name="users_option_btn" VerticalAlignment="Center" Grid.Column="5" BorderThickness="0" Background="{StaticResource BaseBackgroundDark}" Click="users_option_btn_Click" >
+                    <Image Source="/Resources/Images/user.png" VerticalAlignment="Center" Grid.Column="5" Margin="15,15,15,15"/>
+                </Button>
                 <Label x:Name="lblUsername" Content="{Binding UserName}" Style="{StaticResource Font_Bold}" Grid.Column="6" VerticalContentAlignment="Top" FontSize="16" Margin="0,5,0,5" Foreground="#FF0E8086"/>
                 <Label x:Name="lblProfile" Content="{Binding Profile}" Grid.Column="6" VerticalContentAlignment="Bottom" FontSize="16" Margin="0,5,0,5" Foreground="#FF0E8086"/>
                 <Button x:Name="exit_btn" VerticalAlignment="Center" BorderThickness="0" Background="{StaticResource BaseBackgroundDark}" Grid.Column="7" Click="Btn_exit_click">
