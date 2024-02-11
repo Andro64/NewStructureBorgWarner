@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BORGWARNER_SERVOPRESS.DataModel.Views;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -26,6 +27,7 @@ namespace BORGWARNER_SERVOPRESS.DataModel
         public string PathDirectoryResourcesOfThisProyect { get; set; }
         public string PathOperationalImages { get; set; }
         public List<TotalRegistersByTables> lstTotalRegistersByTables { get; set; }
-        public bool TaksRunExecuting { get; set; }
-    }
+        public bool TaksRunExecuting { get; set; }        
+        public ModelViewTypeWorkstation typeWorkstation { get; set; }
+}
 }

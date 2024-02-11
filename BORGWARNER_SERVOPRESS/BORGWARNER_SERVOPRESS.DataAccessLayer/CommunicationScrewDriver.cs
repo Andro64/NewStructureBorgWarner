@@ -34,7 +34,7 @@ namespace BORGWARNER_SERVOPRESS.DataAccessLayer
             }
             catch (Exception ex)
             {
-                Debug.WriteLine("Error: " + ex.Message);
+                Debug.WriteLine($"{DateTime.Now} - "  + "Error: " + ex.Message);
                 throw;
             }
         }
@@ -48,7 +48,7 @@ namespace BORGWARNER_SERVOPRESS.DataAccessLayer
             }
             catch (Exception ex)
             {
-                Debug.WriteLine("Error: " + ex.Message);
+                Debug.WriteLine($"{DateTime.Now} - "  + "Error: " + ex.Message);
                 throw;
             }
             return connectionScrewDriver;
@@ -78,7 +78,7 @@ namespace BORGWARNER_SERVOPRESS.DataAccessLayer
                 byte[] responseFromScrewDriver = new byte[1025];
                 socket.Receive(responseFromScrewDriver);
                 string response = Encoding.ASCII.GetString(responseFromScrewDriver).Substring(positionStart, length).ToString();
-                Console.WriteLine(response);
+                Console.WriteLine($"{DateTime.Now} - "  + response);
                 return response;
             }
             return string.Empty;
@@ -98,7 +98,7 @@ namespace BORGWARNER_SERVOPRESS.DataAccessLayer
             }
             catch (Exception ex)
             {
-                Debug.WriteLine("Error: " + ex.Message);
+                Debug.WriteLine($"{DateTime.Now} - "  + "Error: " + ex.Message);
                 throw;
             }
 

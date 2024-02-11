@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Reflection;
 using System.IO;
+using System.Diagnostics;
 
 namespace BORGWARNER_SERVOPRESS.UI
 {
@@ -19,6 +20,7 @@ namespace BORGWARNER_SERVOPRESS.UI
     {
         private void Application_Startup(object sender, StartupEventArgs e)
         {
+            
             //string occupation = ConfigurationManager.AppSettings["occupation"];
             //Obtiene la información de Appconfig
             SessionApp sessionApp = new SessionApp();
@@ -28,8 +30,11 @@ namespace BORGWARNER_SERVOPRESS.UI
             BussinessLogicLayer.Settings settingsGeneral = new BussinessLogicLayer.Settings(sessionApp);
             sessionApp.settings = settingsGeneral.getSettings();
             sessionApp.connectionsWorkStation = settingsGeneral.getConnections();
+            sessionApp.typeWorkstation = settingsGeneral.getTypeWorksatiton();
+            Logger.SetLogFilePath(sessionApp.settings.FirstOrDefault(x=> x.setting.Equals("Path_LOG")).valueSetting);
+            Logger.Instance.Log("Iniciando sistema");
+            Debug.WriteLine("BORGWARNER_SERVOPRESS iniciado...");
             
-
             Assembly exec = Assembly.GetExecutingAssembly();
             string pathExec = exec.Location;
             sessionApp.PathDirectoryResourcesOfThisProyect = Path.GetDirectoryName(pathExec) + @"\Resources\";
@@ -37,8 +42,8 @@ namespace BORGWARNER_SERVOPRESS.UI
             sessionApp.user = new User();
 
             //Inicial la ventana Login
-            LoginWindow _loginWindow = new LoginWindow(sessionApp);
-            _loginWindow.Show();
+            //LoginWindow _loginWindow = new LoginWindow(sessionApp);
+            //_loginWindow.Show();
 
             //Inicial la ventana Main
             //MainWindow mainWindow = new MainWindow(sessionApp);
@@ -58,8 +63,8 @@ namespace BORGWARNER_SERVOPRESS.UI
             //modelsScrewWindow.Title = "BORGWARNER SERVOPRENSA";
             //modelsScrewWindow.Show();
 
-            //PositionScrewWindow positionScrewWindow = new PositionScrewWindow(sessionApp);
-            //positionScrewWindow.Show();
+            PositionScrewWindow positionScrewWindow = new PositionScrewWindow(sessionApp);
+            positionScrewWindow.Show();
         }
     }
 }

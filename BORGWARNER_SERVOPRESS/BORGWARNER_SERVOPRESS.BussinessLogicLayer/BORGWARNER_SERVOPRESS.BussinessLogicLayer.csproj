@@ -101,6 +101,7 @@
   <ItemGroup>
     <Compile Include="ErgoArm.cs" />
     <Compile Include="IOCards.cs" />
+    <Compile Include="Logger.cs" />
     <Compile Include="ObserverPatternSensor\ISensorObserver.cs" />
     <Compile Include="ObserverPatternSensor\SensorSubject.cs" />
     <Compile Include="Pallet.cs" />

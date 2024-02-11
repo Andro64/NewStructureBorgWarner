@@ -35,7 +35,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
             {
                 ioCard_Type_M1.getDataInput(cancellationToken_ioCard1.Token);
             }).Wait();
-            Debug.WriteLine("Inicia lectura de los sensores ioCard1");
+            Debug.WriteLine($"{DateTime.Now} - "  + "Inicia lectura de los sensores ioCard1");
 
             ioCard_Type_M2 = new IOCards(sessionApp, new IOCardType_M2());
             cancellationToken_ioCard2 = new CancellationTokenSource();
@@ -43,7 +43,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
             {
                 ioCard_Type_M2.getDataInput(cancellationToken_ioCard2.Token);
             }).Wait();
-            Debug.WriteLine("Inicia lectura de los sensores ioCard2");
+            Debug.WriteLine($"{DateTime.Now} - "  + "Inicia lectura de los sensores ioCard2");
 
             ioCard_Type_M3 = new IOCards(sessionApp, new IOCardType_M3());
             cancellationToken_ioCard3 = new CancellationTokenSource();
@@ -52,16 +52,16 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
 
                 ioCard_Type_M3.getDataInput(cancellationToken_ioCard3.Token);
             }).Wait();
-            Debug.WriteLine("Inicia lectura de los sensores ioCard3");
+            Debug.WriteLine($"{DateTime.Now} - "  + "Inicia lectura de los sensores ioCard3");
         }
         public void endRead()
         {
             cancellationToken_ioCard1.Cancel();            
-            Debug.WriteLine("Termine de leer los sensores ioCard1");
+            Debug.WriteLine($"{DateTime.Now} - "  + "Termine de leer los sensores ioCard1");
             cancellationToken_ioCard2.Cancel();
-            Debug.WriteLine("Termine de leer los sensores ioCard2");
+            Debug.WriteLine($"{DateTime.Now} - "  + "Termine de leer los sensores ioCard2");
             cancellationToken_ioCard3.Cancel();
-            Debug.WriteLine("Termine de leer los sensores ioCard3");
+            Debug.WriteLine($"{DateTime.Now} - "  + "Termine de leer los sensores ioCard3");
         }
 
        public bool PalletInStopper()

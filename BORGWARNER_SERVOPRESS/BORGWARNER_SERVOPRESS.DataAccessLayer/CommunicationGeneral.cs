@@ -1,4 +1,6 @@
 ﻿using BORGWARNER_SERVOPRESS.DataModel;
+using BORGWARNER_SERVOPRESS.DataModel.Views;
+using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -35,7 +37,7 @@ namespace BORGWARNER_SERVOPRESS.DataAccessLayer
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex.Message);
+                Debug.WriteLine($"{DateTime.Now} - "  + ex.Message);
                 throw;
             }
             return lstSettings;
@@ -64,7 +66,7 @@ namespace BORGWARNER_SERVOPRESS.DataAccessLayer
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex.Message);
+                Debug.WriteLine($"{DateTime.Now} - "  + ex.Message);
                 throw;
             }
             return lstconnectionsRobots;
@@ -98,11 +100,36 @@ namespace BORGWARNER_SERVOPRESS.DataAccessLayer
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex.Message);
+                Debug.WriteLine($"{DateTime.Now} - "  + ex.Message);
                 throw;
             }
             return lstSettings;
 
         }
+
+        public List<ModelViewTypeWorkstation> getModelViewTypeWorkstation_By_Id(int idTypeWork)
+        {
+            List<ModelViewTypeWorkstation> lstTypeWorkstation = new List<ModelViewTypeWorkstation>();
+            try
+            {
+                MYSQL_DB mYSQL = new MYSQL_DB(sessionApp.connStr);
+                DataTable resultData = mYSQL.ExecuteSP("SP_GET_TYPE_WORKSTATION_BY_ID", new MySqlParameter[] {
+                    new MySqlParameter("p_id", MySqlDbType.Int32) { Value = idTypeWork } });
+                lstTypeWorkstation = resultData.AsEnumerable().Select(row =>
+                new ModelViewTypeWorkstation
+                {
+                    id = row.Field<int>("id"),
+                    description = row.Field<string>("description")
+                }).ToList();
+
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"{DateTime.Now} - " + ex.Message);
+                throw;
+            }
+            return lstTypeWorkstation;
+        }
+
     }
 }

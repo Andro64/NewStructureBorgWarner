@@ -72,6 +72,7 @@
     <Compile Include="Views\ModelViewProfile.cs" />
     <Compile Include="Views\ModelViewRunHistory.cs" />
     <Compile Include="Views\ModelViewSettings.cs" />
+    <Compile Include="Views\ModelViewTypeWorkstation.cs" />
     <Compile Include="Views\ModelViewUsers.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

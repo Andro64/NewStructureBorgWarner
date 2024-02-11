@@ -110,6 +110,12 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.Views
             get { return _profile; }
             set { _profile = value; }
         }
+        private string _nameWorksation;
+        public string NameWorksation
+        {
+            get { return _nameWorksation; }
+            set { _nameWorksation = value; }
+        }
 
         public ICommand SaveCommand { get; private set; }
         public ICommand CreateCommand { get; private set; }
@@ -155,6 +161,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.Views
         {
             UserName = sessionApp.user.userName;
             Profile = sessionApp.user.profile_description;
+            NameWorksation = sessionApp.typeWorkstation.description;
         }
         private void populatePages()
         {

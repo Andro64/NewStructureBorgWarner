@@ -34,7 +34,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
                 screw.tighteningprocess.result = screw.tighteningprocess.resultResponse == "0061";
                 screw.tighteningprocess.id = response.Substring(221, 10).ToString();
 
-                Debug.WriteLine(response);
+                Debug.WriteLine($"{DateTime.Now} - "  + response);
                 if (screw.tighteningprocess.result)
                 {
                     screw.tighteningprocess.Torque = response.Substring(142, 4).ToString();
@@ -123,7 +123,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
             {
                 communicationScrewDriver.sendCodesScrewDriver(connection, @"00200001001000000000\0");
                 string response = communicationScrewDriver.responseScrewDriver(connection, 4, 4);
-                Debug.WriteLine(response);
+                Debug.WriteLine($"{DateTime.Now} - "  + response);
                 return response;
             }
             return string.Empty;
@@ -167,7 +167,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
         {
             communicationScrewDriver.sendCodesScrewDriver(connection, @"00200043000000000000\0");
             string response = communicationScrewDriver.responseScrewDriver(connection, 4, 4);
-            Debug.WriteLine(response);
+            Debug.WriteLine($"{DateTime.Now} - "  + response);
             return response;
         }
         public string screwingSubscription()
@@ -175,7 +175,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
             //communicationScrewDriver.sendCodesScrewDriver(connection, @"00200043000000000000\0");
             communicationScrewDriver.sendCodesScrewDriver(connection, @"00200060000000000000\0");
             string response = communicationScrewDriver.responseScrewDriver(connection, 4, 4);
-            Debug.WriteLine(response);
+            Debug.WriteLine($"{DateTime.Now} - "  + response);
             return response;
         }
 

@@ -39,7 +39,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
             }
             catch (Exception ex)
             {
-                Debug.WriteLine("Error: " + ex.Message);
+                Debug.WriteLine($"{DateTime.Now} - "  + "Error: " + ex.Message);
             }
             return lstRetriveInfoScrew;
         }

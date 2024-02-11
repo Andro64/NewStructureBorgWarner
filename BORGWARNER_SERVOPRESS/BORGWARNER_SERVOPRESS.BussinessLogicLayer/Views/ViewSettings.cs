@@ -2,6 +2,7 @@
 using BORGWARNER_SERVOPRESS.DataModel;
 using BORGWARNER_SERVOPRESS.DataModel.Views;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -33,6 +34,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.Views
             }
         }
         public ObservableCollection<int> lstComboPages { get; set; } = new ObservableCollection<int>();
+        public ObservableCollection<ModelViewTypeWorkstation> lstTypeWorkstation { get; set; } = new ObservableCollection<ModelViewTypeWorkstation>();
         public ModelViewSettings RegisterSelected
         {
             get { return _registerSelected; }
@@ -83,7 +85,16 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.Views
                 }
             }
         }
-
+        private int _TypeWorkstationSelected_Id;
+        public int TypeWorkstationSelected_Id
+        {
+            get { return _TypeWorkstationSelected_Id; }
+            set
+            {
+                _TypeWorkstationSelected_Id = value;
+                OnPropertyChanged(nameof(TypeWorkstationSelected_Id));
+            }
+        }
         private string _userName;
         public string UserName
         {
@@ -96,6 +107,13 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.Views
             get { return _profile; }
             set { _profile = value; }
         }
+        private string _nameWorksation;
+        public string NameWorksation
+        {
+            get { return _nameWorksation; }
+            set { _nameWorksation = value; }
+        }
+
         public ICommand SaveCommand { get; private set; }
         public ICommand CreateCommand { get; private set; }
         public ICommand UpdateCommand { get; private set; }
@@ -133,11 +151,13 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.Views
         {
             sessionApp.lstTotalRegistersByTables = settingsGeneral.getTotalRegByTables();
             populatePages();
+            populateTypeWorkstation();
         }
         public void ShowData()
         {
             UserName = sessionApp.user.userName;
             Profile = sessionApp.user.profile_description;
+            NameWorksation = sessionApp.typeWorkstation.description;
         }
         private void populatePages()
         {
@@ -154,8 +174,18 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.Views
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex.Message);
+                Debug.WriteLine($"{DateTime.Now} - "  + ex.Message);
             }
+        }
+        private void populateTypeWorkstation()
+        {
+            lstTypeWorkstation = new ObservableCollection<ModelViewTypeWorkstation>();
+            List<ModelViewTypeWorkstation> lst_TypeWorkstation = CommunicationSettings.getModelViewTypeWorkstation();
+            foreach (var item in lst_TypeWorkstation)
+            {
+                lstTypeWorkstation.Add(item);
+            }
+            TypeWorkstationSelected_Id = sessionApp.typeWorkstation.id;
         }
         private void cleanControls()
         {
