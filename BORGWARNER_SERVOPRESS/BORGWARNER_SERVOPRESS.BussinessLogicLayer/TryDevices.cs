@@ -33,7 +33,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
         {
             scanner = new Scanner(sessionApp, eTypeConnection.Scan_1);
             serial = scanner.ScanQR("LON");
-            Debug.WriteLine($"SCANNER 1 LEE CODIGO SERIAL: {serial}");
+            Debug.WriteLine($"{DateTime.Now} - "  + $"SCANNER 1 LEE CODIGO SERIAL: {serial}");
         }
         public void TryFIS()
         {
@@ -42,7 +42,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
             resultFIS = fIS.SendBREQToFIS(serial);
             if (resultFIS.Contains("PASS"))
             {
-                Debug.WriteLine("Si paso");
+                Debug.WriteLine($"{DateTime.Now} - "  + "Si paso");
             }
         }
         public string TryFIS(string numSerial)
@@ -54,7 +54,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
             }
             catch(Exception ex)
             {
-                Debug.WriteLine(ex.Message);
+                Debug.WriteLine($"{DateTime.Now} - "  + ex.Message);
             }
             
             return ResultFIS;           
@@ -75,11 +75,11 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
                     ergoArm.startReadPositionRespectScrew(screw);
                     if (sessionApp.positionErgoArm.InPositionReadyToProcess)
                     {
-                        Debug.WriteLine("BRAZO ERGONOMICO EN POSICION");
+                        Debug.WriteLine($"{DateTime.Now} - "  + "BRAZO ERGONOMICO EN POSICION");
 
                         if (!screwdriver.FirstTighteningAttempt(screw))
                         {
-                            Debug.WriteLine("Fallo el atorniollado");
+                            Debug.WriteLine($"{DateTime.Now} - "  + "Fallo el atorniollado");
                         }
                         if (!ergoArm.isInHome())
                         {
@@ -95,11 +95,11 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
             visionSystem = new VisionSystem(sessionApp);
             if (!visionSystem.FirstInspectionAttempt())
             {
-                Debug.WriteLine("Fallo el intento");
+                Debug.WriteLine($"{DateTime.Now} - "  + "Fallo el intento");
             }
             else
             {
-                Debug.WriteLine("Si paso");
+                Debug.WriteLine($"{DateTime.Now} - "  + "Si paso");
                 visionSystem.getNameImageResultFromCamera();
                 visionSystem.Disconnect();
             }

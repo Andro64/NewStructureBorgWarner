@@ -37,7 +37,7 @@ namespace BORGWARNER_SERVOPRESS.DataAccessLayer
             {
                 sender.Connect(remoteEP);
 
-                Console.WriteLine("Socket connected to {0}",
+                Console.WriteLine($"{DateTime.Now} - "  + "Socket connected to {0}",
                     sender.RemoteEndPoint.ToString());
 
                 // Encode the data string into a byte array.  
@@ -49,7 +49,7 @@ namespace BORGWARNER_SERVOPRESS.DataAccessLayer
                 // Receive the response from the remote device.  
                 int bytesRec = sender.Receive(bytes);
                 result = Encoding.ASCII.GetString(bytes, 0, bytesRec);
-                Console.WriteLine("Recieved=" + result);
+                Console.WriteLine($"{DateTime.Now} - "  + "Recieved=" + result);
 
                 // Release the socket.  
                 sender.Shutdown(SocketShutdown.Both);
@@ -59,24 +59,24 @@ namespace BORGWARNER_SERVOPRESS.DataAccessLayer
                 //    catch (ArgumentNullException ane)
                 //    {
                 //        result = "ERROR";
-                //        Console.WriteLine("ArgumentNullException : {0}", ane.ToString());
+                //        Console.WriteLine($"{DateTime.Now} - "  + "ArgumentNullException : {0}", ane.ToString());
                 //    }
                 //    catch (SocketException se)
                 //    {
                 //        result = "ERROR";
-                //        Console.WriteLine("SocketException : {0}", se.ToString());
+                //        Console.WriteLine($"{DateTime.Now} - "  + "SocketException : {0}", se.ToString());
                 //    }
                 //    catch (Exception e)
                 //    {
                 //        result = "ERROR";
-                //        Console.WriteLine("Unexpected exception : {0}", e.ToString());
+                //        Console.WriteLine($"{DateTime.Now} - "  + "Unexpected exception : {0}", e.ToString());
                 //    }
 
             }
             catch (Exception e)
             {
                 result = "ERROR";
-                Console.WriteLine(e.ToString());
+                Console.WriteLine($"{DateTime.Now} - "  + e.ToString());
             }
             return result;
         }

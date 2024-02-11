@@ -41,7 +41,7 @@ namespace BORGWARNER_SERVOPRESS.DataAccessLayer
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex.Message);
+                Debug.WriteLine($"{DateTime.Now} - "  + ex.Message);
                 throw;
             }
             return lstconnectionsRobots;

@@ -49,6 +49,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.Views
         {
             _modelViewMain.UserName = sessionApp.user.userName;
             _modelViewMain.Profile = sessionApp.user.profile_description;
+            _modelViewMain.NameWorksation = sessionApp.typeWorkstation.description;
         }
 
         private void Timer_Tick(object sender, EventArgs e)

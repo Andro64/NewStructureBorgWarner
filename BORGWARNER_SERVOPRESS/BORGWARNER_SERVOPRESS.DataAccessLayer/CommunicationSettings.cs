@@ -40,7 +40,7 @@ namespace BORGWARNER_SERVOPRESS.DataAccessLayer
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex.Message);
+                Debug.WriteLine($"{DateTime.Now} - "  + ex.Message);
                 throw;
             }
             return lstScrews;
@@ -60,7 +60,7 @@ namespace BORGWARNER_SERVOPRESS.DataAccessLayer
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex.Message);
+                Debug.WriteLine($"{DateTime.Now} - "  + ex.Message);
                 throw;
             }
         }
@@ -76,9 +76,32 @@ namespace BORGWARNER_SERVOPRESS.DataAccessLayer
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex.Message);
+                Debug.WriteLine($"{DateTime.Now} - "  + ex.Message);
                 throw;
             }
         }
+        public List<ModelViewTypeWorkstation> getModelViewTypeWorkstation()
+        {
+            List<ModelViewTypeWorkstation> lstScrews = new List<ModelViewTypeWorkstation>();
+            try
+            {
+                MYSQL_DB mYSQL = new MYSQL_DB(sessionApp.connStr);
+                DataTable resultData = mYSQL.ExecuteSP("SP_GET_TYPE_WORKSTATION");
+                lstScrews = resultData.AsEnumerable().Select(row =>
+                new ModelViewTypeWorkstation
+                {
+                    id = row.Field<int>("id"),
+                    description = row.Field<string>("description")
+                }).ToList();
+
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"{DateTime.Now} - " + ex.Message);
+                throw;
+            }
+            return lstScrews;
+        }
+        
     }
 }

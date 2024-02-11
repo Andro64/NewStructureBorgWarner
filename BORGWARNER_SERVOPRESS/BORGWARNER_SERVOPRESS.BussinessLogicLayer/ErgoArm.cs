@@ -38,7 +38,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
         {
             cancellationToken_ErgoArm.Cancel();
             communicationErgoArm.Disconnect();
-            Debug.WriteLine("Termine de leer la posicion del ErgoArm");
+            Debug.WriteLine($"{DateTime.Now} - "  + "Termine de leer la posicion del ErgoArm");
         }
         public bool isInHome()
         {

@@ -55,6 +55,7 @@
     <Content Include="settings\settings.sql" />
     <Content Include="type_connection\type_connection.sql" />
     <Content Include="type_device\type_device.sql" />
+    <Content Include="type_workstation\type_workstation.sql" />
     <Content Include="users\users.sql" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

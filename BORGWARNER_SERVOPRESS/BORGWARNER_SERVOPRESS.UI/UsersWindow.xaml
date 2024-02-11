@@ -79,7 +79,9 @@
 
                 <Border Grid.Column="0" Background="LightGray" Width="1" Margin="0,5,0,5" HorizontalAlignment="Right" />
                 <Image Source="/Resources/Images/BorgWarner Dark.png" HorizontalAlignment="Left" Grid.Column="1" Margin="15,15,0,15" />
-                <Label x:Name="timestamp_lbl" Style="{StaticResource Font_Bold}" FontSize="14" Content="{Binding Timestamp}" Grid.Column="2" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Foreground="#FF0E8086"/>
+                <Label x:Name="lblWorkstation" Style="{StaticResource Font_Bold}" FontSize="14" Content="{Binding NameWorksation}" Grid.Column="2" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"  Foreground="#FF0E8086"/>
+                <Label x:Name="timestamp_lbl" Style="{StaticResource Font_Regular}" FontSize="12" Content="{Binding Timestamp}" Grid.Column="2" HorizontalContentAlignment="Center" VerticalContentAlignment="Bottom" Foreground="#FF0E8086"/>
+                
                 <Button x:Name="home_option_btn" VerticalAlignment="Center"  Grid.Column="3" BorderThickness="0" Background="{StaticResource BaseBackgroundDark}" Click="home_option_btn_Click">
                     <Image Source="/Resources/Images/home.png" Margin="15,15,15,15" />
                 </Button>
@@ -135,7 +137,7 @@
                     <RowDefinition Height="80*" />
                 </Grid.RowDefinitions>
 
-                <Expander Style="{DynamicResource ExpanderStyle}" IsExpanded="True" Header="Posición del Tornillo" Width="auto" FlowDirection="RightToLeft" VerticalAlignment="Stretch" Height="auto" ExpandDirection="Down" FontSize="16" Margin="15,15,14.6,380.6" >
+                <Expander Style="{DynamicResource ExpanderStyle}" IsExpanded="True" Header="Administración de Usuarios" Width="auto" FlowDirection="RightToLeft" VerticalAlignment="Stretch" Height="auto" ExpandDirection="Down" FontSize="16" Margin="15,15,14.6,380.6" >
                 </Expander>
                 <Frame x:Name="mainContent" NavigationUIVisibility="Hidden" Margin="15,0,14.6,14.8" Background="{StaticResource BaseBackgroundLight}" Height="592" VerticalAlignment="Bottom" Grid.RowSpan="2">
                 </Frame>
@@ -175,7 +177,7 @@
                         Command="{Binding CreateCommand}" Content="Cancelar" 
                         Style="{StaticResource BaseButton}" 
                         HorizontalAlignment="Left" Height="31" Margin="780,363,0,0" VerticalAlignment="Top" Width="304" Click="btnToCancel_Click"/>
-                <Label Content="Registra una nueva posición del tornillo" HorizontalAlignment="Left" Margin="780,60,0,0" VerticalAlignment="Top" FontSize="18"/>
+                <Label Content="Registra una nuevo usuario" HorizontalAlignment="Left" Margin="780,60,0,0" VerticalAlignment="Top" FontSize="18"/>
                 <Button x:Name="btnToAdd" 
                         Command="{Binding CreateCommand}" Content="Limpiar"  
                         Style="{StaticResource BaseButton}" 

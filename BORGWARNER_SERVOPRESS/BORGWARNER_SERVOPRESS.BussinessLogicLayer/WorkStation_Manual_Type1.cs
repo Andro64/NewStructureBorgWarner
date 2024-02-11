@@ -1,13 +1,10 @@
-﻿using BORGWARNER_SERVOPRESS.DataModel;
-using BORGWARNER_SERVOPRESS.DataAccessLayer;
+﻿using BORGWARNER_SERVOPRESS.DataAccessLayer;
+using BORGWARNER_SERVOPRESS.DataModel;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Threading;
-using System.Reflection;
+using System.Threading.Tasks;
 
 namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
 {
@@ -24,11 +21,14 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
         {
             sessionApp.MessageOfProcess = message;
             sessionApp.ImageOfProcess = isImageInDiferentPath ? nameimage : sessionApp.PathOperationalImages + nameimage;
-            Debug.WriteLine(message + " Image show:" + nameimage);
+            Debug.WriteLine($"{DateTime.Now} - "  + "Msg:" +  message + " -  Image show:" + nameimage);
         }
 
         public async Task MensajesPantalla()
         {
+
+            Debug.WriteLine($"{DateTime.Now} - "  + "Path de Imagenes:" + sessionApp.PathOperationalImages);
+
             await Task.Run(() =>
             {
                 showMessageAndImage("Inicia Proceso de atornillado", "pallet.jpg");                
@@ -145,33 +145,33 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
             if (!sensorsIO.PalletInStopper())
             {
                 sensorsIO.WaitingResponse(sensorsIO.PalletInStopper());
-                Debug.WriteLine("Esperamos pallet en Pre-Stopper");
+                Debug.WriteLine($"{DateTime.Now} - "  + "Esperamos pallet en Pre-Stopper");
             }
             if (!sensorsIO.ExtendedPalletClamp())
             {
                 sensorsIO.WaitingResponse(sensorsIO.ExtendedPalletClamp());
-                Debug.WriteLine("Esperamos CLAMP DE PALLET EXTENDIDO");
+                Debug.WriteLine($"{DateTime.Now} - "  + "Esperamos CLAMP DE PALLET EXTENDIDO");
             }
             if (!sensorsIO.PlacedHousing())
             {
                 sensorsIO.WaitingResponse(sensorsIO.PlacedHousing());
-                Debug.WriteLine("Esperamos que el OPERADOR COLOCAQUE EL HOUSING");
+                Debug.WriteLine($"{DateTime.Now} - "  + "Esperamos que el OPERADOR COLOCAQUE EL HOUSING");
             }
             scanner = new Scanner(sessionApp, eTypeConnection.Scan_1);
             serial = scanner.ScanQR("LON");
-            Debug.WriteLine($"SCANNER 1 LEE CODIGO SERIAL: {serial}");
+            Debug.WriteLine($"{DateTime.Now} - "  + $"SCANNER 1 LEE CODIGO SERIAL: {serial}");
 
             fIS = new CommunicationFIS(sessionApp);
             resultFIS = fIS.SendBREQToFIS(serial);
 
             if (resultFIS.Contains("PASS"))
             {
-                Debug.WriteLine("PIDE A OPERADOR COLOCAR ULTRA CAP BOARD PAD Y ACTIVAR OPTO");
+                Debug.WriteLine($"{DateTime.Now} - "  + "PIDE A OPERADOR COLOCAR ULTRA CAP BOARD PAD Y ACTIVAR OPTO");
 
                 if (!sensorsIO.UltraCapBoardPadinPlace())
                 {
                     sensorsIO.WaitingResponse(sensorsIO.UltraCapBoardPadinPlace());
-                    Debug.WriteLine("ESPERA ACTIVACION DE OPTO ");
+                    Debug.WriteLine($"{DateTime.Now} - "  + "ESPERA ACTIVACION DE OPTO ");
                 }
 
                 visionSystem = new VisionSystem(sessionApp);
@@ -180,18 +180,18 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
                     if (!sensorsIO.WasPressedOpto())
                     {
                         sensorsIO.WaitingResponse(sensorsIO.WasPressedOpto());
-                        Debug.WriteLine("Fallo primer intento ESPERA ACTIVACION DE OPTO ");
+                        Debug.WriteLine($"{DateTime.Now} - "  + "Fallo primer intento ESPERA ACTIVACION DE OPTO ");
 
                         if (!visionSystem.SecondInspectionAttempt())
                         {
                             if (!sensorsIO.WasPressedOpto())
                             {
                                 sensorsIO.WaitingResponse(sensorsIO.WasPressedOpto());
-                                Debug.WriteLine("Fallo segundo intento ESPERA ACTIVACION DE OPTO ");
+                                Debug.WriteLine($"{DateTime.Now} - "  + "Fallo segundo intento ESPERA ACTIVACION DE OPTO ");
 
                                 if (!visionSystem.ThirdInspectionAttempt())
                                 {
-                                    Debug.WriteLine("Fallaron los 3 intentos ");  ///Falta poner que hace en este caso
+                                    Debug.WriteLine($"{DateTime.Now} - "  + "Fallaron los 3 intentos ");  ///Falta poner que hace en este caso
                                 }
                             }
                         }
@@ -200,28 +200,28 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
                 visionSystem.getNameImageResultFromCamera();
                 visionSystem.Disconnect();
 
-                Debug.WriteLine("PIDE A OPERADOR TOMAR ULTRA CAP BOARD Y COLOCAR EN NIDO");
+                Debug.WriteLine($"{DateTime.Now} - "  + "PIDE A OPERADOR TOMAR ULTRA CAP BOARD Y COLOCAR EN NIDO");
 
                 if (!sensorsIO.UltraCapBoardReadyToScan())
                 {
                     sensorsIO.WaitingResponse(sensorsIO.UltraCapBoardReadyToScan());
-                    Debug.WriteLine("ESPERA ULTRA CAP BOARD SE COLOQUE EN NIDO ");
+                    Debug.WriteLine($"{DateTime.Now} - "  + "ESPERA ULTRA CAP BOARD SE COLOQUE EN NIDO ");
                 }
 
                 scanner = new Scanner(sessionApp, eTypeConnection.Scan_2);
                 serial = scanner.ScanQR("LON");
-                Debug.WriteLine($"SCANNER 1 LEE CODIGO SERIAL: {serial}");
+                Debug.WriteLine($"{DateTime.Now} - "  + $"SCANNER 1 LEE CODIGO SERIAL: {serial}");
 
                 fIS = new CommunicationFIS(sessionApp);
                 resultFIS = fIS.SendBREQToFIS(serial);
 
                 if (resultFIS.Contains("PASS"))
                 {
-                    Debug.WriteLine("PIDE A OPERADOR TOMAR HARNESS, CONECTAR A ULTRA CAP BOARD, COLOCAR EN HOUSING, REALIZAR RUTEO DE HARNESS SOBRE HOUSING Y PRESIONAR OPTO");
+                    Debug.WriteLine($"{DateTime.Now} - "  + "PIDE A OPERADOR TOMAR HARNESS, CONECTAR A ULTRA CAP BOARD, COLOCAR EN HOUSING, REALIZAR RUTEO DE HARNESS SOBRE HOUSING Y PRESIONAR OPTO");
                     if (!sensorsIO.UCBdConnected_RoutingHarness_PlaceInHousing())
                     {
                         sensorsIO.WaitingResponse(sensorsIO.UCBdConnected_RoutingHarness_PlaceInHousing());
-                        Debug.WriteLine("ESPERA ACTIVACION DE OPTO ");
+                        Debug.WriteLine($"{DateTime.Now} - "  + "ESPERA ACTIVACION DE OPTO ");
                     }
 
                     visionSystem = new VisionSystem(sessionApp);
@@ -230,18 +230,18 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
                         if (!sensorsIO.WasPressedOpto())
                         {
                             sensorsIO.WaitingResponse(sensorsIO.WasPressedOpto());
-                            Debug.WriteLine("Fallo primer intento ESPERA ACTIVACION DE OPTO ");
+                            Debug.WriteLine($"{DateTime.Now} - "  + "Fallo primer intento ESPERA ACTIVACION DE OPTO ");
 
                             if (!visionSystem.SecondInspectionAttempt())
                             {
                                 if (!sensorsIO.WasPressedOpto())
                                 {
                                     sensorsIO.WaitingResponse(sensorsIO.WasPressedOpto());
-                                    Debug.WriteLine("Fallo segundo intento ESPERA ACTIVACION DE OPTO ");
+                                    Debug.WriteLine($"{DateTime.Now} - "  + "Fallo segundo intento ESPERA ACTIVACION DE OPTO ");
 
                                     if (!visionSystem.ThirdInspectionAttempt())
                                     {
-                                        Debug.WriteLine("Fallaron los 3 intentos ");  ///Falta poner que hace en este caso
+                                        Debug.WriteLine($"{DateTime.Now} - "  + "Fallaron los 3 intentos ");  ///Falta poner que hace en este caso
                                     }
                                 }
                             }
@@ -250,14 +250,14 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
                     visionSystem.getNameImageResultFromCamera();
                     visionSystem.Disconnect();
 
-                    Debug.WriteLine("2 PIDE A OPERADOR TOMAR TOMAR MASCARA Y COLOCAR SOBRE HOUSING");
+                    Debug.WriteLine($"{DateTime.Now} - "  + "2 PIDE A OPERADOR TOMAR TOMAR MASCARA Y COLOCAR SOBRE HOUSING");
                     if (!sensorsIO.PlacedHousing())
                     {
                         sensorsIO.WaitingResponse(sensorsIO.PlacedHousing());
-                        Debug.WriteLine("Esperamos que el OPERADOR COLOCAQUE MASCARA SOBRE HOUSING");
+                        Debug.WriteLine($"{DateTime.Now} - "  + "Esperamos que el OPERADOR COLOCAQUE MASCARA SOBRE HOUSING");
                     }
                     sensorsIO.ActivateSignalToScrewDispenser();
-                    Debug.WriteLine("PIDE A OPERADOR TOMAR ATORNILLADOR Y REALIZAR ATORNILLADO CORRESPONDIENTE");
+                    Debug.WriteLine($"{DateTime.Now} - "  + "PIDE A OPERADOR TOMAR ATORNILLADOR Y REALIZAR ATORNILLADO CORRESPONDIENTE");
 
                     screws = new Screws(sessionApp);
                     quantityScrews = screws.retriveNumberScrewsPerModel(sessionApp.ModelScrewSelected);
@@ -272,24 +272,24 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
                             ergoArm.startReadPositionRespectScrew(screw);
                             if(sessionApp.positionErgoArm.InPositionReadyToProcess)
                             {
-                                Debug.WriteLine("BRAZO ERGONOMICO EN POSICION");
+                                Debug.WriteLine($"{DateTime.Now} - "  + "BRAZO ERGONOMICO EN POSICION");
 
                                 if (!screwdriver.FirstTighteningAttempt(screw))
                                 {
                                     if (!sensorsIO.WasPressedOpto())
                                     {
                                         sensorsIO.WaitingResponse(sensorsIO.WasPressedOpto());
-                                        Debug.WriteLine("Fallo primer intento de atornillado  ESPERA ACTIVACION DE OPTO ");
+                                        Debug.WriteLine($"{DateTime.Now} - "  + "Fallo primer intento de atornillado  ESPERA ACTIVACION DE OPTO ");
                                         if (!screwdriver.SecondTighteningAttempt(screw))
                                         {
                                             if (!sensorsIO.WasPressedOpto())
                                             {
                                                 sensorsIO.WaitingResponse(sensorsIO.WasPressedOpto());
-                                                Debug.WriteLine("Fallo segundo intento de atornillado ESPERA ACTIVACION DE OPTO ");
+                                                Debug.WriteLine($"{DateTime.Now} - "  + "Fallo segundo intento de atornillado ESPERA ACTIVACION DE OPTO ");
 
                                                 if (screwdriver.ThirdTighteningAttempt(screw))
                                                 {
-                                                    Debug.WriteLine("Fallaron los 3 intentos de atornillado");  ///Falta poner que hace en este caso
+                                                    Debug.WriteLine($"{DateTime.Now} - "  + "Fallaron los 3 intentos de atornillado");  ///Falta poner que hace en este caso
                                                 }
                                             }
                                         }
@@ -297,7 +297,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
                                 }                                
                             }
                         }
-                        Debug.WriteLine("PIDE A OPERADOR COLOCAR BRAZO EN HOME Y RETIRAR MASCARA");
+                        Debug.WriteLine($"{DateTime.Now} - "  + "PIDE A OPERADOR COLOCAR BRAZO EN HOME Y RETIRAR MASCARA");
                         if(!ergoArm.isInHome())
                         {
                             ergoArm.WaitingResponse(ergoArm.isInHome());
@@ -308,11 +308,11 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
                         {
                             sensorsIO.WaitingResponse(sensorsIO.MaskInHolder());
                         }
-                        Debug.WriteLine("PIDE A OPERADOR TOMAR INSULADOR, COLOCAR SOBRE ULTRA CAP BOARD Y ACTIVAR OPTO");
+                        Debug.WriteLine($"{DateTime.Now} - "  + "PIDE A OPERADOR TOMAR INSULADOR, COLOCAR SOBRE ULTRA CAP BOARD Y ACTIVAR OPTO");
                         if (!sensorsIO.WasPressedOpto())
                         {
                             sensorsIO.WaitingResponse(sensorsIO.WasPressedOpto());
-                            Debug.WriteLine("OPTO ACTIVADO");
+                            Debug.WriteLine($"{DateTime.Now} - "  + "OPTO ACTIVADO");
                         }
 
                         visionSystem = new VisionSystem(sessionApp);
@@ -321,18 +321,18 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
                             if (!sensorsIO.WasPressedOpto())
                             {
                                 sensorsIO.WaitingResponse(sensorsIO.WasPressedOpto());
-                                Debug.WriteLine("Fallo primer intento ESPERA ACTIVACION DE OPTO ");
+                                Debug.WriteLine($"{DateTime.Now} - "  + "Fallo primer intento ESPERA ACTIVACION DE OPTO ");
 
                                 if (!visionSystem.SecondInspectionAttempt())
                                 {
                                     if (!sensorsIO.WasPressedOpto())
                                     {
                                         sensorsIO.WaitingResponse(sensorsIO.WasPressedOpto());
-                                        Debug.WriteLine("Fallo segundo intento ESPERA ACTIVACION DE OPTO ");
+                                        Debug.WriteLine($"{DateTime.Now} - "  + "Fallo segundo intento ESPERA ACTIVACION DE OPTO ");
 
                                         if (!visionSystem.ThirdInspectionAttempt())
                                         {
-                                            Debug.WriteLine("Fallaron los 3 intentos ");  ///Falta poner que hace en este caso
+                                            Debug.WriteLine($"{DateTime.Now} - "  + "Fallaron los 3 intentos ");  ///Falta poner que hace en este caso
                                         }
                                     }
                                 }
@@ -340,22 +340,22 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
                         }
                         visionSystem.getNameImageResultFromCamera();
                         visionSystem.Disconnect();
-                        Debug.WriteLine("INSPECCION OK ENVIA BCMP A FIS");
+                        Debug.WriteLine($"{DateTime.Now} - "  + "INSPECCION OK ENVIA BCMP A FIS");
 
                         fIS = new CommunicationFIS(sessionApp);
                         resultFIS = fIS.BCMP(serial,true); //?Cual serial se envia y el pass que signifca?
                         
-                        Debug.WriteLine("DETECTA CLAMP DE PALLET RETRAIDO");
+                        Debug.WriteLine($"{DateTime.Now} - "  + "DETECTA CLAMP DE PALLET RETRAIDO");
                         if (!sensorsIO.DetectsRetractedPalletClamp())
                         {
                             sensorsIO.WaitingResponse(sensorsIO.DetectsRetractedPalletClamp());
                         }
-                        Debug.WriteLine("LIBERA PALLET");
+                        Debug.WriteLine($"{DateTime.Now} - "  + "LIBERA PALLET");
 
                     }
                     else
                     {
-                        Debug.WriteLine("La informacion correspondiente a los tornillos esta incompleta");
+                        Debug.WriteLine($"{DateTime.Now} - "  + "La informacion correspondiente a los tornillos esta incompleta");
                     }
 
 

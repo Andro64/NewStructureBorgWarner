@@ -34,7 +34,7 @@ namespace BORGWARNER_SERVOPRESS.DataAccessLayer
                     }
                     catch (Exception ex)
                     {
-                        Debug.WriteLine(ex.Message);
+                        Debug.WriteLine($"{DateTime.Now} - "  + ex.Message);
                         throw;
                     }
                     finally
@@ -46,7 +46,7 @@ namespace BORGWARNER_SERVOPRESS.DataAccessLayer
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex.Message);
+                Debug.WriteLine($"{DateTime.Now} - "  + ex.Message);
                 throw;
             }
         }
@@ -69,7 +69,7 @@ namespace BORGWARNER_SERVOPRESS.DataAccessLayer
                     }
                     catch (Exception ex)
                     {
-                        Debug.WriteLine(ex.Message);
+                        Debug.WriteLine($"{DateTime.Now} - "  + ex.Message);
                         throw;
                     }
                     finally
@@ -81,7 +81,7 @@ namespace BORGWARNER_SERVOPRESS.DataAccessLayer
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex.Message);
+                Debug.WriteLine($"{DateTime.Now} - "  + ex.Message);
                 throw;
             }
 
@@ -110,7 +110,7 @@ namespace BORGWARNER_SERVOPRESS.DataAccessLayer
                     }
                     catch(MySqlException ex)
                     {
-                        Debug.WriteLine(ex.Message);
+                        Debug.WriteLine($"{DateTime.Now} - "  + ex.Message);
                         throw;
                     }
                     finally
@@ -121,7 +121,7 @@ namespace BORGWARNER_SERVOPRESS.DataAccessLayer
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex.Message);
+                Debug.WriteLine($"{DateTime.Now} - "  + ex.Message);
                 throw;
             }           
             return returnv;
@@ -146,7 +146,7 @@ namespace BORGWARNER_SERVOPRESS.DataAccessLayer
                     }
                     catch (MySqlException ex)
                     {
-                        Debug.WriteLine(ex.Message);
+                        Debug.WriteLine($"{DateTime.Now} - "  + ex.Message);
                         throw;
                     }
                     finally
@@ -157,7 +157,7 @@ namespace BORGWARNER_SERVOPRESS.DataAccessLayer
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex.Message);
+                Debug.WriteLine($"{DateTime.Now} - "  + ex.Message);
                 throw;
             }
             
@@ -181,7 +181,7 @@ namespace BORGWARNER_SERVOPRESS.DataAccessLayer
                     }
                     catch (MySqlException ex)
                     {
-                        Debug.WriteLine(ex.Message);
+                        Debug.WriteLine($"{DateTime.Now} - "  + ex.Message);
                         throw;
                     }
                     finally
@@ -192,7 +192,7 @@ namespace BORGWARNER_SERVOPRESS.DataAccessLayer
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex.Message);
+                Debug.WriteLine($"{DateTime.Now} - "  + ex.Message);
                 throw;
             }
             return dt;

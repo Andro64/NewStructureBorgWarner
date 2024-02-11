@@ -57,7 +57,7 @@ namespace BORGWARNER_SERVOPRESS.DataAccessLayer
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex.Message);
+                Debug.WriteLine($"{DateTime.Now} - "  + ex.Message);
                 throw;
             }
             return lstconnectionsRobots;
@@ -77,7 +77,7 @@ namespace BORGWARNER_SERVOPRESS.DataAccessLayer
                 else
                 {
                     // Manejar el caso en el que el nombre del tipo Robot no coincide con el enum
-                    Debug.WriteLine($"No se puede convertir el robot: {typeRobotFromBD.TypeDevice}");
+                    Debug.WriteLine($"{DateTime.Now} - "  + $"No se puede convertir el robot: {typeRobotFromBD.TypeDevice}");
                 }
             }
 
@@ -95,7 +95,7 @@ namespace BORGWARNER_SERVOPRESS.DataAccessLayer
             }
             catch (Exception ex)
             {
-                Debug.WriteLine("Error: " + ex.Message);
+                Debug.WriteLine($"{DateTime.Now} - "  + "Error: " + ex.Message);
                 throw;
             }
         }
@@ -109,7 +109,7 @@ namespace BORGWARNER_SERVOPRESS.DataAccessLayer
             }
             catch (Exception ex)
             {
-                Debug.WriteLine("Error: " + ex.Message);
+                Debug.WriteLine($"{DateTime.Now} - "  + "Error: " + ex.Message);
                 throw;
             }
             return connectionRobot;
@@ -140,7 +140,7 @@ namespace BORGWARNER_SERVOPRESS.DataAccessLayer
                 byte[] responseFromRobot = new byte[1025];
                 socket.Receive(responseFromRobot);
                 string response = Encoding.ASCII.GetString(responseFromRobot).Substring(positionStart, length).ToString();
-                Console.WriteLine(response);
+                Console.WriteLine($"{DateTime.Now} - "  + response);
                 return response;
             }
             return string.Empty;
@@ -160,7 +160,7 @@ namespace BORGWARNER_SERVOPRESS.DataAccessLayer
             }
             catch (Exception ex)
             {
-                Debug.WriteLine("Error: " + ex.Message);
+                Debug.WriteLine($"{DateTime.Now} - "  + "Error: " + ex.Message);
                 throw;
             }
 

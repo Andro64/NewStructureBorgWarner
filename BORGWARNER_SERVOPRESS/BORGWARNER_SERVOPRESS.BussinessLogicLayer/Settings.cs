@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using BORGWARNER_SERVOPRESS.DataModel.Views;
 
 namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
 {
@@ -28,6 +29,11 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
         public List<TotalRegistersByTables> getTotalRegByTables()
         {         
             return communication.getTotalRegByTables();
+        }
+        public ModelViewTypeWorkstation getTypeWorksatiton()
+        {
+            int idWS = int.Parse(sessionApp.settings.FirstOrDefault(x=>x.setting.Equals("TYPE_WORKSTATION")).valueSetting);
+            return communication.getModelViewTypeWorkstation_By_Id(idWS).FirstOrDefault();
         }
     }
 }

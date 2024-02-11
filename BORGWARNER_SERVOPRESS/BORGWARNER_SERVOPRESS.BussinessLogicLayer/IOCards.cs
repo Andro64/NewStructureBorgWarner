@@ -108,7 +108,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
                     }
                 }
                 
-                Debug.WriteLine(report);                 
+                Debug.WriteLine($"{DateTime.Now} - "  + report);                 
                 progressScrew.Report(report);
                 cont++;
                 await Task.Delay(5); //Tiempo entre cada lectura 5mls
@@ -152,17 +152,17 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
                         if (_ioCard is IOCardType_M1)
                         {
                             properties[i].SetValue(sessionApp.Sensors_M1, CardInputs[i]);
-                            Debug.WriteLine("Leyendo Sensores ioCard1: " + cont.ToString());
+                            Debug.WriteLine($"{DateTime.Now} - "  + "Leyendo Sensores ioCard1: " + cont.ToString());
                         }
                         if (_ioCard is IOCardType_M2)
                         {
                             properties[i].SetValue(sessionApp.Sensors_M2, CardInputs[i]);
-                            Debug.WriteLine("Leyendo Sensores ioCard2: " + cont.ToString());
+                            Debug.WriteLine($"{DateTime.Now} - "  + "Leyendo Sensores ioCard2: " + cont.ToString());
                         }
                         if (_ioCard is IOCardType_M3)
                         {
                             properties[i].SetValue(sessionApp.Sensors_M3, CardInputs[i]);
-                            Debug.WriteLine("Leyendo Sensores ioCard3: " + cont.ToString());
+                            Debug.WriteLine($"{DateTime.Now} - "  + "Leyendo Sensores ioCard3: " + cont.ToString());
                         }                        
                     }
                 }
