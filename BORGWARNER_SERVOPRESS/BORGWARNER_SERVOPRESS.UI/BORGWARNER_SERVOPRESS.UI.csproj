@@ -233,6 +233,8 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="7-buenas-razones-para-tomar-cerveza.png" />
+    <Resource Include="Malta.jpeg" />
     <Content Include="Resources\AduHid.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

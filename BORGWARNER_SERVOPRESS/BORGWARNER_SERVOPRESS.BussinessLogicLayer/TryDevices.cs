@@ -15,7 +15,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
         public TryDevices(SessionApp _sessionApp)
         {
             sessionApp = _sessionApp;
-            
+            sensorsIO = new SensorsIO(_sessionApp);
         }
 
         Scanner scanner;
@@ -24,16 +24,18 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
         Screws screws;
         ErgoArm ergoArm;
         ScrewDriver screwdriver;
+        SensorsIO sensorsIO;
 
         string serial;
         string resultFIS;
 
         int quantityScrews;
-        public void TryScanner()
+        public string TryScannerLON(eTypeConnection typeScanner)
         {
-            scanner = new Scanner(sessionApp, eTypeConnection.Scan_1);
+            scanner = new Scanner(sessionApp, typeScanner);
             serial = scanner.ScanQR("LON");
-            Debug.WriteLine($"{DateTime.Now} - "  + $"SCANNER 1 LEE CODIGO SERIAL: {serial}");
+            Debug.WriteLine($"{DateTime.Now} - "  + $"Prueba {typeScanner} LEE CODIGO SERIAL: {serial}");
+            return serial;
         }
         public void TryFIS()
         {
@@ -92,6 +94,9 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
         }
         public void TryVisionSystem()
         {
+            sessionApp.PathImageResultFromCamera = @"C:\Users\bas1s\OneDrive\Imágenes\Trabajo\7-buenas-razones-para-tomar-cerveza.png";
+
+            #if !DEBUG
             visionSystem = new VisionSystem(sessionApp);
             if (!visionSystem.FirstInspectionAttempt())
             {
@@ -103,10 +108,31 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
                 visionSystem.getNameImageResultFromCamera();
                 visionSystem.Disconnect();
             }
+            #endif
         }
         public void TryScrewdriver()
         {
 
+        }
+        public void TryStartSensor()
+        {   
+            sensorsIO.startRead();
+        }
+        public void TryEndSensor()
+        {           
+            sensorsIO.endRead();
+        }
+        public void TrySendDataSensorsM1()
+        {
+            sensorsIO.SendDataOutpusM1();
+        }
+        public void TrySendDataSensorsM2()
+        {
+            sensorsIO.SendDataOutpusM2();
+        }
+        public void TrySendDataSensorsM3()
+        {
+            sensorsIO.SendDataOutpusM3();
         }
     }
 }

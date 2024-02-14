@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
+using System.Windows.Shapes;
 
 namespace BORGWARNER_SERVOPRESS.UI
 {
@@ -29,6 +27,46 @@ namespace BORGWARNER_SERVOPRESS.UI
                 else if (control is ComboBox)
                 {                    
                     ((ComboBox)control).SelectedIndex = -1;
+                }
+            }
+        }
+        public void IsReadOnlyControls(List<string> controlNames)
+        {
+            foreach (var controlName in controlNames)
+            {
+                UIElement control = GetControl(controlName);
+
+                if (control is TextBox)
+                {
+                    ((TextBox)control).IsReadOnly = true;
+                }
+                else if (control is RichTextBox)
+                {
+                    ((RichTextBox)control).IsReadOnly = true;
+                }               
+                else if (control is ComboBox)
+                {
+                    ((ComboBox)control).IsReadOnly = true;
+                }
+            }
+        }
+        public void IsNotReadOnlyControls(List<string> controlNames)
+        {
+            foreach (var controlName in controlNames)
+            {
+                UIElement control = GetControl(controlName);
+
+                if (control is TextBox)
+                {
+                    ((TextBox)control).IsReadOnly = false;
+                }
+                else if (control is RichTextBox)
+                {
+                    ((RichTextBox)control).IsReadOnly = false;
+                }
+                else if (control is ComboBox)
+                {
+                    ((ComboBox)control).IsReadOnly = false;
                 }
             }
         }
@@ -77,6 +115,32 @@ namespace BORGWARNER_SERVOPRESS.UI
                 if (control != null)
                 {
                     control.Visibility = Visibility.Collapsed;
+                }
+            }
+        }
+
+        public void ChangeBackgroundColor(SolidColorBrush backgroundColor, List<string> controlNames)
+        {
+            foreach (var controlName in controlNames)
+            {
+                UIElement control = GetControl(controlName);
+
+                if (control != null)
+                {
+                    if (control is Control)
+                    {
+                        ((Control)control).Background = backgroundColor;
+                    }
+                    else if (control is Panel)
+                    {
+                        ((Panel)control).Background = backgroundColor;
+                    }
+                    else if (control is Ellipse)
+                    {
+                        Ellipse ellipse = (Ellipse)control;
+                        ellipse.Fill = backgroundColor;
+                    }
+                    // Puedes agregar más casos aquí para otros tipos de controles
                 }
             }
         }

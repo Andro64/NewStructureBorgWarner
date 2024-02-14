@@ -20,7 +20,7 @@ namespace BORGWARNER_SERVOPRESS.DataModel
         #endregion
 
         #region OutPuts
-        public bool ST01Available { get; set; }
+        public bool STAvailable { get; set; }
         public bool LampCamaraR { get; set; }
         public bool LampCamaraL { get; set; }
         public bool K3 { get; set; }
