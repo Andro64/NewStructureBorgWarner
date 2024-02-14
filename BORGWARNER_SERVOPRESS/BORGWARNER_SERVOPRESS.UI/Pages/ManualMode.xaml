@@ -259,7 +259,7 @@
                 <Button x:Name="Camara_1_triggerInsulator_Btn" Style="{StaticResource BaseButton}" Visibility="Hidden" Content="Insulador" Click="Camara_1_triggerInsulator_Btn_Click" Grid.Column="5"/>
                 <Button x:Name="Camara_1_Exit_Btn" Content="Exit" Style="{StaticResource BaseButton}" Visibility="Hidden" Click="Camara_1_Exit_Btn_Click" Grid.Column="6"/>-->
             </Grid>
-            <Image x:Name="Camara_1_Manual_Image" Grid.Row="1" Grid.ColumnSpan="2" Margin="10" Visibility="Hidden"/>
+            <Image x:Name="Camara_1_Manual_Image" Grid.Row="1" Grid.ColumnSpan="2" Margin="10" Visibility="visible"/>
         </Grid>
     </Grid>
 </Page>

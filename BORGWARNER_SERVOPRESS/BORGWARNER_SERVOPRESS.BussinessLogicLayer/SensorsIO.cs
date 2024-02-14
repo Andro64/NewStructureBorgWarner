@@ -25,28 +25,38 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
         CancellationTokenSource cancellationToken_ioCard3;
         public SensorsIO(SessionApp _sessionApp)
         {
-            sessionApp = _sessionApp;                    
+            sessionApp = _sessionApp;
+            initialize();
         }        
-        public void startRead()
-        {   
+        public void initialize()
+        {
             ioCard_Type_M1 = new IOCards(sessionApp, new IOCardType_M1());
             cancellationToken_ioCard1 = new CancellationTokenSource();
+
+            ioCard_Type_M2 = new IOCards(sessionApp, new IOCardType_M2());
+            cancellationToken_ioCard2 = new CancellationTokenSource();
+
+            ioCard_Type_M3 = new IOCards(sessionApp, new IOCardType_M3());
+            cancellationToken_ioCard3 = new CancellationTokenSource();
+
+            
+        }
+        public void startRead()
+        {   
+            
             Task.Run(async () =>
             {
                 ioCard_Type_M1.getDataInput(cancellationToken_ioCard1.Token);
             }).Wait();
             Debug.WriteLine($"{DateTime.Now} - "  + "Inicia lectura de los sensores ioCard1");
 
-            ioCard_Type_M2 = new IOCards(sessionApp, new IOCardType_M2());
-            cancellationToken_ioCard2 = new CancellationTokenSource();
+            
             Task.Run(async () =>
             {
                 ioCard_Type_M2.getDataInput(cancellationToken_ioCard2.Token);
             }).Wait();
             Debug.WriteLine($"{DateTime.Now} - "  + "Inicia lectura de los sensores ioCard2");
 
-            ioCard_Type_M3 = new IOCards(sessionApp, new IOCardType_M3());
-            cancellationToken_ioCard3 = new CancellationTokenSource();
             Task.Run(async () =>
             {
 
@@ -63,8 +73,19 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
             cancellationToken_ioCard3.Cancel();
             Debug.WriteLine($"{DateTime.Now} - "  + "Termine de leer los sensores ioCard3");
         }
-
-       public bool PalletInStopper()
+        public void SendDataOutpusM1()
+        {
+            ioCard_Type_M1.sendDataOutput();           
+        }
+        public void SendDataOutpusM2()
+        {            
+            ioCard_Type_M2.sendDataOutput();            
+        }
+        public void SendDataOutpusM3()
+        {            
+            ioCard_Type_M3.sendDataOutput();
+        }
+        public bool PalletInStopper()
         {
             return sessionApp.Sensors_M1.PalletatPreStation;
         }

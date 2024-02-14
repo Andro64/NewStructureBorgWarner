@@ -118,6 +118,7 @@
     <Compile Include="Views\MessageBoxService.cs" />
     <Compile Include="Views\RelayCommand.cs" />
     <Compile Include="Views\ViewMain.cs" />
+    <Compile Include="Views\ViewManual.cs" />
     <Compile Include="Views\ViewModelsScrew.cs" />
     <Compile Include="Views\ViewPositionScrew.cs" />
     <Compile Include="Views\ViewRunHistory.cs" />
