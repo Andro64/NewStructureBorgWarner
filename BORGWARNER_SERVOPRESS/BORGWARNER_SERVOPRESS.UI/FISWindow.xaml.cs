@@ -31,11 +31,6 @@ namespace BORGWARNER_SERVOPRESS.UI
 
             viewMain.ShowData();
             viewMain.ShowDate();
-
-            controlNames = new List<string> { "startCycle_btn",  "export_btn", "mn_btn_positions", "positions_separator", "from_fis_textblock" };
-            //pageManager.DisableControls(controlNames);
-            //pageManager.HideControls(controlNames);
-
         }
 
         
@@ -124,8 +119,7 @@ namespace BORGWARNER_SERVOPRESS.UI
         }
 
         private void StopCycle_btn_Click(object sender, RoutedEventArgs e)
-        {
-            pageManager.DisableControls(controlNames);            
+        {                  
             MessageBox.Show("Cerrando ciclos...");
         }
 

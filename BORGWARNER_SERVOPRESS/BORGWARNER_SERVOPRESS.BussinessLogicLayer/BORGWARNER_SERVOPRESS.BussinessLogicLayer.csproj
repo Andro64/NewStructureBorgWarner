@@ -125,7 +125,10 @@
     <Compile Include="Views\ViewSettings.cs" />
     <Compile Include="Views\ViewUsers.cs" />
     <Compile Include="VisionSystem.cs" />
-    <Compile Include="WorkStation_Manual_Type1.cs" />
+    <Compile Include="WorkStation\Workstation.cs" />
+    <Compile Include="WorkStation\WorkstationFactory.cs" />
+    <Compile Include="WorkStation\WorkStation_Automatic_Type1.cs" />
+    <Compile Include="WorkStation\WorkStation_Manual_Type1.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\BORGWARNER_SERVOPRESS.DataAccessLayer\BORGWARNER_SERVOPRESS.DataAccessLayer.csproj">

@@ -179,7 +179,7 @@
                         <Button x:Name="Screw_Scrap" Click="Screw_Scrap_Click" Style="{StaticResource BaseButton}" Content="Tornillo descartado" VerticalAlignment="Top" Grid.Column="5" Grid.ColumnSpan="3" Margin="19.6,39,19.6,0" Grid.RowSpan="2"/>
                         
                         <Label Content="FIS:" HorizontalAlignment="Left" VerticalAlignment="Bottom" Grid.Column="1" Grid.Row="2" Grid.ColumnSpan="2" Margin="0,0,0,38.2" Grid.RowSpan="2"/>
-                        <Ellipse x:Name="Fis_enabled_display" Fill="Lime" Stroke="Gray" Width="20" Height="20" HorizontalAlignment="Left" VerticalAlignment="Top" Grid.Column="1" Grid.Row="3" Margin="0,0.2,0,0"/>
+                        <Ellipse x:Name="Fis_enabled_display" Fill="Aqua" Stroke="Gray" Width="20" Height="20" HorizontalAlignment="Left" VerticalAlignment="Top" Grid.Column="1" Grid.Row="3" Margin="0,0.2,0,0"/>
 
                         <Label x:Name="from_fis_lbl" Content="From:" HorizontalAlignment="Left" VerticalAlignment="Bottom" Grid.Column="3" Grid.Row="2" Grid.ColumnSpan="2" Margin="19.8,0,0,38.2" Grid.RowSpan="2"/>
                         <TextBox x:Name="from_fis_textblock" Style="{StaticResource BaseTextBox}" VerticalAlignment="Top" Height="auto" Grid.Column="3" Grid.Row="3" Grid.ColumnSpan="3" Margin="19.8,0.2,19.4,0" />

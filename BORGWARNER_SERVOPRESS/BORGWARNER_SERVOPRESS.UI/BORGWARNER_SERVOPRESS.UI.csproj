@@ -235,6 +235,7 @@
   <ItemGroup>
     <Resource Include="7-buenas-razones-para-tomar-cerveza.png" />
     <Resource Include="Malta.jpeg" />
+    <Resource Include="BW.png" />
     <Content Include="Resources\AduHid.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

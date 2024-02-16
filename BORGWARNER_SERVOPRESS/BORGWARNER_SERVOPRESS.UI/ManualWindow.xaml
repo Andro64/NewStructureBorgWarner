@@ -410,7 +410,7 @@
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
                             <Button x:Name="Camara_1_Btn" Style="{StaticResource BaseButton}"  Content="Capturar Imagen" Click="Camara_1_Btn_Click" Grid.Column="0" Grid.Row="2"/>
-                            <Image x:Name="Camara_1_Manual_Image" Grid.Row="3" Grid.ColumnSpan="4" Margin="10" Visibility="visible" Source="Malta.jpeg"/>
+                            <Image x:Name="Camara_1_Manual_Image" Grid.Row="3" Grid.ColumnSpan="4" Margin="10" Visibility="visible" Source="BW.png"/>
                         </Grid>
                     </TabItem>
                 </TabControl>
