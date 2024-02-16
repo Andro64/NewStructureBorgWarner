@@ -99,19 +99,31 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.Views
         public string UserName
         {
             get { return _userName; }
-            set { _userName = value; }
+            set
+            {
+                _userName = value;
+                OnPropertyChanged(nameof(UserName));
+            }
         }
         private string _profile;
         public string Profile
         {
             get { return _profile; }
-            set { _profile = value; }
+            set
+            {
+                _profile = value;
+                OnPropertyChanged(nameof(Profile));
+            }
         }
         private string _nameWorksation;
         public string NameWorksation
         {
             get { return _nameWorksation; }
-            set { _nameWorksation = value; }
+            set
+            {
+                _nameWorksation = value;
+                OnPropertyChanged(nameof(NameWorksation));
+            }
         }
 
         public ICommand SaveCommand { get; private set; }
@@ -174,7 +186,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.Views
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"{DateTime.Now} - "  + ex.Message);
+                Debug.WriteLine($"{DateTime.Now} - " + ex.Message);
             }
         }
         private void populateTypeWorkstation()
@@ -207,6 +219,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.Views
             if (result == MessageBoxResult.OK)
             {
                 CommunicationSettings.Ins_Upd_ModelViewSettings(RegisterSelected);
+                UpdateSession();
                 cleanControls();
                 Read(PageSelected);
             }
@@ -233,6 +246,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.Views
             if (result == MessageBoxResult.OK)
             {
                 CommunicationSettings.Ins_Upd_ModelViewSettings(RegisterSelected);
+                UpdateSession();
                 cleanControls();
                 Read(PageSelected);
             }
@@ -249,6 +263,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.Views
             if (result == MessageBoxResult.OK)
             {
                 CommunicationSettings.Del_ModelViewSettings(RegisterSelected);
+                UpdateSession();
                 cleanControls();
                 Read(PageSelected);
             }
@@ -270,6 +285,12 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.Views
             return true;
         }
 
+        private void UpdateSession()
+        {
+            sessionApp.settings = settingsGeneral.getSettings();
+            sessionApp.typeWorkstation = settingsGeneral.getTypeWorksatiton();
+            ShowData();
+        }
         public void ShowDate()
         {
             var timer = new DispatcherTimer

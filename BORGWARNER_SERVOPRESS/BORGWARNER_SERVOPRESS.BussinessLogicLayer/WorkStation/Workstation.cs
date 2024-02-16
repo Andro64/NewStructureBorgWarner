@@ -15,12 +15,8 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
             return $"Workstation type: {Type}";
         }
 
-        public void CancelProcess()
-        {
-
-        }
-        public async Task StartProcess()
-        {
-        }
+        public abstract void CancelProcess();        
+        public abstract Task StartProcess();
+        
     }
 }

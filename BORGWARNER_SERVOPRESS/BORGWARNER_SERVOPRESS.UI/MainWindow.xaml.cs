@@ -18,27 +18,19 @@ namespace BORGWARNER_SERVOPRESS.UI
         private SessionApp sessionApp;
         private PageManager pageManager;
         private ViewMain viewMain;
-        List<string> controlNames;
-        //private WorkStation_Manual_Type1 workStation_Manual_Type1;
+        List<string> controlNames;        
         private Workstation workstation;
 
         public MainWindow(SessionApp _sessionApp)
         {
             sessionApp = _sessionApp;
 
-            //WorkstationFactory.injectionSession(sessionApp);
-            //Workstation WSAutoType1 = WorkstationFactory.CreateWorkstation("AutoTipo1");
-            //MessageBox.Show(WSAutoType1.Type);
-
             WorkstationFactory.injectionSession(sessionApp);
-            Workstation workstation = WorkstationFactory.CreateWorkstation("ManualTipo1");
-            MessageBox.Show(workstation.Type);
-            workstation.StartProcess();
-
-            //workStation_Manual_Type1 = new WorkStation_Manual_Type1(sessionApp);
+            workstation = WorkstationFactory.CreateWorkstation();
+            MessageBox.Show("La estacion de trabajo es: " + workstation.Type);            
+            
             InitializeComponent();
             initialize();
-
         }
 
         public void initialize()
@@ -46,11 +38,9 @@ namespace BORGWARNER_SERVOPRESS.UI
             viewMain = new ViewMain(sessionApp);
             DataContext = viewMain.GetModel();
             pageManager = new PageManager(this);
-
-            
+                        
             viewMain.ShowData();
             viewMain.ShowDate();
-
         }
 
 
@@ -149,14 +139,10 @@ namespace BORGWARNER_SERVOPRESS.UI
 
             sessionApp.TaksRunExecuting = true;
             try
-            {
-                
+            {                
                 viewMain.StartTimer();
-                workstation.StartProcess();
-                //workStation_Manual_Type1.StartProcess();
-                //workStation_Manual_Type1.MensajesPantalla();
-                EneableControlsWhenEndTaskRun();
-                //Task.Run(() => WaitingEndTaskRun().GetAwaiter().GetResult());
+                workstation.StartProcess();               
+                EneableControlsWhenEndTaskRun();                
             }
             catch (Exception ex)
             {
@@ -164,16 +150,14 @@ namespace BORGWARNER_SERVOPRESS.UI
             }
             finally
             {
-                //pageManager.EnableControls(new List<string> { "mn_btn_run", "mn_btn_fis", "mn_btn_history", "mn_btn_modelos_screw", "mn_btn_manual", "mn_btn_positions" });
+                
             }
         }
 
         private void StopCycle_btn_Click(object sender, RoutedEventArgs e)
         {
             viewMain.StopTimer();
-            workstation.CancelProcess();
-            //workStation_Manual_Type1.CancelProcess();
-            //MessageBox.Show("Cerrando ciclos...");
+            workstation.CancelProcess();          
         }
 
         private void Screw_Scrap_Click(object sender, RoutedEventArgs e)
