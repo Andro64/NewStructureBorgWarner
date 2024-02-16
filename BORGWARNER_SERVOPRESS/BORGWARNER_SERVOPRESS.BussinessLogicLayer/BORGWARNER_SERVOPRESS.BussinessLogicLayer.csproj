@@ -128,7 +128,14 @@
     <Compile Include="WorkStation\Workstation.cs" />
     <Compile Include="WorkStation\WorkstationFactory.cs" />
     <Compile Include="WorkStation\WorkStation_Automatic_Type1.cs" />
+    <Compile Include="WorkStation\WorkStation_Automatic_Type2.cs" />
+    <Compile Include="WorkStation\WorkStation_Automatic_Type3.cs" />
+    <Compile Include="WorkStation\WorkStation_Automatic_Type4.cs" />
     <Compile Include="WorkStation\WorkStation_Manual_Type1.cs" />
+    <Compile Include="WorkStation\WorkStation_Manual_Type17A.cs" />
+    <Compile Include="WorkStation\WorkStation_Manual_Type17B.cs" />
+    <Compile Include="WorkStation\WorkStation_Manual_Type17C.cs" />
+    <Compile Include="WorkStation\WorkStation_Manual_Type2.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\BORGWARNER_SERVOPRESS.DataAccessLayer\BORGWARNER_SERVOPRESS.DataAccessLayer.csproj">

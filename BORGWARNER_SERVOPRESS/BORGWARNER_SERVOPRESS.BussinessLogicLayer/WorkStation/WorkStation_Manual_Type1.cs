@@ -11,7 +11,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
 {
     public class WorkStation_Manual_Type1 : Workstation
     {
-        public override string Type => "Manual Tipo 1";
+        public override string Type => "(◕‿◕) \n Manual Tipo 1";
 
         SensorsIO sensorsIO;
         SessionApp sessionApp;
@@ -133,7 +133,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
             });
         }
 
-        public void CancelProcess()
+        public override void CancelProcess()
         {
             showMessageAndImage("El proceso se ha finalizado a petición del usuario");
             sessionApp.TaksRunExecuting = false;
@@ -155,7 +155,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
             }
         }
 
-        public async Task StartProcess()
+        public override async Task StartProcess()
         {
             Scanner scanner;
             CommunicationFIS fIS;
