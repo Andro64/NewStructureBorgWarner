@@ -131,8 +131,7 @@ namespace BORGWARNER_SERVOPRESS.UI
         }
 
         private void StopCycle_btn_Click(object sender, RoutedEventArgs e)
-        {
-            pageManager.DisableControls(controlNames);            
+        {                   
             MessageBox.Show("Cerrando ciclos...");
         }
 

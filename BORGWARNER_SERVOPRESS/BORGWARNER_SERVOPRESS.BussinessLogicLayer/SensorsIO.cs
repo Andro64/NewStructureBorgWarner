@@ -1,15 +1,8 @@
 ﻿using BORGWARNER_SERVOPRESS.DataModel;
-using BORGWARNER_SERVOPRESS.DataAccessLayer;
 using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
 using System.Diagnostics;
-using System.Linq;
-using System.Net.Sockets;
-using System.Text;
-using System.Threading.Tasks;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
 {
@@ -87,18 +80,22 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
         }
         public bool PalletInStopper()
         {
+            isWaiting = true;
             return sessionApp.Sensors_M1.PalletatPreStation;
         }
         public bool ExtendedPalletClamp()
         {
+            isWaiting = true;
             return sessionApp.Sensors_M1.PalletatPreStation;
         }
         public bool PlacedHousing()
         {
+            isWaiting = true;
             return sessionApp.Sensors_M1.PalletatPreStation;
         }
         public bool UltraCapBoardPadinPlace()
         {
+            isWaiting = true;
             return sessionApp.Sensors_M1.OptoBtn;
         }
         public bool UCBdConnected_RoutingHarness_PlaceInHousing()
@@ -133,16 +130,37 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
         {
             sessionApp.Sensors_M1.ScrewDispenser = true;
             ioCard_Type_M1.sendDataOutput();
-        }        
-        public void WaitingResponse(bool sensorToCheck)
+        }
+
+        private bool isWaiting = true;
+        public async Task WaitingResponse(CancellationTokenSource cancellationTokenSource, bool sensorToCheck)
         {
-            while(!sensorToCheck)
+            //while(!sensorToCheck)
+            //{
+            //    Task.Run(async () =>
+            //    {
+            //        await Task.Delay(5);
+            //    }).Wait();
+            //}
+
+            await Task.Run(async () =>
             {
-                Task.Run(async () =>
+                while (!sensorToCheck && isWaiting)
                 {
+                    cancellationTokenSource.Token.ThrowIfCancellationRequested();
+                    Debug.WriteLine("Esperando......");
                     await Task.Delay(5);
-                }).Wait();
+                }
+            }, cancellationTokenSource.Token);
+            if (!sensorToCheck)
+            {
+                Debug.WriteLine("Ya no estoy esperando.");
+                //isWaiting = true;
             }
+        }
+        public void StopWaiting()
+        {
+            isWaiting = false;
         }
 
     }

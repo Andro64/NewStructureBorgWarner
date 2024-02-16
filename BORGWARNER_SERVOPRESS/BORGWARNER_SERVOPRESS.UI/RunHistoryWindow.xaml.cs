@@ -33,7 +33,7 @@ namespace BORGWARNER_SERVOPRESS.UI
 
           
 
-            controlNames = new List<string> { "startCycle_btn",  "export_btn", "mn_btn_positions", "positions_separator", "from_fis_textblock" };
+            
            
 
         }

@@ -1,10 +1,12 @@
 ﻿using BORGWARNER_SERVOPRESS.BussinessLogicLayer;
 using BORGWARNER_SERVOPRESS.BussinessLogicLayer.Views;
+using BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation;
 using BORGWARNER_SERVOPRESS.DataModel;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Media;
 
 namespace BORGWARNER_SERVOPRESS.UI
 {
@@ -17,11 +19,26 @@ namespace BORGWARNER_SERVOPRESS.UI
         private PageManager pageManager;
         private ViewMain viewMain;
         List<string> controlNames;
+        //private WorkStation_Manual_Type1 workStation_Manual_Type1;
+        private Workstation workstation;
+
         public MainWindow(SessionApp _sessionApp)
         {
             sessionApp = _sessionApp;
+
+            //WorkstationFactory.injectionSession(sessionApp);
+            //Workstation WSAutoType1 = WorkstationFactory.CreateWorkstation("AutoTipo1");
+            //MessageBox.Show(WSAutoType1.Type);
+
+            WorkstationFactory.injectionSession(sessionApp);
+            Workstation workstation = WorkstationFactory.CreateWorkstation("ManualTipo1");
+            MessageBox.Show(workstation.Type);
+            workstation.StartProcess();
+
+            //workStation_Manual_Type1 = new WorkStation_Manual_Type1(sessionApp);
             InitializeComponent();
             initialize();
+
         }
 
         public void initialize()
@@ -34,7 +51,6 @@ namespace BORGWARNER_SERVOPRESS.UI
             viewMain.ShowData();
             viewMain.ShowDate();
 
-            controlNames = new List<string> { "startCycle_btn", "export_btn", "mn_btn_positions", "positions_separator", "from_fis_textblock" };
         }
 
 
@@ -119,19 +135,26 @@ namespace BORGWARNER_SERVOPRESS.UI
             });
 
             viewMain.StopTimer();
-            pageManager.EnableControls(new List<string> { "mn_btn_run", "mn_btn_fis", "mn_btn_history", "mn_btn_modelos_screw", "mn_btn_manual", "mn_btn_positions" });
+            pageManager.EnableControls(new List<string> { "startCycle_btn", "mn_btn_run", "mn_btn_fis", "mn_btn_history", "mn_btn_modelos_screw", "mn_btn_manual", "mn_btn_positions" });
+            pageManager.DisableControls(new List<string> { "stopCycle_btn" });
+            pageManager.ChangeBackgroundColor(Brushes.Aqua, new List<string> { "Fis_enabled_display" });
         }
+        
         
         private void StartCycle_btn_Click(object sender, RoutedEventArgs e)
         {
-            pageManager.DisableControls(new List<string> { "mn_btn_run", "mn_btn_fis", "mn_btn_history", "mn_btn_modelos_screw", "mn_btn_manual", "mn_btn_positions" });
+            pageManager.DisableControls(new List<string> { "startCycle_btn", "mn_btn_run", "mn_btn_fis", "mn_btn_history", "mn_btn_modelos_screw", "mn_btn_manual", "mn_btn_positions" });
+            pageManager.EnableControls(new List<string> { "stopCycle_btn" });
+            pageManager.ChangeBackgroundColor(Brushes.Red, new List<string> { "Fis_enabled_display" });
+
             sessionApp.TaksRunExecuting = true;
             try
             {
-                WorkStation_Manual_Type1 workStation_Manual_Type1 = new WorkStation_Manual_Type1(sessionApp);
+                
                 viewMain.StartTimer();
-                //workStation_Manual_Type1.start();
-                workStation_Manual_Type1.MensajesPantalla();
+                workstation.StartProcess();
+                //workStation_Manual_Type1.StartProcess();
+                //workStation_Manual_Type1.MensajesPantalla();
                 EneableControlsWhenEndTaskRun();
                 //Task.Run(() => WaitingEndTaskRun().GetAwaiter().GetResult());
             }
@@ -147,8 +170,10 @@ namespace BORGWARNER_SERVOPRESS.UI
 
         private void StopCycle_btn_Click(object sender, RoutedEventArgs e)
         {
-            pageManager.DisableControls(controlNames);
-            MessageBox.Show("Cerrando ciclos...");
+            viewMain.StopTimer();
+            workstation.CancelProcess();
+            //workStation_Manual_Type1.CancelProcess();
+            //MessageBox.Show("Cerrando ciclos...");
         }
 
         private void Screw_Scrap_Click(object sender, RoutedEventArgs e)

@@ -29,7 +29,7 @@ namespace BORGWARNER_SERVOPRESS.UI
             //Se carga el modelo
             DataContext = ViewPositionScrew;
             pageManager = new PageManager(this);          
-            controlNames = new List<string> { "startCycle_btn",  "export_btn", "mn_btn_positions", "positions_separator", "from_fis_textblock" };           
+            
 
         }        
        
