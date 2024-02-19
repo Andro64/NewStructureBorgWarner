@@ -16,11 +16,11 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.Views
     public class ViewSettings : INotifyPropertyChanged
     {
         private SessionApp sessionApp;
-        private Settings settingsGeneral;
-        private ObservableCollection<ModelViewSettings> _ResultSettings;
+        private Settings settingsGeneral;        
         private ModelViewSettings _registerSelected;
         private CommunicationSettings CommunicationSettings;
         private IMessageBoxService messageBoxService;
+        private ObservableCollection<ModelViewSettings> _ResultSettings;
         public ObservableCollection<ModelViewSettings> ResultSettings
         {
             get { return _ResultSettings; }
@@ -33,7 +33,21 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.Views
                 }
             }
         }
-        public ObservableCollection<int> lstComboPages { get; set; } = new ObservableCollection<int>();
+        //public ObservableCollection<int> lstComboPages { get; set; } = new ObservableCollection<int>();
+        private ObservableCollection<int> _lstComboPages;
+        public ObservableCollection<int> lstComboPages
+        {
+            get { return _lstComboPages; }
+            set 
+            {
+                if(_lstComboPages != value)
+                {
+                    _lstComboPages = value;                   
+                    OnPropertyChanged(nameof(lstComboPages));                   
+                }
+            }
+        }
+
         public ObservableCollection<ModelViewTypeWorkstation> lstTypeWorkstation { get; set; } = new ObservableCollection<ModelViewTypeWorkstation>();
         public ModelViewSettings RegisterSelected
         {
@@ -126,12 +140,23 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.Views
             }
         }
 
+        private int _TypeWorksationSelected;
+        public int TypeWorksationSelected
+        {
+            get { return _TypeWorksationSelected; }
+            set
+            {
+                _TypeWorksationSelected = value;
+                OnPropertyChanged(nameof(TypeWorksationSelected));
+            }
+        }
+
         public ICommand SaveCommand { get; private set; }
-        public ICommand CreateCommand { get; private set; }
-        public ICommand UpdateCommand { get; private set; }
+        public ICommand CleanCommand { get; private set; }        
         public ICommand DeleteCommand { get; private set; }
         public ICommand ReadCommand { get; private set; }
         public ICommand SelectComboPageCommand { get; }
+        public ICommand SelectComboTypeWorkstationCommand { get; }
 
         public ViewSettings(SessionApp _sessionApp, IMessageBoxService messageBoxService)
         {
@@ -139,16 +164,18 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.Views
             settingsGeneral = new Settings(sessionApp);
 
             SaveCommand = new RelayCommand<object>(Save, CanYouSave);
-            CreateCommand = new RelayCommand<object>(Create, CanYouCreate);
-            ReadCommand = new RelayCommand<object>(Read, CanYouRead);
-            UpdateCommand = new RelayCommand<object>(Update, CanYouUpdate);
+            CleanCommand = new RelayCommand<object>(Clean, CanYouClean);
+            ReadCommand = new RelayCommand<object>(Read, CanYouRead);            
             DeleteCommand = new RelayCommand<object>(Delete, CanYouDelete);
             SelectComboPageCommand = new RelayCommand<int>(Page_SelectionChanged);
+            SelectComboTypeWorkstationCommand = new RelayCommand<int>(SaveTypeWS_SelectionChanged, CanYouChange);
 
 
             ResultSettings = new ObservableCollection<ModelViewSettings>();
             RegisterSelected = new ModelViewSettings();
             CommunicationSettings = new CommunicationSettings(sessionApp);
+            lstComboPages = new ObservableCollection<int>();
+            
 
             this.messageBoxService = messageBoxService;
 
@@ -175,12 +202,12 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.Views
         {
             try
             {
-                lstComboPages = new ObservableCollection<int>();
-                foreach (var page in sessionApp.lstTotalRegistersByTables.FirstOrDefault(x => x.NameTable.Equals("settings")).Pages)
-                {
-                    lstComboPages.Add(page);
-                }
 
+                lstComboPages = new ObservableCollection<int>();                
+                foreach (var page in sessionApp.lstTotalRegistersByTables.FirstOrDefault(x => x.NameTable.Equals("settings")).Pages)
+                {                    
+                    lstComboPages.Add(page);
+                }                
                 total_pages_grid = sessionApp.lstTotalRegistersByTables.FirstOrDefault(x => x.NameTable.Equals("settings")).NumPages;
                 PageSelected = 1;
             }
@@ -213,6 +240,31 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.Views
         {
             Read(pageSelected);
         }
+        private void SaveTypeWS_SelectionChanged(int TypeWSSelected)
+        {
+            string workstationPrevious = sessionApp.typeWorkstation.description;
+            if (sessionApp.typeWorkstation.id != TypeWSSelected)
+            {
+                MessageBoxResult result = messageBoxService.Show("¿Está seguro que desea cambiar el tipo de Estación de Trabajo?", "Confirmación", MessageBoxButton.OKCancel, eMessageBoxIcon.Warning);
+                if (result == MessageBoxResult.OK)
+                {
+                    //var modelSettingsTypeWS = sessionApp.settings.FirstOrDefault(x => x.setting.Equals("TYPE_WORKSTATION"));
+                    //ModelViewSettings modelViewSettings = new ModelViewSettings()
+                    //{
+                    //    id = modelSettingsTypeWS.id,
+                    //    setting = modelSettingsTypeWS.setting,
+                    //    valueSetting = TypeWSSelected.ToString()
+                    //};
+                    //CommunicationSettings.Ins_Upd_ModelViewSettings(modelViewSettings);
+                    CommunicationSettings.Upd_Workstation(TypeWSSelected);
+                    UpdateSession();
+                    cleanControls();
+                    InitializeGrid();
+                    Read(PageSelected);
+                    Debug.WriteLine($"Se ha cambiado de Workstation: {workstationPrevious} ... a Workstation: {sessionApp.typeWorkstation.description}");
+                }
+            }
+        }
         private void Save(object parameter)
         {
             MessageBoxResult result = messageBoxService.Show("¿Está seguro de guardar la información?", "Confirmación", MessageBoxButton.OKCancel, eMessageBoxIcon.Information);
@@ -221,42 +273,34 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.Views
                 CommunicationSettings.Ins_Upd_ModelViewSettings(RegisterSelected);
                 UpdateSession();
                 cleanControls();
-                Read(PageSelected);
+                InitializeGrid();
+                Read(PageSelected);                
+                InitializeModel();
             }
         }
 
         private bool CanYouSave(object parameter)
         {
-            return RegisterSelected != null && RegisterSelected.IsValid(); // Agrega lógica de validación si es necesario
+            return RegisterSelected != null && RegisterSelected.IsValid();
         }
-        private void Create(object parameter)
+        private void InitializeModel()
+        {
+            //Inicializamos el modelo para activar el boton Guardar
+            RegisterSelected = new ModelViewSettings();
+        }
+        private void Clean(object parameter)
         {
             cleanControls();
             Read(1);
+            InitializeModel();
         }
 
-        private bool CanYouCreate(object parameter)
-        {
-            return true;
-            //return RegisterSelected != null && RegisterSelected.IsValid(); // Agrega lógica de validación si es necesario
+        private bool CanYouClean(object parameter)
+        {   
+            // Agrega lógica de validación si es necesario
+            return true;            
         }
-        private void Update(object parameter)
-        {
-            MessageBoxResult result = messageBoxService.Show("¿Está seguro de actualizar la información?", "Confirmación", MessageBoxButton.OKCancel, eMessageBoxIcon.Information);
-            if (result == MessageBoxResult.OK)
-            {
-                CommunicationSettings.Ins_Upd_ModelViewSettings(RegisterSelected);
-                UpdateSession();
-                cleanControls();
-                Read(PageSelected);
-            }
-        }
-
-        private bool CanYouUpdate(object parameter)
-        {
-            return RegisterSelected != null && RegisterSelected.IsValid(); // Agrega lógica de validación si es necesario
-        }
-
+       
         private void Delete(object parameter)
         {
             MessageBoxResult result = messageBoxService.Show("¿Está seguro de borrar la información?", "Confirmación", MessageBoxButton.OKCancel, eMessageBoxIcon.Information);
@@ -277,7 +321,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.Views
         private void Read(object parameter)
         {
             ResultSettings.Clear();
-            ResultSettings = new ObservableCollection<ModelViewSettings>(CommunicationSettings.getModelViewSettings(PageSelected));
+            ResultSettings = new ObservableCollection<ModelViewSettings>(CommunicationSettings.getModelViewSettings(PageSelected).Where(x=>x.setting != "TYPE_WORKSTATION"));
         }
 
         private bool CanYouRead(object parameter)
@@ -285,10 +329,15 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.Views
             return true;
         }
 
+        private bool CanYouChange(int parameter)
+        {
+            return true;
+        }
         private void UpdateSession()
         {
-            sessionApp.settings = settingsGeneral.getSettings();
             sessionApp.typeWorkstation = settingsGeneral.getTypeWorksatiton();
+            sessionApp.settings = settingsGeneral.getSettings(sessionApp.typeWorkstation.id);            
+            sessionApp.connectionsWorkStation = settingsGeneral.getConnections(sessionApp.typeWorkstation.id);
             ShowData();
         }
         public void ShowDate()

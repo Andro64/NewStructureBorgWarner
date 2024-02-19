@@ -1,15 +1,11 @@
-﻿using BORGWARNER_SERVOPRESS.DataModel;
-using BORGWARNER_SERVOPRESS.BussinessLogicLayer;
-using System;
-using System.Collections.Generic;
+﻿using BORGWARNER_SERVOPRESS.BussinessLogicLayer;
+using BORGWARNER_SERVOPRESS.DataModel;
 using System.Configuration;
-using System.Data;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Reflection;
-using System.IO;
 using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Windows;
 
 namespace BORGWARNER_SERVOPRESS.UI
 {
@@ -27,18 +23,34 @@ namespace BORGWARNER_SERVOPRESS.UI
             sessionApp.connStr = ConfigurationManager.ConnectionStrings["conn_str"].ToString();
             
             //Obtiene la información de configuracion de la BD
-            BussinessLogicLayer.Settings settingsGeneral = new BussinessLogicLayer.Settings(sessionApp);
-            sessionApp.settings = settingsGeneral.getSettings();
-            sessionApp.connectionsWorkStation = settingsGeneral.getConnections();
+            BussinessLogicLayer.Settings settingsGeneral = new BussinessLogicLayer.Settings(sessionApp);            
             sessionApp.typeWorkstation = settingsGeneral.getTypeWorksatiton();
-            Logger.SetLogFilePath(sessionApp.settings.FirstOrDefault(x=> x.setting.Equals("Path_LOG")).valueSetting);
+            sessionApp.settings = settingsGeneral.getSettings(sessionApp.typeWorkstation.id);
+            sessionApp.connectionsWorkStation = settingsGeneral.getConnections(sessionApp.typeWorkstation.id);
+
+            if (sessionApp.settings.FirstOrDefault(x => x.setting.Equals("Path_LOG")) != null)
+            {
+                Logger.SetLogFilePath(sessionApp.settings.FirstOrDefault(x => x.setting.Equals("Path_LOG")).valueSetting);
+                
+            }
+            else
+            {
+                MessageBox.Show("La configuracion \"Path_LOG\" es requerida para el correcto funcionamiento de la aplicación");
+            }
+            if(sessionApp.settings.FirstOrDefault(x => x.setting.Equals("GRID_Number_Reg_by_Page")) == null)
+            {
+                MessageBox.Show("La configuracion \"GRID_Number_Reg_by_Page\" es requerida para el correcto funcionamiento de la aplicación");
+            }
+
+
             Logger.Instance.Log("Iniciando sistema");
             Debug.WriteLine("BORGWARNER_SERVOPRESS iniciado...");
             
             Assembly exec = Assembly.GetExecutingAssembly();
             string pathExec = exec.Location;
             sessionApp.PathDirectoryResourcesOfThisProyect = Path.GetDirectoryName(pathExec) + @"\Resources\";
-            sessionApp.PathOperationalImages = sessionApp.PathDirectoryResourcesOfThisProyect + @"Operational_Images\";
+            string pathWorkstationImage = settingsGeneral.GetImageFolderName(sessionApp.typeWorkstation.description);
+            sessionApp.PathOperationalImages = sessionApp.PathDirectoryResourcesOfThisProyect + @"Operational_Images\" + pathWorkstationImage;
             sessionApp.user = new User();
 
             //Inicial la ventana Login

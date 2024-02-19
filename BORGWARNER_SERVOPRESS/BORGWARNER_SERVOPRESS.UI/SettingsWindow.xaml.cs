@@ -102,7 +102,7 @@ namespace BORGWARNER_SERVOPRESS.UI
         #endregion
 
 
-        private void cboPage_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        private void cboPage_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (sender is ComboBox comboBox)
             {   
@@ -110,14 +110,24 @@ namespace BORGWARNER_SERVOPRESS.UI
             }
         }
 
-        private void btnToAdd_Click(object sender, RoutedEventArgs e)
+        private void btnToClean_Click(object sender, RoutedEventArgs e)
         {
             pageManager.CleanControls(new List<string> { "txtPartNumber", "txtSerial", "txtNamemodel", "txtDescription", "txtQuantityScrews" });
+            pageManager.EnableControls(new List<string> { "btnToSave" });
         }
 
         private void btnToCancel_Click(object sender, RoutedEventArgs e)
         {
             pageManager.CleanControls(new List<string> { "txtPartNumber", "txtSerial", "txtNamemodel", "txtDescription", "txtQuantityScrews" });
+            pageManager.EnableControls(new List<string> { "btnToSave" });
+        }
+
+        private void cbo_Type_Workstation_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (sender is ComboBox comboBox)
+            {                
+                (DataContext as ViewSettings)?.SelectComboTypeWorkstationCommand.Execute(comboBox.SelectedValue);                
+            }
         }
     }
 }

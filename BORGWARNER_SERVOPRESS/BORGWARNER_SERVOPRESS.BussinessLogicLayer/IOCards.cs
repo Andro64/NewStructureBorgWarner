@@ -43,15 +43,18 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
 
             if (_ioCard is IOCardType_M1)
             {
-                NumSerial1 = sessionApp.settings.FirstOrDefault(x => x.setting.Contains("ADU_SERIAL_1")).valueSetting;                
+                NumSerial1 = sessionApp.settings.FirstOrDefault(x => x.setting.Contains("ADU_SERIAL_1")) != null ?
+                    sessionApp.settings.FirstOrDefault(x => x.setting.Contains("ADU_SERIAL_1")).valueSetting : string.Empty;                
             }
             if (_ioCard is IOCardType_M2)
             {
-                NumSerial2 = sessionApp.settings.FirstOrDefault(x => x.setting.Contains("ADU_SERIAL_2")).valueSetting;                
+                NumSerial2 = sessionApp.settings.FirstOrDefault(x => x.setting.Contains("ADU_SERIAL_2")) != null ?
+                    sessionApp.settings.FirstOrDefault(x => x.setting.Contains("ADU_SERIAL_2")).valueSetting : string.Empty;                
             }
             if (_ioCard is IOCardType_M3)
             {
-                NumSerial3 = sessionApp.settings.FirstOrDefault(x => x.setting.Contains("ADU_SERIAL_3")).valueSetting;                
+                NumSerial3 = sessionApp.settings.FirstOrDefault(x => x.setting.Contains("ADU_SERIAL_3")) != null ?
+                    sessionApp.settings.FirstOrDefault(x => x.setting.Contains("ADU_SERIAL_3")).valueSetting: string.Empty;                
             }
             
         }

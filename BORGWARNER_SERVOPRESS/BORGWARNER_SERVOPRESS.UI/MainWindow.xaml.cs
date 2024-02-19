@@ -157,6 +157,7 @@ namespace BORGWARNER_SERVOPRESS.UI
         private void StopCycle_btn_Click(object sender, RoutedEventArgs e)
         {
             viewMain.StopTimer();
+            pageManager.ChangeBackgroundColor(Brushes.Aqua, new List<string> { "Fis_enabled_display" });
             workstation.CancelProcess();          
         }
 

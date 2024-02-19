@@ -19,6 +19,31 @@ namespace BORGWARNER_SERVOPRESS.DataAccessLayer
             sessionApp = _sessionApp;
         }
 
+
+        public ModelViewTypeWorkstation getWorkstation()
+        {
+            List<ModelViewTypeWorkstation> WorkStations = new List<ModelViewTypeWorkstation>();
+            try
+            {
+                MYSQL_DB mYSQL = new MYSQL_DB(sessionApp.connStr);
+                DataTable resultData = mYSQL.ExecuteSP("SP_GET_WORKSTATION");
+                WorkStations = resultData.AsEnumerable().Select(row =>
+                new ModelViewTypeWorkstation
+                {
+                    id = row.Field<int>("id"),
+                    description = row.Field<string>("description")
+                }).ToList();
+
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"{DateTime.Now} - " + ex.Message);
+                throw;
+            }
+            return WorkStations.FirstOrDefault();
+
+        }
+
         public List<Settings> getSettings()
         {
             List<Settings> lstSettings = new List<Settings>();
@@ -38,6 +63,33 @@ namespace BORGWARNER_SERVOPRESS.DataAccessLayer
             catch (Exception ex)
             {
                 Debug.WriteLine($"{DateTime.Now} - "  + ex.Message);
+                throw;
+            }
+            return lstSettings;
+
+        }
+
+        public List<Settings> getSettings(int TypeWorkstation)
+        {
+            List<Settings> lstSettings = new List<Settings>();
+            try
+            {
+                MYSQL_DB mYSQL = new MYSQL_DB(sessionApp.connStr);
+                DataTable resultData = mYSQL.ExecuteSP("SP_GET_SETTINGS_BY_WS", new MySqlParameter[] {
+                    new MySqlParameter("p_id_TypeWorkstation", MySqlDbType.Int32) { Value = TypeWorkstation } });
+                lstSettings = resultData.AsEnumerable().Select(row =>
+                new Settings
+                {
+                    id_TypeWorkstation = row.Field<int>("id_TypeWorkstation"),
+                    id = row.Field<int>("id"),
+                    setting = row.Field<string>("setting"),
+                    valueSetting = row.Field<string>("value_setting")
+                }).ToList();
+
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"{DateTime.Now} - " + ex.Message);
                 throw;
             }
             return lstSettings;
@@ -70,8 +122,38 @@ namespace BORGWARNER_SERVOPRESS.DataAccessLayer
                 throw;
             }
             return lstconnectionsRobots;
-
         }
+
+        public List<ConnectionWorkStation> getConnectionsDevices(int TypeWorkstation)
+        {
+            List<ConnectionWorkStation> lstconnectionsRobots = new List<ConnectionWorkStation>();
+            try
+            {
+                MYSQL_DB mYSQL = new MYSQL_DB(sessionApp.connStr);
+                DataTable resultData = mYSQL.ExecuteSP("SP_GET_CONNECTIONS_BY_WS", new MySqlParameter[] {
+                    new MySqlParameter("p_id_TypeWorkstation", MySqlDbType.Int32) { Value = TypeWorkstation } });
+                lstconnectionsRobots = resultData.AsEnumerable().Select(row =>
+                new ConnectionWorkStation
+                { 
+                    id_TypeWorkstation = row.Field<int>("id_TypeWorkstation"),
+                    id = row.Field<int>("id"),
+                    idTypeDevice = row.Field<int>("id_type_device"),
+                    TypeDevice = row.Field<string>("des_type_device"),
+                    IP = row.Field<string>("ip"),
+                    Port = row.Field<int>("port_robot"),
+                    idTypeConnection = row.Field<int>("id_type_connection"),
+                    TypeConnection = row.Field<string>("des_type_connection")
+                }).ToList();
+
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"{DateTime.Now} - " + ex.Message);
+                throw;
+            }
+            return lstconnectionsRobots;
+        }
+
         public int[] getNumsPages(double top)
         {
             int[] arrayIntegers = new int[(int)top];
@@ -92,9 +174,12 @@ namespace BORGWARNER_SERVOPRESS.DataAccessLayer
                 new TotalRegistersByTables
                 {
                     NameTable = row.Field<string>("name_table"),
-                    TotalRegisters = row.Field<int>("total_reg"),
-                    NumPages = row.Field<int>("pages"),
-                    Pages = getNumsPages(row.Field<int>("pages"))
+                    //TotalRegisters = row.Field<int>("total_reg"),
+                    //NumPages = row.Field<int>("pages"),
+                    //Pages = getNumsPages(row.Field<int>("pages"))
+                    TotalRegisters = Convert.IsDBNull(row["total_reg"]) ? 0 : row.Field<int>("total_reg"),
+                    NumPages = Convert.IsDBNull(row["pages"]) ? 0 : row.Field<int>("pages"),
+                    Pages = Convert.IsDBNull(row["pages"]) ? new int[0] : getNumsPages(row.Field<int>("pages"))
                 }).ToList();
 
             }
@@ -104,7 +189,6 @@ namespace BORGWARNER_SERVOPRESS.DataAccessLayer
                 throw;
             }
             return lstSettings;
-
         }
 
         public List<ModelViewTypeWorkstation> getModelViewTypeWorkstation_By_Id(int idTypeWork)

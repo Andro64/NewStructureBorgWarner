@@ -17,7 +17,8 @@ namespace BORGWARNER_SERVOPRESS.DataAccessLayer
         public CommunicationRunHistory(SessionApp _sessionApp)
         {
             sessionApp = _sessionApp;
-            numRegbyPages = int.Parse(sessionApp.settings.FirstOrDefault(x => x.setting.Equals("GRID_Number_Reg_by_Page")).valueSetting);
+            numRegbyPages = sessionApp.settings.FirstOrDefault(x => x.setting.Equals("GRID_Number_Reg_by_Page")) != null ?
+                int.Parse(sessionApp.settings.FirstOrDefault(x => x.setting.Equals("GRID_Number_Reg_by_Page")).valueSetting) : 0;            
         }
         
         public List<ModelViewRunHistory> getModelViewRunHistory(int indexPage)

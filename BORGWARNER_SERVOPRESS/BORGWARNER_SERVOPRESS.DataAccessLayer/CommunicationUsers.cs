@@ -16,7 +16,8 @@ namespace BORGWARNER_SERVOPRESS.DataAccessLayer
         public CommunicationUsers(SessionApp _sessionApp)
         {
             sessionApp = _sessionApp;
-            numRegbyPages = int.Parse(sessionApp.settings.FirstOrDefault(x => x.setting.Equals("GRID_Number_Reg_by_Page")).valueSetting);
+            numRegbyPages = sessionApp.settings.FirstOrDefault(x => x.setting.Equals("GRID_Number_Reg_by_Page")) != null ?
+                int.Parse(sessionApp.settings.FirstOrDefault(x => x.setting.Equals("GRID_Number_Reg_by_Page")).valueSetting) : 0;
         }
         public List<ModelViewUsers> getModelViewUsers(int indexPage)
         {
