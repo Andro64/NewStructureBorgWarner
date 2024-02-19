@@ -233,6 +233,72 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="Resources\Operational_Images\WSAT2\GNC_HousingWithScanner.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Operational_Images\WSAT2\GNC_Mask.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Operational_Images\WSAT2\GNC_Opto.jpeg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Operational_Images\WSAT2\GNC_Padlock.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Operational_Images\WSAT2\GNC_PalletInHousing.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Operational_Images\WSAT2\GNC_PalletInStation.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Operational_Images\WSAT2\GNC_ScrewdriverInHome.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Operational_Images\WSAT2\GNC_SlidePalletOutOfStation.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Operational_Images\WSAT2\GNC_ValidatePalletEnteringStation.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Operational_Images\WSAT2\GNC_WaitPallet.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Operational_Images\WSAT2\KYC_Scanner.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Operational_Images\WSAT1\GNC_HousingWithScanner.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Operational_Images\WSAT1\GNC_Mask.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Operational_Images\WSAT1\GNC_Opto.jpeg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Operational_Images\WSAT1\GNC_Padlock.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Operational_Images\WSAT1\GNC_PalletInHousing.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Operational_Images\WSAT1\GNC_PalletInStation.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Operational_Images\WSAT1\GNC_ScrewdriverInHome.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Operational_Images\WSAT1\GNC_SlidePalletOutOfStation.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Operational_Images\WSAT1\GNC_ValidatePalletEnteringStation.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Operational_Images\WSAT1\GNC_WaitPallet.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Operational_Images\WSAT1\KYC_Scanner.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
     <Resource Include="7-buenas-razones-para-tomar-cerveza.png" />
     <Resource Include="Malta.jpeg" />
     <Resource Include="BW.png" />
@@ -288,6 +354,39 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Resources\Images\sendImage.png" />
+    <Resource Include="Resources\Operational_Images\WSMT1\GNC_HousingWithScanner.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Operational_Images\WSMT1\GNC_Mask.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Operational_Images\WSMT1\GNC_Opto.jpeg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Operational_Images\WSMT1\GNC_Padlock.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Operational_Images\WSMT1\GNC_PalletInHousing.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Operational_Images\WSMT1\GNC_PalletInStation.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Operational_Images\WSMT1\GNC_ScrewdriverInHome.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Operational_Images\WSMT1\GNC_SlidePalletOutOfStation.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Operational_Images\WSMT1\GNC_ValidatePalletEnteringStation.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Operational_Images\WSMT1\GNC_WaitPallet.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Operational_Images\WSMT1\KYC_Scanner.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
     <Content Include="Resources\Operational_Images\servo_working.jfif">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

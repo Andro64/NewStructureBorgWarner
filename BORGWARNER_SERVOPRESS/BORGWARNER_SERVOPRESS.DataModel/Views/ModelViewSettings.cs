@@ -4,10 +4,23 @@ namespace BORGWARNER_SERVOPRESS.DataModel.Views
 {
     public class ModelViewSettings:INotifyPropertyChanged
     {
+        private int _id_TypeWorkstation;
         private int _id;
         private string _setting;
         private string _valueSetting;
 
+        public int id_TypeWorkstation
+        {
+            get { return _id_TypeWorkstation; }
+            set
+            {
+                if (_id_TypeWorkstation != value)
+                {
+                    _id_TypeWorkstation = value;
+                    OnPropertyChanged(nameof(id_TypeWorkstation));
+                }
+            }
+        }
         public int id
         {
             get { return _id; }

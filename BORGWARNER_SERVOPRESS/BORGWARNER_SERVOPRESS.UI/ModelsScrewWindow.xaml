@@ -175,10 +175,10 @@
                         Style="{StaticResource BaseButton}" 
                         HorizontalAlignment="Left" Height="31" Margin="780,29.4,0,0" VerticalAlignment="Top" Width="304" Click="btnToCancel_Click" Grid.Row="1"/>
                 <Label Content="Registra un nuevo modelo de tornillo" HorizontalAlignment="Left" Margin="780,60,0,0" VerticalAlignment="Top" FontSize="18"/>
-                <Button x:Name="btnToAdd" 
+                <Button x:Name="btnToClean" 
                         Command="{Binding CreateCommand}" Content="Limpiar"  
                         Style="{StaticResource BaseButton}" 
-                        HorizontalAlignment="Left" Height="31" Margin="45,428,0,0" VerticalAlignment="Top" Width="131" Grid.RowSpan="2" Click="btnToAdd_Click"/>
+                        HorizontalAlignment="Left" Height="31" Margin="45,428,0,0" VerticalAlignment="Top" Width="131" Grid.RowSpan="2" Click="btnToClean_Click"/>
                 <Button x:Name="btnToDelete" 
                         Command="{Binding DeleteCommand}" Content="Eliminar" 
                         Style="{StaticResource BaseButton}" 

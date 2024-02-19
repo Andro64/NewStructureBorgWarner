@@ -157,14 +157,14 @@
                         Command="{Binding SaveCommand}" Content="Guardar cambios" 
                         Style="{StaticResource BaseButton}" HorizontalAlignment="Left" Height="31" Margin="780,432,0,0" VerticalAlignment="Top" Width="304"/>
                 <Button x:Name="btnToCancel" 
-                        Command="{Binding CreateCommand}" Content="Cancelar" 
+                        Command="{Binding CleanCommand}" Content="Cancelar" 
                         Style="{StaticResource BaseButton}" 
                         HorizontalAlignment="Left" Height="31" Margin="780,477,0,0" VerticalAlignment="Top" Width="304" Click="btnToCancel_Click"/>
                 <Label Content="Registra un nueva configuración" HorizontalAlignment="Left" Margin="780,112,0,0" VerticalAlignment="Top" FontSize="18"/>
-                <Button x:Name="btnToAdd" 
-                        Command="{Binding CreateCommand}" Content="Limpiar"  
+                <Button x:Name="btnToClean" 
+                        Command="{Binding CleanCommand}" Content="Limpiar"  
                         Style="{StaticResource BaseButton}" 
-                        HorizontalAlignment="Left" Height="31" Margin="45,474,0,0" VerticalAlignment="Top" Width="131" Click="btnToAdd_Click"/>
+                        HorizontalAlignment="Left" Height="31" Margin="45,474,0,0" VerticalAlignment="Top" Width="131" Click="btnToClean_Click"/>
                 <Button x:Name="btnToDelete" 
                         Command="{Binding DeleteCommand}" Content="Eliminar" 
                         Style="{StaticResource BaseButton}" 
@@ -182,10 +182,11 @@
                           HorizontalAlignment="Left" Margin="535,476,0,0" VerticalAlignment="Top" Width="79" Height="23"/>
                 <Label Content="Selecciona Workstation:" HorizontalAlignment="Left" Margin="45,60,0,0" VerticalAlignment="Top" FontSize="15"/>
                 <ComboBox x:Name="cbo_Type_Workstation" 
-                          ItemsSource="{Binding lstTypeWorkstation}" 
+                          ItemsSource="{Binding lstTypeWorkstation}"                           
                           SelectedValuePath="id"                          
                           DisplayMemberPath="description"                          
-                          SelectedValue="{Binding TypeWorkstationSelected_Id}"                           
+                          SelectedValue="{Binding TypeWorkstationSelected_Id}"   
+                          SelectionChanged="cbo_Type_Workstation_SelectionChanged"
                           Style="{StaticResource BaseComboBox}" 
                           HorizontalAlignment="Left" Margin="228,64,0,0" VerticalAlignment="Top" Width="176"  Height="23"/>
 

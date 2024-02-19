@@ -117,8 +117,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.Views
             set { _nameWorksation = value; }
         }
         public ICommand SaveCommand { get; private set; }
-        public ICommand CreateCommand { get; private set; }
-        public ICommand UpdateCommand { get; private set; }
+        public ICommand CleanCommand { get; private set; }        
         public ICommand DeleteCommand { get; private set; }
         public ICommand ReadCommand { get; private set; }
         public ICommand SelectComboPageCommand { get; }
@@ -132,9 +131,8 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.Views
             settingsGeneral = new Settings(sessionApp);
 
             SaveCommand = new RelayCommand<object>(Save, CanYouSave);
-            CreateCommand = new RelayCommand<object>(Create, CanYouCreate);
-            ReadCommand = new RelayCommand<object>(Read, CanYouRead);
-            UpdateCommand = new RelayCommand<object>(Update, CanYouUpdate);
+            CleanCommand = new RelayCommand<object>(Clean, CanYouClean);
+            ReadCommand = new RelayCommand<object>(Read, CanYouRead);            
             DeleteCommand = new RelayCommand<object>(Delete, CanYouDelete);
             SelectComboPageCommand = new RelayCommand<int>(Page_SelectionChanged);
             SelectChangedModelScrew = new RelayCommand<int>(ModelScrew_SelectionChanged);
@@ -222,6 +220,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.Views
                 CommunicationScrew.Ins_Upd_ModelViewPositionScrew(RegisterSelected);
                 cleanControls();
                 Read(PageSelected);
+                InitializeModel();
             }
         }
 
@@ -229,33 +228,24 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.Views
         {
             return RegisterSelected != null && RegisterSelected.IsValid(); // Agrega lógica de validación si es necesario
         }
-        private void Create(object parameter)
+        private void InitializeModel()
+        {
+            //Inicializamos el modelo para activar el boton Guardar
+            RegisterSelected = new ModelViewPositionScrew();
+        }
+        private void Clean(object parameter)
         {
             cleanControls();
             Read(1);
+            InitializeModel();
         }
 
-        private bool CanYouCreate(object parameter)
+        private bool CanYouClean(object parameter)
         {
             return true;
             //return RegisterSelected != null && RegisterSelected.IsValid(); // Agrega lógica de validación si es necesario
         }
-        private void Update(object parameter)
-        {
-            MessageBoxResult result = messageBoxService.Show("¿Está seguro de actualizar la información?", "Confirmación", MessageBoxButton.OKCancel, eMessageBoxIcon.Information);
-            if (result == MessageBoxResult.OK)
-            {
-                CommunicationScrew.Ins_Upd_ModelViewPositionScrew(RegisterSelected);
-                cleanControls();
-                Read(PageSelected);
-            }
-        }
-
-        private bool CanYouUpdate(object parameter)
-        {
-            return RegisterSelected != null && RegisterSelected.IsValid(); // Agrega lógica de validación si es necesario
-        }
-
+       
         private void Delete(object parameter)
         {
             MessageBoxResult result = messageBoxService.Show("¿Está seguro de borrar la información?", "Confirmación", MessageBoxButton.OKCancel, eMessageBoxIcon.Information);

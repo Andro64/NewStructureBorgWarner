@@ -110,7 +110,7 @@ namespace BORGWARNER_SERVOPRESS.UI
             }
         }
 
-        private void btnToAdd_Click(object sender, RoutedEventArgs e)
+        private void btnToClean_Click(object sender, RoutedEventArgs e)
         {
             pageManager.CleanControls(new List<string> { "txtPartNumber", "txtSerial", "txtNamemodel", "txtDescription", "txtQuantityScrews" });
         }
