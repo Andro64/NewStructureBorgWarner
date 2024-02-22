@@ -4,8 +4,11 @@ using BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation;
 using BORGWARNER_SERVOPRESS.DataModel;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Media;
 
 namespace BORGWARNER_SERVOPRESS.UI
@@ -21,6 +24,12 @@ namespace BORGWARNER_SERVOPRESS.UI
         List<string> controlNames;        
         private Workstation workstation;
 
+        //Timer Varibles 
+        private System.Timers.Timer timer;
+        private TimeSpan elapsedTime;
+        private DateTime startTime;
+        private bool isRunning;
+
         public MainWindow(SessionApp _sessionApp)
         {
             sessionApp = _sessionApp;
@@ -31,6 +40,54 @@ namespace BORGWARNER_SERVOPRESS.UI
             
             InitializeComponent();
             initialize();
+            InitializeTimer();
+
+            workstation.CreateTextBoxRequested += BusinessLayer_CreateTextBoxRequested;
+            workstation.RemoveTextBoxRequested += TextBoxRemoveContentGrid;
+            Loaded += MainWindow_Loaded;
+        }
+
+        private void BusinessLayer_CreateTextBoxRequested(object sender, TextBoxInfoEventArgs e)
+        {
+            contentgrid.Dispatcher.Invoke(() =>
+            {
+                // Crear una nueva caja de texto
+                var textBox = new Label
+                {
+                    Content = e.Text,
+                    Width = 100,
+                    Height = 30,
+                    Style = (Style)Application.Current.Resources["RoundLabel"]
+                    //Style = (Style)Application.Current.Resources["BaseIsFocused"]
+
+                };
+
+                // Establecer la posición de la caja de texto
+                textBox.Margin = new Thickness(e.Position.X, e.Position.Y, 0, 0);
+
+                Grid.SetRow(textBox, 1);
+                Grid.SetColumn(textBox, 0);
+                Grid.SetColumnSpan(textBox, 1); // O el número de columnas que ocupa tu imagen
+
+                // Agregar la caja de texto al contenedor en la interfaz de usuario
+                contentgrid.Children.Add(textBox);
+            
+            });
+        }
+
+        private void TextBoxRemoveContentGrid(object sender, EventArgs e)
+        {            
+            contentgrid.Dispatcher.Invoke(() =>
+            {
+                //Elimina todos menos el primero
+                //var textBoxesToRemove = contentgrid.Children.OfType<Label>().Skip(1).ToList();
+                //var textBoxesToRemove = contentgrid.Children.OfType<Label>().ToList();
+                var textBoxesToRemove = contentgrid.Children.OfType<Label>().Where(lbl => lbl != lblRunCycle).ToList();
+                foreach (var textBox in textBoxesToRemove)
+                {
+                    contentgrid.Children.Remove(textBox);
+                }
+            });
         }
 
         public void initialize()
@@ -40,10 +97,14 @@ namespace BORGWARNER_SERVOPRESS.UI
             pageManager = new PageManager(this);
                         
             viewMain.ShowData();
-            viewMain.ShowDate();
+            viewMain.ShowMessage();
+            pageManager.IsReadOnlyControls(new List<string> { "from_fis_textblock", "to_fis_textblock", "cycletime" });
         }
 
-
+        private void MainWindow_Loaded(object sender, RoutedEventArgs e)
+        {
+            //workstation.RequestCreateTextBox("Hola", 100, 100);
+        }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
@@ -123,13 +184,16 @@ namespace BORGWARNER_SERVOPRESS.UI
                     await Task.Delay(100); 
                 }
             });
-
-            viewMain.StopTimer();
+            ProcessFinished();
+        }
+        
+        private void ProcessFinished()
+        {
+            StopChronometer();
             pageManager.EnableControls(new List<string> { "startCycle_btn", "mn_btn_run", "mn_btn_fis", "mn_btn_history", "mn_btn_modelos_screw", "mn_btn_manual", "mn_btn_positions" });
             pageManager.DisableControls(new List<string> { "stopCycle_btn" });
             pageManager.ChangeBackgroundColor(Brushes.Aqua, new List<string> { "Fis_enabled_display" });
         }
-        
         
         private void StartCycle_btn_Click(object sender, RoutedEventArgs e)
         {
@@ -139,38 +203,83 @@ namespace BORGWARNER_SERVOPRESS.UI
 
             sessionApp.TaksRunExecuting = true;
             try
-            {                
-                viewMain.StartTimer();
+            {
+                StartChronometer();
                 workstation.StartProcess();               
                 EneableControlsWhenEndTaskRun();                
             }
             catch (Exception ex)
             {
                 MessageBox.Show("Error: " + ex.Message + "\nSource: " + ex.Source + "\nInner: " + ex.InnerException, "Error", System.Windows.MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-            finally
-            {
-                
-            }
+            }           
         }
 
         private void StopCycle_btn_Click(object sender, RoutedEventArgs e)
-        {
-            viewMain.StopTimer();
+        {                       
             pageManager.ChangeBackgroundColor(Brushes.Aqua, new List<string> { "Fis_enabled_display" });
-            workstation.CancelProcess();          
+            workstation.CancelProcess();
+            StopChronometer();
         }
 
         private void Screw_Scrap_Click(object sender, RoutedEventArgs e)
         {
-            pageManager.HideControls(controlNames);
+            var textBoxesToRemove = contentgrid.Children.OfType<Label>().Skip(1).ToList();
+            foreach (var textBox in textBoxesToRemove)
+            {
+                contentgrid.Children.Remove(textBox);
+            }
         }
 
         private void showMenu(string profile)
         {
-
+            
+        }
+        #region chronometer
+        private void StartChronometer()
+        {
+            startTime = DateTime.Now;
+            timer.Start();
+            isRunning = true;
+        }
+        private void StopChronometer()
+        {
+            if (isRunning)
+            {
+                timer.Stop();
+                isRunning = false;
+            }
+        }
+        private void InitializeTimer()
+        {
+            timer = new System.Timers.Timer(10); // Intervalo de 10 milisegundos para centésimas
+            timer.Elapsed += Timer_Tick;
         }
 
+        private void Timer_Tick(object sender, EventArgs e)
+        {
+            elapsedTime = DateTime.Now - startTime;
+            UpdateTimeLabel();
+        }
+
+        private void UpdateTimeLabel()
+        {
+            Dispatcher.Invoke(() =>
+            {
+                cycletime.Text = $"{elapsedTime.Hours:D2}:{elapsedTime.Minutes:D2}:{elapsedTime.Seconds:D2}.{elapsedTime.Milliseconds / 10:D2}";                
+            });
+        }
+        protected override void OnClosing(CancelEventArgs e)
+        {
+            base.OnClosing(e);
+            timer.Stop(); // Detiene el temporizador al cerrar la ventana
+        }
+
+        private void ResetTimer()
+        {
+            elapsedTime = TimeSpan.Zero;
+            UpdateTimeLabel();
+        }
+        #endregion
 
     }
 }

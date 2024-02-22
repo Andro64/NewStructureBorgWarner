@@ -14,7 +14,7 @@ namespace BORGWARNER_SERVOPRESS.UI
     {
         private SessionApp sessionApp;        
         private PageManager pageManager;
-        private ViewMain viewMain;
+        private ViewFIS viewFIS;
         List<string> controlNames;
         public FISWindow(SessionApp _sessionApp)
         {
@@ -25,12 +25,12 @@ namespace BORGWARNER_SERVOPRESS.UI
 
         public void initialize()
         {
-            viewMain = new ViewMain(sessionApp);
-            DataContext = viewMain.GetModel();
+            viewFIS = new ViewFIS(sessionApp);
+            DataContext = viewFIS.GetModel();
             pageManager = new PageManager(this);
 
-            viewMain.ShowData();
-            viewMain.ShowDate();
+            viewFIS.ShowData();
+            viewFIS.ShowMessage();
         }
 
         

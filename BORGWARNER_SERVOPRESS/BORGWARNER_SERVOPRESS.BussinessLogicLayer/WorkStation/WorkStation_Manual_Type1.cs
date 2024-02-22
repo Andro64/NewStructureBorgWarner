@@ -17,11 +17,32 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
         SessionApp sessionApp;
         private CancellationTokenSource _cancellationTokenSource;
         private bool isCancellationRequested = false;
+        public override event EventHandler<TextBoxInfoEventArgs> CreateTextBoxRequested;
+        public override event EventHandler RemoveTextBoxRequested;
+
+        public override void RequestCreateTextBox(string msg, int PositionX, int PositionY)
+        {
+            OnCreateTextBoxRequested(new TextBoxInfoEventArgs
+            {
+                Text = msg,
+                Position = new System.Windows.Point(PositionX, PositionY)
+            });
+        }
+
+        protected virtual void OnCreateTextBoxRequested(TextBoxInfoEventArgs e)
+        {
+            CreateTextBoxRequested?.Invoke(this, e);
+        }
+
+        public override void RequestRemoveTextBox()
+        {
+            RemoveTextBoxRequested?.Invoke(this,EventArgs.Empty);
+        }
 
         public WorkStation_Manual_Type1(SessionApp _sessionApp)
         {
             sessionApp = _sessionApp;
-            sensorsIO = new SensorsIO(sessionApp);
+            sensorsIO = new SensorsIO(sessionApp);            
         }
         public void showMessageAndImage(string message, string nameimage = "", bool isImageInDiferentPath = false)
         {
@@ -30,107 +51,127 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
             Debug.WriteLine($"{DateTime.Now} - "  + "Msg:" +  message + " -  Image show:" + nameimage);
         }
 
-        public async Task MensajesPantalla()
+        //public async Task MensajesPantalla()
+        public override async Task StartProcess()
         {
-
+            showMessageAndImage("Esperamos pallet en Pre-Stopper", "GNC_Mask.png");
+            //RequestCreateTextBox("Entranndo desde la vista (╯°□°)╯︵ ʞooqǝɔɐɟ ", 50, 100);
+            RequestCreateTextBox("Torque: 102.12 ", 0, -150);            
+            RequestCreateTextBox("5 Nm 30° ", 350, -150);
+            RequestCreateTextBox("Angulo: 102.12' ", 40, -60);
             Debug.WriteLine($"{DateTime.Now} - "  + "Path de Imagenes:" + sessionApp.PathOperationalImages);
-
             await Task.Run(() =>
             {
-                showMessageAndImage("Inicia Proceso de atornillado", "pallet.jpg");                
                 Thread.Sleep(3000);
-                showMessageAndImage("Esperamos pallet en Pre-Stopper", "master.jpg");
+                RequestRemoveTextBox();
+                RequestCreateTextBox("(╯°□°)╯", 50, 100);
+                showMessageAndImage("SCANNER 1 LEE CODIGO SERIAL: ", "GNC_PalletInHousing.jpg");
                 Thread.Sleep(3000);
-                showMessageAndImage("Esperamos CLAMP DE PALLET EXTENDIDO","button.jpg");
-                Thread.Sleep(3000);
-               showMessageAndImage("Esperamos que el OPERADOR COLOCAQUE EL HOUSING","pressure.jpg");
-                Thread.Sleep(3000);
-                showMessageAndImage("SCANNER 1 LEE CODIGO SERIAL: ","part.jpg");
-                Thread.Sleep(3000);
-                showMessageAndImage("PIDE A OPERADOR COLOCAR ULTRA CAP BOARD PAD Y ACTIVAR OPTO","button.jpg");
-                Thread.Sleep(3000);
-                showMessageAndImage("ESPERA ACTIVACION DE OPTO ", "button.jpg");
-                Thread.Sleep(3000);
-                showMessageAndImage("Fallo primer intento ESPERA ACTIVACION DE OPTO ","button.jpg");
-                Thread.Sleep(3000);
-                showMessageAndImage("Fallo segundo intento ESPERA ACTIVACION DE OPTO ","button.jpg");
-                Thread.Sleep(3000);
-                showMessageAndImage("Fallaron los 3 intentos ");
-                Thread.Sleep(3000);  ///Falta poner que hace en este caso
-                
-             /*    sessionApp.MessageOfProcess = "PIDE A OPERADOR TOMAR ULTRA CAP BOARD Y COLOCAR EN NIDO";
-                sessionApp.ImageOfProcess = sessionApp.PathOperationalImages + "pressure.jpg";
-                Thread.Sleep(3000);
-                sessionApp.MessageOfProcess = "ESPERA ULTRA CAP BOARD SE COLOQUE EN NIDO ";
-                sessionApp.ImageOfProcess = sessionApp.PathOperationalImages + "pressure.jpg";
-                Thread.Sleep(3000);
-                sessionApp.MessageOfProcess = $"SCANNER 1 LEE CODIGO SERIAL: ";
-                sessionApp.ImageOfProcess = sessionApp.PathOperationalImages + "pressure.jpg";
-                Thread.Sleep(5);
-
-                sessionApp.MessageOfProcess = "PIDE A OPERADOR TOMAR HARNESS, CONECTAR A ULTRA CAP BOARD, COLOCAR EN HOUSING, REALIZAR RUTEO DE HARNESS SOBRE HOUSING Y PRESIONAR OPTO";
-                Thread.Sleep(3000);
-                sessionApp.MessageOfProcess = "ESPERA ACTIVACION DE OPTO ";
-                sessionApp.ImageOfProcess = sessionApp.PathOperationalImages + "button.jpg";
-                Thread.Sleep(3000);
-                sessionApp.MessageOfProcess = "Fallo primer intento ESPERA ACTIVACION DE OPTO ";
-                sessionApp.ImageOfProcess = sessionApp.PathOperationalImages + "button.jpg";
-                Thread.Sleep(3000);
-                sessionApp.MessageOfProcess = "Fallo segundo intento ESPERA ACTIVACION DE OPTO ";
-                sessionApp.ImageOfProcess = sessionApp.PathOperationalImages + "button.jpg";
-                Thread.Sleep(3000);
-                sessionApp.MessageOfProcess = "Fallaron los 3 intentos ";
-                Thread.Sleep(3000);  ///Falta poner que hace en este caso
-                sessionApp.MessageOfProcess = "2 PIDE A OPERADOR TOMAR TOMAR MASCARA Y COLOCAR SOBRE HOUSING";
-                sessionApp.ImageOfProcess = sessionApp.PathOperationalImages + "pressure.jpg";
-                Thread.Sleep(3000);
-                sessionApp.MessageOfProcess = "Esperamos que el OPERADOR COLOCAQUE MASCARA SOBRE HOUSING";
-                sessionApp.ImageOfProcess = sessionApp.PathOperationalImages + "pallet.jpg";
-                Thread.Sleep(3000);
-                sessionApp.MessageOfProcess = "PIDE A OPERADOR TOMAR ATORNILLADOR Y REALIZAR ATORNILLADO CORRESPONDIENTE";
-                sessionApp.ImageOfProcess = sessionApp.PathOperationalImages + "pressure.jpg";
-                Thread.Sleep(3000);
-                sessionApp.MessageOfProcess = "BRAZO ERGONOMICO EN POSICION";
-                sessionApp.ImageOfProcess = sessionApp.PathOperationalImages + "pallet.jpg";
-                Thread.Sleep(3000);
-                sessionApp.MessageOfProcess = "Fallo primer intento de atornillado  ESPERA ACTIVACION DE OPTO ";
-                sessionApp.ImageOfProcess = sessionApp.PathOperationalImages + "button.jpg";
-                Thread.Sleep(3000);
-                sessionApp.MessageOfProcess = "Fallo segundo intento de atornillado ESPERA ACTIVACION DE OPTO ";
-                sessionApp.ImageOfProcess = sessionApp.PathOperationalImages + "button.jpg";
-                Thread.Sleep(3000);
-                sessionApp.MessageOfProcess = "Fallaron los 3 intentos de atornillado";
-                Thread.Sleep(3000);  ///Falta poner que hace en este caso
-                sessionApp.MessageOfProcess = "PIDE A OPERADOR COLOCAR BRAZO EN HOME Y RETIRAR MASCARA";
-                sessionApp.ImageOfProcess = sessionApp.PathOperationalImages + "pressure.jpg";
-                Thread.Sleep(3000);
-                sessionApp.MessageOfProcess = "PIDE A OPERADOR TOMAR INSULADOR, COLOCAR SOBRE ULTRA CAP BOARD Y ACTIVAR OPTO";
-                sessionApp.ImageOfProcess = sessionApp.PathOperationalImages + "button.jpg";
-                Thread.Sleep(3000);
-                sessionApp.MessageOfProcess = "OPTO ACTIVADO";
-                Thread.Sleep(3000);
-                sessionApp.MessageOfProcess = "Fallo primer intento ESPERA ACTIVACION DE OPTO ";
-                sessionApp.ImageOfProcess = sessionApp.PathOperationalImages + "pallet.jpg";
-                Thread.Sleep(3000);
-
-                sessionApp.MessageOfProcess = "Fallo segundo intento ESPERA ACTIVACION DE OPTO ";
-                sessionApp.ImageOfProcess = sessionApp.PathOperationalImages + "button.jpg";
-                Thread.Sleep(3000);
-                sessionApp.MessageOfProcess = "Fallaron los 3 intentos ";
-                Thread.Sleep(3000);  ///Falta poner que hace en este caso
-                sessionApp.MessageOfProcess = "INSPECCION OK ENVIA BCMP A FIS";
-                Thread.Sleep(3000);
-                sessionApp.MessageOfProcess = "DETECTA CLAMP DE PALLET RETRAIDO";
-                Thread.Sleep(3000);
-                sessionApp.MessageOfProcess = "LIBERA PALLET";
-                sessionApp.ImageOfProcess = sessionApp.PathOperationalImages + "pallet.jpg";
-                Thread.Sleep(3000);
-                */
+                RequestRemoveTextBox();
+                RequestCreateTextBox(" ʕ•ᴥ•ʔ​​ ", 0, 0);
                 showMessageAndImage("La informacion correspondiente a los tornillos esta incompleta");
                 Thread.Sleep(3000);
-                showMessageAndImage("Finaliza Proceso de atornillado",@"C:\Users\bas1s\OneDrive\Imágenes\Trabajo\CONINTEC\Success.gif",true);
+                RequestRemoveTextBox();
+                showMessageAndImage("Finaliza Proceso de atornillado", @"C:\Users\bas1s\OneDrive\Imágenes\Trabajo\CONINTEC\Success.gif", true);
                 sessionApp.TaksRunExecuting = false;
             });
+
+            //await Task.Run(() =>
+            //{
+            //    showMessageAndImage("Inicia Proceso de atornillado", "GNC_HousingWithScanner.png");                
+            //    Thread.Sleep(3000);
+            //    showMessageAndImage("Esperamos pallet en Pre-Stopper", "GNC_Mask.png");
+            //    Thread.Sleep(3000);
+            //    showMessageAndImage("Esperamos CLAMP DE PALLET EXTENDIDO", "GNC_Opto.jpeg");
+            //    Thread.Sleep(3000);
+            //   showMessageAndImage("Esperamos que el OPERADOR COLOCAQUE EL HOUSING", "GNC_Padlock.jpg");
+            //    Thread.Sleep(3000);
+            //    showMessageAndImage("SCANNER 1 LEE CODIGO SERIAL: ", "GNC_PalletInHousing.jpg");
+            //    Thread.Sleep(3000);
+            //    showMessageAndImage("PIDE A OPERADOR COLOCAR ULTRA CAP BOARD PAD Y ACTIVAR OPTO", "GNC_PalletInStation.jpg");
+            //    Thread.Sleep(3000);
+            //    showMessageAndImage("ESPERA ACTIVACION DE OPTO ", "GNC_ScrewdriverInHome.png");
+            //    Thread.Sleep(3000);
+            //    showMessageAndImage("Fallo primer intento ESPERA ACTIVACION DE OPTO ", "GNC_SlidePalletOutOfStation.png");
+            //    Thread.Sleep(3000);
+            //    showMessageAndImage("Fallo segundo intento ESPERA ACTIVACION DE OPTO ", "GNC_ValidatePalletEnteringStation.jpg");
+            //    Thread.Sleep(3000);
+            //    showMessageAndImage("Fallaron los 3 intentos ");
+            //    Thread.Sleep(3000);  ///Falta poner que hace en este caso
+
+            // /*    sessionApp.MessageOfProcess = "PIDE A OPERADOR TOMAR ULTRA CAP BOARD Y COLOCAR EN NIDO";
+            //    sessionApp.ImageOfProcess = sessionApp.PathOperationalImages + "pressure.jpg";
+            //    Thread.Sleep(3000);
+            //    sessionApp.MessageOfProcess = "ESPERA ULTRA CAP BOARD SE COLOQUE EN NIDO ";
+            //    sessionApp.ImageOfProcess = sessionApp.PathOperationalImages + "pressure.jpg";
+            //    Thread.Sleep(3000);
+            //    sessionApp.MessageOfProcess = $"SCANNER 1 LEE CODIGO SERIAL: ";
+            //    sessionApp.ImageOfProcess = sessionApp.PathOperationalImages + "pressure.jpg";
+            //    Thread.Sleep(5);
+
+            //    sessionApp.MessageOfProcess = "PIDE A OPERADOR TOMAR HARNESS, CONECTAR A ULTRA CAP BOARD, COLOCAR EN HOUSING, REALIZAR RUTEO DE HARNESS SOBRE HOUSING Y PRESIONAR OPTO";
+            //    Thread.Sleep(3000);
+            //    sessionApp.MessageOfProcess = "ESPERA ACTIVACION DE OPTO ";
+            //    sessionApp.ImageOfProcess = sessionApp.PathOperationalImages + "button.jpg";
+            //    Thread.Sleep(3000);
+            //    sessionApp.MessageOfProcess = "Fallo primer intento ESPERA ACTIVACION DE OPTO ";
+            //    sessionApp.ImageOfProcess = sessionApp.PathOperationalImages + "button.jpg";
+            //    Thread.Sleep(3000);
+            //    sessionApp.MessageOfProcess = "Fallo segundo intento ESPERA ACTIVACION DE OPTO ";
+            //    sessionApp.ImageOfProcess = sessionApp.PathOperationalImages + "button.jpg";
+            //    Thread.Sleep(3000);
+            //    sessionApp.MessageOfProcess = "Fallaron los 3 intentos ";
+            //    Thread.Sleep(3000);  ///Falta poner que hace en este caso
+            //    sessionApp.MessageOfProcess = "2 PIDE A OPERADOR TOMAR TOMAR MASCARA Y COLOCAR SOBRE HOUSING";
+            //    sessionApp.ImageOfProcess = sessionApp.PathOperationalImages + "pressure.jpg";
+            //    Thread.Sleep(3000);
+            //    sessionApp.MessageOfProcess = "Esperamos que el OPERADOR COLOCAQUE MASCARA SOBRE HOUSING";
+            //    sessionApp.ImageOfProcess = sessionApp.PathOperationalImages + "pallet.jpg";
+            //    Thread.Sleep(3000);
+            //    sessionApp.MessageOfProcess = "PIDE A OPERADOR TOMAR ATORNILLADOR Y REALIZAR ATORNILLADO CORRESPONDIENTE";
+            //    sessionApp.ImageOfProcess = sessionApp.PathOperationalImages + "pressure.jpg";
+            //    Thread.Sleep(3000);
+            //    sessionApp.MessageOfProcess = "BRAZO ERGONOMICO EN POSICION";
+            //    sessionApp.ImageOfProcess = sessionApp.PathOperationalImages + "pallet.jpg";
+            //    Thread.Sleep(3000);
+            //    sessionApp.MessageOfProcess = "Fallo primer intento de atornillado  ESPERA ACTIVACION DE OPTO ";
+            //    sessionApp.ImageOfProcess = sessionApp.PathOperationalImages + "button.jpg";
+            //    Thread.Sleep(3000);
+            //    sessionApp.MessageOfProcess = "Fallo segundo intento de atornillado ESPERA ACTIVACION DE OPTO ";
+            //    sessionApp.ImageOfProcess = sessionApp.PathOperationalImages + "button.jpg";
+            //    Thread.Sleep(3000);
+            //    sessionApp.MessageOfProcess = "Fallaron los 3 intentos de atornillado";
+            //    Thread.Sleep(3000);  ///Falta poner que hace en este caso
+            //    sessionApp.MessageOfProcess = "PIDE A OPERADOR COLOCAR BRAZO EN HOME Y RETIRAR MASCARA";
+            //    sessionApp.ImageOfProcess = sessionApp.PathOperationalImages + "pressure.jpg";
+            //    Thread.Sleep(3000);
+            //    sessionApp.MessageOfProcess = "PIDE A OPERADOR TOMAR INSULADOR, COLOCAR SOBRE ULTRA CAP BOARD Y ACTIVAR OPTO";
+            //    sessionApp.ImageOfProcess = sessionApp.PathOperationalImages + "button.jpg";
+            //    Thread.Sleep(3000);
+            //    sessionApp.MessageOfProcess = "OPTO ACTIVADO";
+            //    Thread.Sleep(3000);
+            //    sessionApp.MessageOfProcess = "Fallo primer intento ESPERA ACTIVACION DE OPTO ";
+            //    sessionApp.ImageOfProcess = sessionApp.PathOperationalImages + "pallet.jpg";
+            //    Thread.Sleep(3000);
+
+            //    sessionApp.MessageOfProcess = "Fallo segundo intento ESPERA ACTIVACION DE OPTO ";
+            //    sessionApp.ImageOfProcess = sessionApp.PathOperationalImages + "button.jpg";
+            //    Thread.Sleep(3000);
+            //    sessionApp.MessageOfProcess = "Fallaron los 3 intentos ";
+            //    Thread.Sleep(3000);  ///Falta poner que hace en este caso
+            //    sessionApp.MessageOfProcess = "INSPECCION OK ENVIA BCMP A FIS";
+            //    Thread.Sleep(3000);
+            //    sessionApp.MessageOfProcess = "DETECTA CLAMP DE PALLET RETRAIDO";
+            //    Thread.Sleep(3000);
+            //    sessionApp.MessageOfProcess = "LIBERA PALLET";
+            //    sessionApp.ImageOfProcess = sessionApp.PathOperationalImages + "pallet.jpg";
+            //    Thread.Sleep(3000);
+            //    */
+            //    showMessageAndImage("La informacion correspondiente a los tornillos esta incompleta");
+            //    Thread.Sleep(3000);
+            //    showMessageAndImage("Finaliza Proceso de atornillado",@"C:\Users\bas1s\OneDrive\Imágenes\Trabajo\CONINTEC\Success.gif",true);
+            //    sessionApp.TaksRunExecuting = false;
+            //});
         }
 
         public override void CancelProcess()
@@ -155,7 +196,8 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
             }
         }
 
-        public override async Task StartProcess()
+        //public override async Task StartProcess()
+        public async Task MensajesPantalla()
         {
             Scanner scanner;
             CommunicationFIS fIS;
@@ -170,9 +212,11 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
 
             int quantityScrews;
 
-
+            //RequestCreateTextBox("Entranndo ", 0, 0);
+            //RequestCreateTextBox("Entranndo desde la vista (－‸ლ) ", 0, 100);
+            RequestCreateTextBox("Entranndo desde la vista ( ˇ෴ˇ ) ", 100, 300);
             //sensorsIO.startRead();
-
+            showMessageAndImage("Esperamos pallet en Pre-Stopper", "pallet.jpg");
             await CheckSensorAndWait(() => sensorsIO.PalletInStopper(), "Esperamos pallet en Pre-Stopper");
             if (isCancellationRequested) {return; };
             await CheckSensorAndWait(() => sensorsIO.ExtendedPalletClamp(), "Esperamos CLAMP DE PALLET EXTENDIDO");

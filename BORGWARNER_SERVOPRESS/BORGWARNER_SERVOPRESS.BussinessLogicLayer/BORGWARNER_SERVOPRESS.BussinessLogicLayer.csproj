@@ -112,11 +112,13 @@
     <Compile Include="ObserverPatternSensor\SensorLogic.cs" />
     <Compile Include="SensorsIO.cs" />
     <Compile Include="Settings.cs" />
+    <Compile Include="TextBoxInfoEventArgs.cs" />
     <Compile Include="TryDevices.cs" />
     <Compile Include="UserAdmin.cs" />
     <Compile Include="Views\IMessageBoxService.cs" />
     <Compile Include="Views\MessageBoxService.cs" />
     <Compile Include="Views\RelayCommand.cs" />
+    <Compile Include="Views\ViewFIS.cs" />
     <Compile Include="Views\ViewMain.cs" />
     <Compile Include="Views\ViewManual.cs" />
     <Compile Include="Views\ViewModelsScrew.cs" />
