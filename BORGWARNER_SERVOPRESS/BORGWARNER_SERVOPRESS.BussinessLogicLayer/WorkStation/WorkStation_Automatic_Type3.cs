@@ -10,7 +10,20 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
     {
         public override string Type => "╭∩╮( •̀_•́ )╭∩╮ \n WS Automatica Tipo 3";
 
+        public override event EventHandler<TextBoxInfoEventArgs> CreateTextBoxRequested;
+        public override event EventHandler RemoveTextBoxRequested;
+
         public override void CancelProcess()
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void RequestCreateTextBox(string msg, int PositionX, int PositionY)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void RequestRemoveTextBox()
         {
             throw new NotImplementedException();
         }

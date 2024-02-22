@@ -18,6 +18,9 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
         private CancellationTokenSource _cancellationTokenSource;
         private bool isCancellationRequested = false;
 
+        public override event EventHandler<TextBoxInfoEventArgs> CreateTextBoxRequested;
+        public override event EventHandler RemoveTextBoxRequested;
+
         public WorkStation_Automatic_Type2(SessionApp _sessionApp)
         {
             sessionApp = _sessionApp;
@@ -139,6 +142,16 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
                 showMessageAndImage("Finaliza Proceso de atornillado", @"C:\Users\bas1s\OneDrive\Imágenes\Trabajo\CONINTEC\Success.gif", true);
                 sessionApp.TaksRunExecuting = false;
             });
+        }
+
+        public override void RequestCreateTextBox(string msg, int PositionX, int PositionY)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void RequestRemoveTextBox()
+        {
+            throw new NotImplementedException();
         }
     }
 }

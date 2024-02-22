@@ -173,10 +173,9 @@
                         <Label Content="Tiempo (s):" HorizontalAlignment="Left" VerticalAlignment="Bottom" Grid.Column="3" Grid.Row="0" Grid.ColumnSpan="2" Margin="19.8,0,0,0.2"/>
                         <TextBox x:Name="cycletime"                                  
                                  Style="{StaticResource BaseTextBox}" 
-                                 Text="{Binding Seconds, StringFormat=N2}"
-                                 IsReadOnly="True"
-                                 VerticalAlignment="Top" Grid.Column="3" Grid.ColumnSpan="3" Margin="19.8,39,19.4,0" Grid.RowSpan="2"/>
-                        <Button x:Name="Screw_Scrap" Click="Screw_Scrap_Click" Style="{StaticResource BaseButton}" Content="Tornillo descartado" VerticalAlignment="Top" Grid.Column="5" Grid.ColumnSpan="3" Margin="19.6,39,19.6,0" Grid.RowSpan="2"/>
+                                 Text="{Binding Seconds, StringFormat=N2}"                                 
+                                 VerticalAlignment="Top" Grid.Column="3" Grid.ColumnSpan="3" Margin="19.8,39,19.4,0" Grid.RowSpan="2" Width="200" HorizontalAlignment="Left"/>
+                        <Button x:Name="Screw_Scrap" Click="Screw_Scrap_Click" Visibility="Visible" Style="{StaticResource BaseButton}" Content="Tornillo descartado" VerticalAlignment="Top" Grid.Column="5" Grid.ColumnSpan="3" Margin="19.6,39,19.6,0" Grid.RowSpan="2"/>
                         
                         <Label Content="FIS:" HorizontalAlignment="Left" VerticalAlignment="Bottom" Grid.Column="1" Grid.Row="2" Grid.ColumnSpan="2" Margin="0,0,0,38.2" Grid.RowSpan="2"/>
                         <Ellipse x:Name="Fis_enabled_display" Fill="Aqua" Stroke="Gray" Width="20" Height="20" HorizontalAlignment="Left" VerticalAlignment="Top" Grid.Column="1" Grid.Row="3" Margin="0,0.2,0,0"/>
@@ -193,11 +192,13 @@
                     <Frame.Effect>
                         <DropShadowEffect Color="Black" ShadowDepth="1" RenderingBias="Quality"/>
                     </Frame.Effect>
-
+                    
                 </Frame>
+                <!--<Label x:Name="lblRunCycle" Content="{Binding MessageProcess, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Grid.Row="1" Margin="63,0,0,413" Width="597"/>
+                <Image x:Name="imgImageOfProcess" Source="{Binding ImageOfProcess, UpdateSourceTrigger=PropertyChanged}"   Width="1013" Margin="63,48,54,50" Grid.Row="1" Stretch="Uniform" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>-->
                 <Label x:Name="lblRunCycle" Content="{Binding MessageProcess, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Grid.Row="1" Margin="63,0,0,413" Width="597"/>
-                <Image x:Name="imgImageOfProcess" Source="{Binding ImageOfProcess, UpdateSourceTrigger=PropertyChanged}"   Width="1013" Margin="63,48,54,50" Grid.Row="1" Stretch="Uniform" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
-                
+                <Image x:Name="imgImageOfProcess" Source="{Binding ImageOfProcess, UpdateSourceTrigger=PropertyChanged}" Width="1013" Margin="63,48,54,50" Grid.Row="1" Stretch="Uniform" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+
 
             </Grid>
 
