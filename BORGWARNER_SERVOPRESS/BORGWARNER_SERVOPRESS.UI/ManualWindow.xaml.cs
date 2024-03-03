@@ -397,6 +397,9 @@ namespace BORGWARNER_SERVOPRESS.UI
             cancelllationToken_Brushes_Sensor.Cancel();
             isRunningBrushes = false;
             Debug.WriteLine($"{DateTime.Now} - " + "Termine de pintar los sensores en la pantalla");
+            pageManager.ChangeBackgroundColor(Brushes.LightBlue, new List<string> { "Card1_Input_0","Card1_Input_1","Card1_Input_2","Card1_Input_3","Card1_Input_4","Card1_Input_5","Card1_Input_6","Card1_Input_7",
+                                                                                    "Card2_Input_0","Card2_Input_1","Card2_Input_2","Card2_Input_3","Card2_Input_4","Card2_Input_5","Card2_Input_6","Card2_Input_7",
+                                                                                    "Card3_Input_0","Card3_Input_1","Card3_Input_2","Card3_Input_3","Card3_Input_4","Card3_Input_5","Card3_Input_6","Card3_Input_7" });
         }
      
         private async void BrushesSensors(int sensingTime)

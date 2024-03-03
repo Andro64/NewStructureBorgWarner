@@ -16,12 +16,13 @@ namespace BORGWARNER_SERVOPRESS.DataAccessLayer
         {
             sessionApp = _sessionApp;
             fis = new FIS();
+            initialize();
         }
         public void initialize()
         {
             
-            fis.IP = sessionApp.connectionsWorkStation.FirstOrDefault(x => x.idTypeDevice.Equals(eTypeDevices.FIS) && x.idTypeConnection.Equals(eTypeConnection.Main)).IP;
-            fis.Port = sessionApp.connectionsWorkStation.FirstOrDefault(x => x.idTypeDevice.Equals(eTypeDevices.FIS) && x.idTypeConnection.Equals(eTypeConnection.Main)).Port;            
+            fis.IP = sessionApp.connectionsWorkStation.FirstOrDefault(x => x.idTypeDevice.Equals((int)eTypeDevices.FIS) && x.idTypeConnection.Equals((int)eTypeConnection.Main)).IP;
+            fis.Port = sessionApp.connectionsWorkStation.FirstOrDefault(x => x.idTypeDevice.Equals((int)eTypeDevices.FIS) && x.idTypeConnection.Equals((int)eTypeConnection.Main)).Port;            
             fis.Process = sessionApp.settings.FirstOrDefault(x => x.setting.Contains("fis_process")).valueSetting;
             fis.Station = sessionApp.settings.FirstOrDefault(x => x.setting.Contains("fis_station")).valueSetting;            
         }

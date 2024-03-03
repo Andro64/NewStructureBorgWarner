@@ -2,6 +2,7 @@
 using BORGWARNER_SERVOPRESS.DataModel;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -23,13 +24,25 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
         }
         public void Initialize()
         {
-            TCPcamara = new TCP_IP(camara.IP,camara.Port);
-            camara = new Camara()
+            try
             {
-                IP = sessionApp.connectionsWorkStation.FirstOrDefault(x => x.idTypeDevice.Equals(eTypeDevices.Scanner) && x.idTypeConnection.Equals(eTypeConnection.CognexD900)).IP,
-                Port = sessionApp.connectionsWorkStation.FirstOrDefault(x => x.idTypeDevice.Equals(eTypeDevices.Scanner) && x.idTypeConnection.Equals(eTypeConnection.CognexD900)).Port
-            };
-            TCPcamara.Conectar();
+                camara = new Camara()
+                {
+                    IP = sessionApp.connectionsWorkStation.FirstOrDefault(x => x.idTypeDevice.Equals((int)eTypeDevices.Camara) && x.idTypeConnection.Equals((int)eTypeConnection.CognexD900)).IP,
+                    Port = sessionApp.connectionsWorkStation.FirstOrDefault(x => x.idTypeDevice.Equals((int)eTypeDevices.Camara) && x.idTypeConnection.Equals((int)eTypeConnection.CognexD900)).Port
+                };
+
+                TCPcamara = new TCP_IP(camara.IP, camara.Port);
+                TCPcamara.Conectar();
+            }
+            catch(Exception ex)
+            {
+                Debug.WriteLine($"{DateTime.Now} - " + ex.Message);
+            }
+        }
+        public bool isConnect()
+        {
+            return TCPcamara.conectado;
         }
         public void getNameImageResultFromCamera()
         {

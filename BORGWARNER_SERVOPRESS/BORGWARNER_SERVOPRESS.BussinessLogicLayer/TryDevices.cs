@@ -32,9 +32,16 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
         int quantityScrews;
         public string TryScannerLON(eTypeConnection typeScanner)
         {
-            scanner = new Scanner(sessionApp, typeScanner);
-            serial = scanner.ScanQR("LON");
-            Debug.WriteLine($"{DateTime.Now} - "  + $"Prueba {typeScanner} LEE CODIGO SERIAL: {serial}");
+            try
+            {
+                scanner = new Scanner(sessionApp, typeScanner);
+                serial = scanner.ScanQR("LON");
+                Debug.WriteLine($"{DateTime.Now} - " + $"Prueba {typeScanner} LEE CODIGO SERIAL: {serial}");
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"{DateTime.Now} - " + ex.Message);
+            }
             return serial;
         }
         public void TryFIS()
@@ -47,7 +54,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
                 Debug.WriteLine($"{DateTime.Now} - "  + "Si paso");
             }
         }
-        public string TryFIS(string numSerial)
+        public string TryFIS_BREQToFIS(string numSerial)
         {
             string ResultFIS = string.Empty;
             try
@@ -57,9 +64,25 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
             catch(Exception ex)
             {
                 Debug.WriteLine($"{DateTime.Now} - "  + ex.Message);
+                return "Error";
             }
             
             return ResultFIS;           
+        }
+        public string TryFIS_BCMP(string numSerial)
+        {
+            string ResultFIS = string.Empty;
+            try
+            {
+                ResultFIS = new CommunicationFIS(sessionApp).BCMP(numSerial,true);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"{DateTime.Now} - " + ex.Message);
+                return "Error";
+            }
+
+            return ResultFIS;
         }
 
         public void TryErgoArm()
@@ -96,8 +119,13 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
         {
             sessionApp.PathImageResultFromCamera = @"C:\Users\bas1s\OneDrive\Imágenes\Trabajo\7-buenas-razones-para-tomar-cerveza.png";
 
-            #if !DEBUG
+         //   #if !DEBUG
             visionSystem = new VisionSystem(sessionApp);
+            if(!visionSystem.isConnect())
+            {
+                Debug.WriteLine($"{DateTime.Now} - " + "No existe conexion con la camara");
+                return;
+            }
             if (!visionSystem.FirstInspectionAttempt())
             {
                 Debug.WriteLine($"{DateTime.Now} - "  + "Fallo el intento");
@@ -108,7 +136,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
                 visionSystem.getNameImageResultFromCamera();
                 visionSystem.Disconnect();
             }
-            #endif
+            //#endif
         }
         public void TryScrewdriver()
         {

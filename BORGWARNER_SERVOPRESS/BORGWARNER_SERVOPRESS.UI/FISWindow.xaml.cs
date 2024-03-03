@@ -137,13 +137,13 @@ namespace BORGWARNER_SERVOPRESS.UI
         {
             TryDevices tryDevices = new TryDevices(sessionApp);
 
-            if (string.IsNullOrEmpty(txtBREQ.Text))
+            if (!string.IsNullOrEmpty(txtBREQ.Text))
             {
-                txtBCNF.Text = tryDevices.TryFIS(txtBREQ.Text);
+                txtBCNF.Text = tryDevices.TryFIS_BREQToFIS(txtBREQ.Text);
             }
-            if (string.IsNullOrEmpty(txtBCMP.Text))
+            if (!string.IsNullOrEmpty(txtBCMP.Text))
             {
-                txtBACK.Text = tryDevices.TryFIS(txtBCMP.Text);
+                txtBACK.Text = tryDevices.TryFIS_BCMP(txtBCMP.Text);
             }
         }
     }

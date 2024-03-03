@@ -15,7 +15,8 @@ namespace BORGWARNER_SERVOPRESS.DataModel
         Scan_1 = 5,
         Scan_2 = 6,
         CognexD900 = 7,
-        CognexD2800 = 8
+        CognexD2800 = 8,
+        Camara3 = 9
 
     }
     public enum eTypeDevices

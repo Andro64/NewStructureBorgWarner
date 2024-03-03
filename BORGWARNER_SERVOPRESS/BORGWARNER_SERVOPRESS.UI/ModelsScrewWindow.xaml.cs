@@ -1,5 +1,7 @@
-﻿using BORGWARNER_SERVOPRESS.BussinessLogicLayer.Views;
+﻿using BORGWARNER_SERVOPRESS.BussinessLogicLayer;
+using BORGWARNER_SERVOPRESS.BussinessLogicLayer.Views;
 using BORGWARNER_SERVOPRESS.DataModel;
+using System;
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
@@ -146,5 +148,16 @@ namespace BORGWARNER_SERVOPRESS.UI
             }
         }
 
+        private void btnScan_Click(object sender, RoutedEventArgs e)
+        {
+            string selectedItem = cboScanners.SelectedItem?.ToString();
+
+            if (selectedItem != null && Enum.TryParse(selectedItem, true, out eTypeConnection tipoConexion))
+            {
+                txtSerial.Text = new TryDevices(sessionApp).TryScannerLON(tipoConexion);
+            }
+
+
+        }
     }
 }
