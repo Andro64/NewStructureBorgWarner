@@ -43,6 +43,7 @@
   <ItemGroup>
     <Compile Include="ActionModel.cs" />
     <Compile Include="Camara.cs" />
+    <Compile Include="CommandCamara.cs" />
     <Compile Include="ConnectionWorkStation.cs" />
     <Compile Include="Devices.cs" />
     <Compile Include="Enums.cs" />

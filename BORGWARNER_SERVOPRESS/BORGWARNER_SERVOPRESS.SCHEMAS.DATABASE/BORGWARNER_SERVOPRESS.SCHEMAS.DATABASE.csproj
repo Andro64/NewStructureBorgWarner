@@ -47,6 +47,7 @@
     <Folder Include="fis_history\" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="cameras\cameras.sql" />
     <Content Include="connections\connections.sql" />
     <Content Include="General\general_scripts.sql" />
     <Content Include="models_screw\models_screw.sql" />

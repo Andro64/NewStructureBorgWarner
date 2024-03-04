@@ -13,6 +13,7 @@ namespace BORGWARNER_SERVOPRESS.DataModel
         public string connStr { get; set; }
         public int statusCiclo { get; set; }
         public List<Settings> settings { get; set; }
+        public List<CommandCamara> commandCamaras { get; set; }
         public User user { get; set; }
         public List<ConnectionWorkStation> connectionsWorkStation { get; set; }
         public IOCardType_M1 Sensors_M1 { get; set; } = new IOCardType_M1();

@@ -269,7 +269,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
                 //    Debug.WriteLine($"{DateTime.Now} - "  + "ESPERA ACTIVACION DE OPTO ");
                 //}
 
-                visionSystem = new VisionSystem(sessionApp);
+                visionSystem = new VisionSystem(sessionApp,eTypeConnection.Camara_1);
                 if (!visionSystem.FirstInspectionAttempt())
                 {
                     if (!sensorsIO.WasPressedOpto())
@@ -321,7 +321,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
                         Debug.WriteLine($"{DateTime.Now} - "  + "ESPERA ACTIVACION DE OPTO ");
                     }
 
-                    visionSystem = new VisionSystem(sessionApp);
+                    visionSystem = new VisionSystem(sessionApp,eTypeConnection.Camara_2);
                     if (!visionSystem.FirstInspectionAttempt())
                     {
                         if (!sensorsIO.WasPressedOpto())
@@ -412,7 +412,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
                             Debug.WriteLine($"{DateTime.Now} - "  + "OPTO ACTIVADO");
                         }
 
-                        visionSystem = new VisionSystem(sessionApp);
+                        visionSystem = new VisionSystem(sessionApp,eTypeConnection.Camara_3);
                         if (!visionSystem.FirstInspectionAttempt())
                         {
                             if (!sensorsIO.WasPressedOpto())

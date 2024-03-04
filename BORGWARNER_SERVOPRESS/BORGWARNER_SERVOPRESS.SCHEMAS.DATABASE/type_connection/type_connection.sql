@@ -10,5 +10,6 @@ INSERT INTO type_connection (description) VALUES ('Emergency');
 
 INSERT INTO type_connection (description) VALUES ('Scan_1');
 INSERT INTO type_connection (description) VALUES ('Scan_2');
-INSERT INTO type_connection (description) VALUES ('CognexD900');
-INSERT INTO type_connection (description) VALUES ('CognexD2800');
+INSERT INTO type_connection (description) VALUES ('Camara_1');
+INSERT INTO type_connection (description) VALUES ('Camara_2');
+INSERT INTO type_connection (description) VALUES ('Camara_3');

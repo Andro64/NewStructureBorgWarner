@@ -27,6 +27,7 @@ namespace BORGWARNER_SERVOPRESS.UI
             sessionApp.typeWorkstation = settingsGeneral.getTypeWorksatiton();
             sessionApp.settings = settingsGeneral.getSettings(sessionApp.typeWorkstation.id);
             sessionApp.connectionsWorkStation = settingsGeneral.getConnections(sessionApp.typeWorkstation.id);
+            sessionApp.commandCamaras = settingsGeneral.getCommandCamera();
 
             if (sessionApp.settings.FirstOrDefault(x => x.setting.Equals("Path_LOG")) != null)
             {

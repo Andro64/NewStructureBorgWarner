@@ -52,6 +52,16 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.Views
                 OnPropertyChanged(nameof(ScannerSelected));
             }
         }
+        private string _cameraSelected;
+        public string CameraSelected
+        {
+            get { return _cameraSelected; }
+            set
+            {
+                _cameraSelected = value;
+                OnPropertyChanged(nameof(CameraSelected));
+            }
+        }
         private string _programsSelected;
         public string ProgramsSelected
         {
@@ -65,6 +75,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.Views
 
         public ObservableCollection<string> lstScanners { get; set; } = new ObservableCollection<string>();
         public ObservableCollection<string> lstPrograms { get; set; } = new ObservableCollection<string>();
+        public ObservableCollection<string> lstCameras { get; set; } = new ObservableCollection<string>();
 
         public ViewManual(SessionApp _sessionApp)
         {
@@ -73,17 +84,29 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.Views
             ShowDate();
             ShowData();
             populateScanners();
+            populateCameras();
             populatePrograms();
         }
 
         private void populateScanners()
         {
             lstScanners = new ObservableCollection<string>();
-            foreach (var item in sessionApp.connectionsWorkStation.Where(x => x.idTypeDevice.Equals(5)).ToList())
+            foreach (var item in sessionApp.connectionsWorkStation.Where(x => x.idTypeDevice.Equals((int)eTypeDevices.Scanner)).ToList()) //4 - Camaras
             {
                 lstScanners.Add(item.TypeConnection);
             }
             ScannerSelected = lstScanners.FirstOrDefault();
+        }
+        private void populateCameras()
+        {
+            lstCameras = new ObservableCollection<string>();
+            string typeCamara;
+            foreach (var item in sessionApp.connectionsWorkStation.Where(x => x.idTypeDevice.Equals((int)eTypeDevices.Camara)).ToList()) //5 - Scanner
+            {
+                typeCamara = sessionApp.commandCamaras.FirstOrDefault(x=>x.des_type_connection.Equals(item.TypeConnection)).des_type_camara;
+                lstCameras.Add(item.TypeConnection + " - " + typeCamara);
+            }
+            CameraSelected = lstCameras.FirstOrDefault();
         }
         private void populatePrograms()
         {
