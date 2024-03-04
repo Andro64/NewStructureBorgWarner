@@ -45,6 +45,7 @@
     <Compile Include="Camara.cs" />
     <Compile Include="CommandCamara.cs" />
     <Compile Include="ConnectionWorkStation.cs" />
+    <Compile Include="DataFIS.cs" />
     <Compile Include="Devices.cs" />
     <Compile Include="Enums.cs" />
     <Compile Include="EpsonRobot.cs" />

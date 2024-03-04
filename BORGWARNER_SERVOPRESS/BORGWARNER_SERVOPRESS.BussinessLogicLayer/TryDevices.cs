@@ -25,6 +25,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
         ErgoArm ergoArm;
         ScrewDriver screwdriver;
         SensorsIO sensorsIO;
+        DataFIS dataFIS;
 
         string serial;
         string resultFIS;
@@ -47,19 +48,18 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
         public void TryFIS()
         {
             serial = "serial de prueba";
-            fIS = new CommunicationFIS(sessionApp);
-            resultFIS = fIS.SendBREQToFIS(serial);
+            fIS = new CommunicationFIS(sessionApp);            
+            dataFIS = fIS.SendBREQToFIS(serial);
             if (resultFIS.Contains("PASS"))
             {
                 Debug.WriteLine($"{DateTime.Now} - "  + "Si paso");
             }
         }
         public string TryFIS_BREQToFIS(string numSerial)
-        {
-            string ResultFIS = string.Empty;
+        {            
             try
             {
-                ResultFIS = new CommunicationFIS(sessionApp).SendBREQToFIS(numSerial);
+                dataFIS = new CommunicationFIS(sessionApp).SendBREQToFIS(numSerial);
             }
             catch(Exception ex)
             {
@@ -67,14 +67,14 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
                 return "Error";
             }
             
-            return ResultFIS;           
+            return dataFIS.from_fis;           
         }
         public string TryFIS_BCMP(string numSerial)
         {
             string ResultFIS = string.Empty;
             try
             {
-                ResultFIS = new CommunicationFIS(sessionApp).BCMP(numSerial,true);
+                dataFIS = new CommunicationFIS(sessionApp).BCMP(numSerial,true);
             }
             catch (Exception ex)
             {
@@ -82,7 +82,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
                 return "Error";
             }
 
-            return ResultFIS;
+            return dataFIS.from_fis;
         }
 
         public void TryErgoArm()
