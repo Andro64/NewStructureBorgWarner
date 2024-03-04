@@ -115,12 +115,12 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
                 }
             }
         }
-        public void TryVisionSystem()
+        public void TryVisionSystem(eTypeConnection typeCamera)
         {
             sessionApp.PathImageResultFromCamera = @"C:\Users\bas1s\OneDrive\Imágenes\Trabajo\7-buenas-razones-para-tomar-cerveza.png";
-
+          
          //   #if !DEBUG
-            visionSystem = new VisionSystem(sessionApp);
+            visionSystem = new VisionSystem(sessionApp, typeCamera);
             if(!visionSystem.isConnect())
             {
                 Debug.WriteLine($"{DateTime.Now} - " + "No existe conexion con la camara");
@@ -137,6 +137,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
                 visionSystem.Disconnect();
             }
             //#endif
+           
         }
         public void TryScrewdriver()
         {

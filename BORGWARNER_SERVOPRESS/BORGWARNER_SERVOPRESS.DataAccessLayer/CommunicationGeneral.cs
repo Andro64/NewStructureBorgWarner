@@ -215,5 +215,46 @@ namespace BORGWARNER_SERVOPRESS.DataAccessLayer
             return lstTypeWorkstation;
         }
 
+        public List<CommandCamara> getCommandCamera()
+        {
+            List<CommandCamara> lstCamera = new List<CommandCamara>();
+            try
+            {
+                MYSQL_DB mYSQL = new MYSQL_DB(sessionApp.connStr);
+                DataTable resultData = mYSQL.ExecuteSP("SP_GET_COMMAND_CAMERAS");
+                lstCamera = resultData.AsEnumerable().Select(row =>
+                new CommandCamara
+                {
+                    id = row.Field<int>("id"),
+                    id_type_connection = row.Field<int>("id_type_connection"),
+                    des_type_connection = row.Field<string>("des_type_connection"),
+                    id_type_camara = row.Field<int>("id_type_camara"),
+                    des_type_camara = row.Field<string>("des_type_camara"),
+                    id_connections_by_workstation = row.Field<int>("id_connections_by_workstation"),
+                    ip = row.Field<string>("ip"),
+                    port = row.Field<int>("port"),
+                    command_user = row.Field<string>("command_user"),
+                    command_setstring = row.Field<string>("command_setstring"),
+                    command_setevent = row.Field<string>("command_setevent"),
+                    command_getvalue_test = row.Field<string>("command_setevent"),
+                    command_getvalue_real = row.Field<string>("command_getvalue_real"),
+                    command_getjob = row.Field<string>("command_getjob"),
+                    command_setjob = row.Field<string>("command_setjob"),
+                    command_getvalue_test_1 = row.Field<string>("command_getvalue_test_1"),
+                    command_getvalue_real_1 = row.Field<string>("command_getvalue_real_1"),
+                    command_getvalue_test_2 = row.Field<string>("command_getvalue_test_2"),
+                    command_getvalue_real_2 = row.Field<string>("command_getvalue_real_2")
+                }).ToList();
+
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"{DateTime.Now} - " + ex.Message);
+                throw;
+            }
+            return lstCamera;
+
+        }
+
     }
 }

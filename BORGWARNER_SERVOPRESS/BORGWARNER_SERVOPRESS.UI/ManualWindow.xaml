@@ -163,7 +163,7 @@
                                     <RowDefinition Height="auto" />
                                     <RowDefinition Height="auto" />
                                     <RowDefinition Height="auto" />
-                                </Grid.RowDefinitions>                                
+                                </Grid.RowDefinitions>
                                 <Button x:Name="btnActivarCardIO" 
                                         Grid.Row="0"
                                         Style="{StaticResource BaseButton}"
@@ -362,7 +362,7 @@
                                         <TextBox x:Name="Encoder3" Visibility="Hidden" TextWrapping="Wrap" Style="{StaticResource BaseTextBox}" Grid.Row="1" Grid.Column="1"/>
                                     </Grid>
                                 </GroupBox>
-                            </Grid>                        
+                            </Grid>
                         </Grid>
                     </TabItem>
                     <TabItem Header="Escanner">
@@ -375,21 +375,22 @@
                             </Grid.RowDefinitions>
                             <Grid.ColumnDefinitions>
                                 <!-- Definir dos columnas -->
-                                <ColumnDefinition Width="217*"/>
+                                <ColumnDefinition Width="174*"/>
+                                <ColumnDefinition Width="43*"/>
                                 <ColumnDefinition Width="157*"/>
                                 <ColumnDefinition Width="375*"/>
                                 <ColumnDefinition Width="375*"/>
                             </Grid.ColumnDefinitions>
 
-                            <Button x:Name="Scanner_2" Style="{StaticResource BaseButton}" Content="Escanea" Click="Scanner_Click" Grid.Column="2" Margin="0.2,11,374.4,10" Grid.ColumnSpan="2"/>
+                            <Button x:Name="Scanner_2" Style="{StaticResource BaseButton}" Content="Escanea" Click="Scanner_Click" Grid.Column="3" Margin="0.4,11,374,10.2" Grid.ColumnSpan="2"/>
 
                             <ComboBox x:Name="cboScanners" 
                           ItemsSource="{Binding lstScanners}" 
                           SelectedItem="{Binding ScannerSelected}"                           
                           Style="{StaticResource BaseComboBox}" 
-                          HorizontalAlignment="Stretch" Grid.ColumnSpan="2"  Grid.Column="0" Margin="0,11,97.404,10" />
+                          HorizontalAlignment="Stretch" Grid.ColumnSpan="3"  Grid.Column="0" Margin="0,11,97.6,10.2" />
 
-                            <TextBox x:Name="serialCode" Style="{StaticResource BaseTextBox}" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" TextWrapping="Wrap" Grid.Row="1" Grid.ColumnSpan="3" />
+                            <TextBox x:Name="serialCode" Style="{StaticResource BaseTextBox}" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" TextWrapping="Wrap" Grid.ColumnSpan="5" Margin="0,51,375,534.8" Grid.RowSpan="3" />
 
                         </Grid>
                     </TabItem>
@@ -397,7 +398,7 @@
                         <Grid>
                             <Grid.RowDefinitions>
                                 <!-- Definir dos filas -->
-                                <RowDefinition Height="Auto"/>                                
+                                <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="10"/>
                                 <RowDefinition Height="30"/>
                                 <RowDefinition Height="*"/>
@@ -409,7 +410,13 @@
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
-                            <Button x:Name="Camara_1_Btn" Style="{StaticResource BaseButton}"  Content="Capturar Imagen" Click="Camara_1_Btn_Click" Grid.Column="0" Grid.Row="2"/>
+                            <ComboBox x:Name="cboCameras" 
+                                        ItemsSource="{Binding lstCameras}" 
+                                        SelectedItem="{Binding CameraSelected}"                                        
+                                        Style="{StaticResource BaseComboBox}" 
+                                        Grid.Row="1" Grid.Column="0" Margin="20,10,42.4,575.8" Grid.RowSpan="3"/>
+                            
+                            <Button x:Name="Camara_1_Btn" Style="{StaticResource BaseButton}"  Content="Capturar Imagen" Click="Camara_1_Btn_Click" Grid.Column="1" Grid.Row="2"/>
                             <Image x:Name="Camara_1_Manual_Image" Grid.Row="3" Grid.ColumnSpan="4" Margin="10" Visibility="visible" Source="BW.png"/>
                         </Grid>
                     </TabItem>

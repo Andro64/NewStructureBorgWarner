@@ -23,6 +23,10 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
         {            
             return communication.getSettings();
         }
+        public List<CommandCamara> getCommandCamera()
+        {
+            return communication.getCommandCamera();
+        }
         public List<DataModel.Settings> getSettings(int TypeWorkstation)
         {
             return communication.getSettings(TypeWorkstation);

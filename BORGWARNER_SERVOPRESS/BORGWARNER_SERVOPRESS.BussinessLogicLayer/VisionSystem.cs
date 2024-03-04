@@ -16,26 +16,47 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
         SessionApp sessionApp;
         Camara camara;
         TCP_IP TCPcamara;
+        eTypeConnection typeCamera;
+        CommandCamara commands;
 
-        public VisionSystem(SessionApp _sessionApp)
+        public VisionSystem(SessionApp _sessionApp, eTypeConnection _typeCamera)
         {
             sessionApp = _sessionApp;
+            typeCamera = _typeCamera;
+            commands = new CommandCamara();
             Initialize();
         }
         public void Initialize()
         {
             try
             {
+                commands = sessionApp.commandCamaras.FirstOrDefault(x => x.id_type_connection.Equals((int)typeCamera));
                 camara = new Camara()
                 {
-                    IP = sessionApp.connectionsWorkStation.FirstOrDefault(x => x.idTypeDevice.Equals((int)eTypeDevices.Camara) && x.idTypeConnection.Equals((int)eTypeConnection.CognexD900)).IP,
-                    Port = sessionApp.connectionsWorkStation.FirstOrDefault(x => x.idTypeDevice.Equals((int)eTypeDevices.Camara) && x.idTypeConnection.Equals((int)eTypeConnection.CognexD900)).Port
+                    IP = commands.ip, //sessionApp.connectionsWorkStation.FirstOrDefault(x => x.idTypeDevice.Equals((int)eTypeDevices.Camara) && x.idTypeConnection.Equals((int)typeCamera)).IP,
+                    Port = commands.port//sessionApp.connectionsWorkStation.FirstOrDefault(x => x.idTypeDevice.Equals((int)eTypeDevices.Camara) && x.idTypeConnection.Equals((int)typeCamera)).Port
                 };
 
                 TCPcamara = new TCP_IP(camara.IP, camara.Port);
-                TCPcamara.Conectar();
+
             }
-            catch(Exception ex)
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"{DateTime.Now} - " + ex.Message);
+            }
+        }
+        private void Connect()
+        {
+            try
+            {
+                TCPcamara.Conectar();
+                if (commands.command_user != "")
+                {
+                    TCPcamara.EnviarComando(commands.command_user + (char)13 + (char)10);
+                    TCPcamara.EnviarComando("" + (char)13 + (char)10);
+                }
+            }
+            catch (Exception ex)
             {
                 Debug.WriteLine($"{DateTime.Now} - " + ex.Message);
             }
@@ -44,6 +65,50 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
         {
             return TCPcamara.conectado;
         }
+        private bool ReadingBait()
+        {
+            try
+            {
+                string FileName = string.Empty;
+                string result = string.Empty;
+                if (commands.command_setstring != "")
+                {
+                    FileName = sessionApp.QR.scan1.Substring(0, (sessionApp.QR.scan1.Length - 1));
+                    TCPcamara.EnviarComando(commands.command_setstring + FileName + (char)13 + (char)10);
+                    Thread.Sleep(150);
+                }
+
+                TCPcamara.EnviarComando(commands.command_setevent + (char)13 + (char)10);
+                TCPcamara.EnviarComando(commands.command_getvalue_test + (char)13 + (char)10);
+                Thread.Sleep(500);
+                result = TCPcamara.Leer();
+                return ValidateResponse(result);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"{DateTime.Now} - " + ex.Message);
+            }
+            return false;
+        }
+
+        private bool ReadingReal()
+        {
+            try
+            {
+                string result = string.Empty;
+                TCPcamara.EnviarComando(commands.command_getvalue_real + (char)13 + (char)10);
+                Thread.Sleep(500);
+                result = TCPcamara.Leer();
+                return ValidateResponse(result);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"{DateTime.Now} - " + ex.Message);
+            }
+            return false;
+        }
+
+
         public void getNameImageResultFromCamera()
         {
             Thread.Sleep(300);
@@ -52,14 +117,27 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
             string nameFile = file.Remove(file.Length - 3) + "jpg";
             Thread.Sleep(500);
             sessionApp.PathImageResultFromCamera = nameFile;
-        } 
+        }
         public void Disconnect()
         {
             TCPcamara.Desconectar();
         }
-               
+
         public bool FirstInspectionAttempt()
         {
+            Connect();
+            if (!isConnect())
+            {
+                return false;
+            }
+            if (!ReadingBait())
+            {
+                return false;
+            }
+            return ReadingReal();
+
+
+            /*
             string readingReuslt;
             readingReuslt = tryCommunicationCamera("SFEXP 5.00" + (char)13 + (char)10);
             Thread.Sleep(100);
@@ -69,40 +147,41 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
                 Thread.Sleep(10); 
             }
 
-            return validateInspectionResult("GVOutput" + (char)13 + (char)10);                  
+            return validateInspectionResult("GVOutput" + (char)13 + (char)10);       */
+
         }
-        
+
         public bool SecondInspectionAttempt()
         {
-            string readingReuslt;           
+            string readingReuslt;
 
             readingReuslt = tryCommunicationCamera("SFEXP 20.00" + (char)13 + (char)10);
             Thread.Sleep(100);
 
-            if (ValidateResponse(readingReuslt)) 
-            { 
-                Thread.Sleep(10); 
+            if (ValidateResponse(readingReuslt))
+            {
+                Thread.Sleep(10);
             }
 
-            if(validateConnectorCable() && validateRountingCable())
+            if (validateConnectorCable() && validateRountingCable())
             {
                 return true;
             }
             return false;
         }
 
-       
+
         public bool ThirdInspectionAttempt()
         {
             string readingReuslt;
             readingReuslt = tryCommunicationCamera("SFEXP 10.00" + (char)13 + (char)10);
             Thread.Sleep(100);
 
-            if (ValidateResponse(readingReuslt)) 
-            { 
-                Thread.Sleep(10); 
+            if (ValidateResponse(readingReuslt))
+            {
+                Thread.Sleep(10);
             }
-            return validateInspectionResult("GVResultado" + (char)13 + (char)10);            
+            return validateInspectionResult("GVResultado" + (char)13 + (char)10);
         }
 
         private bool validateConnectorCable()
@@ -131,6 +210,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
         {
             if (readingReuslt.Contains("1\r\n") || readingReuslt.Contains("1.000\r\n"))
             {
+                Thread.Sleep(500);
                 return true;
             }
             return false;
@@ -157,6 +237,6 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
                 .First().ToString();
 
             return $"{path}\\{file}";
-        }        
+        }
     }
 }

@@ -346,20 +346,7 @@ namespace BORGWARNER_SERVOPRESS.UI
         {
 
         }
-
-        private void Camara_1_Btn_Click(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                tryDevices.TryVisionSystem();              
-                Uri uri = new Uri(sessionApp.PathImageResultFromCamera);
-                Camara_1_Manual_Image.Source = new BitmapImage(uri);
-            }
-            catch(Exception ex)
-            {
-                Debug.WriteLine($"{DateTime.Now} - Error" + ex.Message);
-            }
-        }
+               
 
         private void TestScrewdriver_Btn_Click(object sender, RoutedEventArgs e)
         {
@@ -489,6 +476,36 @@ namespace BORGWARNER_SERVOPRESS.UI
             else
             {                
                 MessageBox.Show("No se ha seleccionado ningún elemento.");
+            }
+        }
+
+        private void Camara_1_Btn_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                if(cboCameras.SelectedItem != null)
+                {
+                    eTypeConnection typeConnection;
+                    string cameraSelected = cboCameras.SelectedItem.ToString().Substring(0, cboCameras.SelectedItem.ToString().IndexOf(" - "));
+                    if (Enum.TryParse(cameraSelected, out typeConnection))
+                    {
+                        tryDevices.TryVisionSystem(typeConnection);
+                        Uri uri = new Uri(sessionApp.PathImageResultFromCamera);
+                        Camara_1_Manual_Image.Source = new BitmapImage(uri);
+                    }
+                    else
+                    {
+                        MessageBox.Show("No existe la camara.");
+                    }
+                }
+                else 
+                {
+                    MessageBox.Show("No se ha seleccionado ningún elemento.");
+                }               
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"{DateTime.Now} - Error" + ex.Message);
             }
         }
     }
