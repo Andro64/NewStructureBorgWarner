@@ -205,7 +205,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
             Screws screws;
             ErgoArm ergoArm;
             ScrewDriver screwdriver;
-
+            DataFIS dataFIS;
 
             string serial;
             string resultFIS;
@@ -253,9 +253,9 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
             if (isCancellationRequested) { return; };
 
             fIS = new CommunicationFIS(sessionApp);
-            resultFIS = fIS.SendBREQToFIS(serial);
+            dataFIS = fIS.SendBREQToFIS(serial);
 
-            if (resultFIS.Contains("PASS"))
+            if (dataFIS.from_fis.Contains("PASS"))
             {
                 Debug.WriteLine($"{DateTime.Now} - "  + "PIDE A OPERADOR COLOCAR ULTRA CAP BOARD PAD Y ACTIVAR OPTO");
                 
@@ -310,9 +310,9 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
                 Debug.WriteLine($"{DateTime.Now} - "  + $"SCANNER 1 LEE CODIGO SERIAL: {serial}");
 
                 fIS = new CommunicationFIS(sessionApp);
-                resultFIS = fIS.SendBREQToFIS(serial);
+                dataFIS = fIS.SendBREQToFIS(serial);
 
-                if (resultFIS.Contains("PASS"))
+                if (dataFIS.from_fis.Contains("PASS"))
                 {
                     Debug.WriteLine($"{DateTime.Now} - "  + "PIDE A OPERADOR TOMAR HARNESS, CONECTAR A ULTRA CAP BOARD, COLOCAR EN HOUSING, REALIZAR RUTEO DE HARNESS SOBRE HOUSING Y PRESIONAR OPTO");
                     if (!sensorsIO.UCBdConnected_RoutingHarness_PlaceInHousing())
@@ -440,7 +440,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
                         Debug.WriteLine($"{DateTime.Now} - "  + "INSPECCION OK ENVIA BCMP A FIS");
 
                         fIS = new CommunicationFIS(sessionApp);
-                        resultFIS = fIS.BCMP(serial,true); //?Cual serial se envia y el pass que signifca?
+                        dataFIS = fIS.BCMP(serial,true); //?Cual serial se envia y el pass que signifca?
                         
                         Debug.WriteLine($"{DateTime.Now} - "  + "DETECTA CLAMP DE PALLET RETRAIDO");
                         if (!sensorsIO.DetectsRetractedPalletClamp())
