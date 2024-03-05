@@ -112,7 +112,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
         public void getNameImageResultFromCamera()
         {
             Thread.Sleep(300);
-            string file = GetLatestFile(sessionApp.settings.FirstOrDefault(x => x.setting.Equals("Cognex_Camara_Path")).valueSetting);
+            string file = GetLatestFile(commands.path_image);
             Thread.Sleep(300);
             string nameFile = file.Remove(file.Length - 3) + "jpg";
             Thread.Sleep(500);

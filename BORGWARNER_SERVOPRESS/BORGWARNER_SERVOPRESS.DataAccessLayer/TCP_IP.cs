@@ -304,8 +304,8 @@ namespace BORGWARNER_SERVOPRESS.DataAccessLayer
             {
                 try
                 {
-                    clientSocketInstance.commandSocket.Close();
                     clientSocketInstance.commandSocket.Disconnect(true);
+                    clientSocketInstance.commandSocket.Close();                    
                     clientSocketInstance.commandSocket = null;
                 }
                 catch (Exception ex)

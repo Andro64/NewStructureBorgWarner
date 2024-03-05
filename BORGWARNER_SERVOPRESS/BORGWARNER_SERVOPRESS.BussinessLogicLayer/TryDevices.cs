@@ -117,17 +117,14 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
         }
         public void TryVisionSystem(eTypeConnection typeCamera)
         {
-            sessionApp.PathImageResultFromCamera = @"C:\Users\bas1s\OneDrive\Imágenes\Trabajo\7-buenas-razones-para-tomar-cerveza.png";
+            //sessionApp.PathImageResultFromCamera = @"C:\Users\MyUser\Desktop\COGNEX\Cognex_0\4203641232680057169.jpg";
           
-         //   #if !DEBUG
+            //#if !DEBUG
             visionSystem = new VisionSystem(sessionApp, typeCamera);
-            if(!visionSystem.isConnect())
-            {
-                Debug.WriteLine($"{DateTime.Now} - " + "No existe conexion con la camara");
-                return;
-            }
+           
             if (!visionSystem.FirstInspectionAttempt())
             {
+
                 Debug.WriteLine($"{DateTime.Now} - "  + "Fallo el intento");
             }
             else

@@ -15,7 +15,8 @@ namespace BORGWARNER_SERVOPRESS.DataModel
         public string des_type_camara { get; set; }
         public int id_connections_by_workstation { get; set; }
         public string ip { get; set; }
-        public int port { get; set; }
+        public int port { get; set; }        
+        public string path_image { get; set; }
         public string command_user { get; set; }
         public string command_setstring { get; set; }
         public string command_setevent { get; set; }

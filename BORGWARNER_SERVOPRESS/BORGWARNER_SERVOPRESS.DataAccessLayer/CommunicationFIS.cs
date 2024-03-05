@@ -31,7 +31,9 @@ namespace BORGWARNER_SERVOPRESS.DataAccessLayer
             MYSQL_DB mYSQL = new MYSQL_DB(sessionApp.connStr);
             DataFIS dataFIS = new DataFIS();
             string response;
-            string msg = "BREQ|id=" + serial.Substring(0, serial.Length - 1) + "|process=" + fis.Process + "|station=" + fis.Station;
+            //string msg = "BREQ|id=" + serial.Substring(0, serial.Length - 1) + "|process=" + fis.Process + "|station=" + fis.Station;            
+            string msg = "BREQ|id=" + serial + "|process=" + fis.Process + "|station=" + fis.Station;
+
             dataFIS.to_fis = msg;
             response = Sockets.Client(fis.IP, Convert.ToInt32(fis.Port), msg);
             dataFIS.from_fis = response;
