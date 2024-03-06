@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Media.Imaging;
 
 namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
 {
@@ -115,8 +116,9 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
                 }
             }
         }
-        public void TryVisionSystem(eTypeConnection typeCamera)
+        public BitmapImage TryVisionSystem(eTypeConnection typeCamera)
         {
+            BitmapImage bitmapImage =  new BitmapImage(); 
             //sessionApp.PathImageResultFromCamera = @"C:\Users\MyUser\Desktop\COGNEX\Cognex_0\4203641232680057169.jpg";
           
             //#if !DEBUG
@@ -125,16 +127,19 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
             if (!visionSystem.FirstInspectionAttempt())
             {
 
+                Debug.WriteLine($"{DateTime.Now} - " + "No paso");
+                bitmapImage = visionSystem.getNameImageResultFromCamera();
+                visionSystem.Disconnect();
                 Debug.WriteLine($"{DateTime.Now} - "  + "Fallo el intento");
             }
             else
             {
                 Debug.WriteLine($"{DateTime.Now} - "  + "Si paso");
-                visionSystem.getNameImageResultFromCamera();
+                bitmapImage = visionSystem.getNameImageResultFromCamera();
                 visionSystem.Disconnect();
             }
             //#endif
-           
+            return bitmapImage;
         }
         public void TryScrewdriver()
         {

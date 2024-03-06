@@ -59,7 +59,7 @@ namespace BORGWARNER_SERVOPRESS.UI
             //_loginWindow.Show();
 
             //Inicial la ventana Main
-            MainWindow mainWindow = new MainWindow(sessionApp);
+            ManualWindow mainWindow = new ManualWindow(sessionApp);
             mainWindow.Title = "BORGWARNER SERVOPRENSA";
             mainWindow.Show();
 

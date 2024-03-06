@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Media.Imaging;
 
 namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
 {
@@ -109,14 +110,15 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
         }
 
 
-        public void getNameImageResultFromCamera()
+        public BitmapImage getNameImageResultFromCamera()
         {
             Thread.Sleep(300);
-            string file = GetLatestFile(commands.path_image);
-            Thread.Sleep(300);
-            string nameFile = file.Remove(file.Length - 3) + "jpg";
+            BitmapImage file = GetLatestCreatedImage(commands.path_image);
+            //Thread.Sleep(300);
+            //string nameFile = file.Remove(file.Length - 3) + "jpg";
             Thread.Sleep(500);
-            sessionApp.PathImageResultFromCamera = nameFile;
+            //sessionApp.PathImageResultFromCamera = file;
+            return file;
         }
         public void Disconnect()
         {
@@ -229,14 +231,29 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
             return TCPcamara.Leer();
         }
 
-        private static string GetLatestFile(string path)
+        private BitmapImage GetLatestCreatedImage(string path)
         {
+            BitmapImage bitmapImage = new BitmapImage(); 
+            string filename = string.Empty;
+            string file = string.Empty;
             DirectoryInfo dir = new DirectoryInfo(path);
-            string file = dir.GetFiles()
-                .OrderByDescending(f => f.LastWriteTime)
-                .First().ToString();
-
-            return $"{path}\\{file}";
+            var files = dir.GetFiles().OrderByDescending(f => f.LastWriteTime).ToList();
+                
+            if (files.Count > 0)
+            {
+                filename = files.First().FullName;                
+                //filename = filename.Replace(".bmp", ".svg");                
+                bitmapImage.BeginInit(); 
+                bitmapImage.UriSource = new Uri(filename);
+                bitmapImage.EndInit(); 
+            }
+            else
+            {
+                bitmapImage.BeginInit();
+                bitmapImage.UriSource = new Uri(sessionApp.PathDirectoryResourcesOfThisProyect + "image_not_found.jpg");
+                bitmapImage.EndInit();
+            }
+            return bitmapImage;
         }
     }
 }

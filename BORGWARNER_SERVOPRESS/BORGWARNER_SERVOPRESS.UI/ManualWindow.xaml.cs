@@ -489,9 +489,9 @@ namespace BORGWARNER_SERVOPRESS.UI
                     string cameraSelected = cboCameras.SelectedItem.ToString().Substring(0, cboCameras.SelectedItem.ToString().IndexOf(" - "));
                     if (Enum.TryParse(cameraSelected, out typeConnection))
                     {
-                        tryDevices.TryVisionSystem(typeConnection);
-                        Uri uri = new Uri(sessionApp.PathImageResultFromCamera);
-                        Camara_1_Manual_Image.Source = new BitmapImage(uri);
+                        Camara_1_Manual_Image.Source = tryDevices.TryVisionSystem(typeConnection);
+                        //Uri uri = new Uri(sessionApp.PathImageResultFromCamera);
+                        //Camara_1_Manual_Image.Source = new BitmapImage(uri);
                     }
                     else
                     {
