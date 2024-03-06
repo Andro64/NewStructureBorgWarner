@@ -116,26 +116,25 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
                 }
             }
         }
-        public BitmapImage TryVisionSystem(eTypeConnection typeCamera)
+        public BitmapImage TryVisionSystem(eTypeConnection typeCamera, string serial)
         {
-            BitmapImage bitmapImage =  new BitmapImage(); 
-            //sessionApp.PathImageResultFromCamera = @"C:\Users\MyUser\Desktop\COGNEX\Cognex_0\4203641232680057169.jpg";
+            BitmapImage bitmapImage =  new BitmapImage();             
           
             //#if !DEBUG
             visionSystem = new VisionSystem(sessionApp, typeCamera);
            
-            if (!visionSystem.FirstInspectionAttempt())
+            if (!visionSystem.FirstInspectionAttempt(serial))
             {
 
                 Debug.WriteLine($"{DateTime.Now} - " + "No paso");
-                bitmapImage = visionSystem.getNameImageResultFromCamera();
+                bitmapImage = visionSystem.getNameImageResultFromCamera(false);
                 visionSystem.Disconnect();
                 Debug.WriteLine($"{DateTime.Now} - "  + "Fallo el intento");
             }
             else
             {
                 Debug.WriteLine($"{DateTime.Now} - "  + "Si paso");
-                bitmapImage = visionSystem.getNameImageResultFromCamera();
+                bitmapImage = visionSystem.getNameImageResultFromCamera(true);
                 visionSystem.Disconnect();
             }
             //#endif

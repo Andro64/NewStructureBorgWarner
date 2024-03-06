@@ -270,7 +270,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
                 //}
 
                 visionSystem = new VisionSystem(sessionApp,eTypeConnection.Camara_1);
-                if (!visionSystem.FirstInspectionAttempt())
+                if (!visionSystem.FirstInspectionAttempt(string.Empty))
                 {
                     if (!sensorsIO.WasPressedOpto())
                     {
@@ -294,7 +294,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
                         }
                     }
                 }
-                visionSystem.getNameImageResultFromCamera();
+                //visionSystem.getNameImageResultFromCamera();
                 visionSystem.Disconnect();
 
                 Debug.WriteLine($"{DateTime.Now} - "  + "PIDE A OPERADOR TOMAR ULTRA CAP BOARD Y COLOCAR EN NIDO");
@@ -322,7 +322,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
                     }
 
                     visionSystem = new VisionSystem(sessionApp,eTypeConnection.Camara_2);
-                    if (!visionSystem.FirstInspectionAttempt())
+                    if (!visionSystem.FirstInspectionAttempt(string.Empty))
                     {
                         if (!sensorsIO.WasPressedOpto())
                         {
@@ -344,7 +344,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
                             }
                         }
                     }
-                    visionSystem.getNameImageResultFromCamera();
+                    //visionSystem.getNameImageResultFromCamera();
                     visionSystem.Disconnect();
 
                     Debug.WriteLine($"{DateTime.Now} - "  + "2 PIDE A OPERADOR TOMAR TOMAR MASCARA Y COLOCAR SOBRE HOUSING");
@@ -413,7 +413,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
                         }
 
                         visionSystem = new VisionSystem(sessionApp,eTypeConnection.Camara_3);
-                        if (!visionSystem.FirstInspectionAttempt())
+                        if (!visionSystem.FirstInspectionAttempt(string.Empty))
                         {
                             if (!sensorsIO.WasPressedOpto())
                             {
@@ -435,7 +435,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
                                 }
                             }
                         }
-                        visionSystem.getNameImageResultFromCamera();
+                        //visionSystem.getNameImageResultFromCamera();
                         visionSystem.Disconnect();
                         Debug.WriteLine($"{DateTime.Now} - "  + "INSPECCION OK ENVIA BCMP A FIS");
 

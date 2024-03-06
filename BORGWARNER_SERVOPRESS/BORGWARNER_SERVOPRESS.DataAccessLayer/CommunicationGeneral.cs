@@ -234,6 +234,7 @@ namespace BORGWARNER_SERVOPRESS.DataAccessLayer
                     ip = row.Field<string>("ip"),
                     port = row.Field<int>("port"),
                     path_image = row.Field<string>("path_image"),
+                    path_image_show_errors = row.Field<string>("path_image_show_errors"),                    
                     command_user = row.Field<string>("command_user"),
                     command_setstring = row.Field<string>("command_setstring"),
                     command_setevent = row.Field<string>("command_setevent"),

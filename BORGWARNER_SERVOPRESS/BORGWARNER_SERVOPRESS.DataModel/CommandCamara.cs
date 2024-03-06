@@ -17,6 +17,7 @@ namespace BORGWARNER_SERVOPRESS.DataModel
         public string ip { get; set; }
         public int port { get; set; }        
         public string path_image { get; set; }
+        public string path_image_show_errors { get; set; }        
         public string command_user { get; set; }
         public string command_setstring { get; set; }
         public string command_setevent { get; set; }

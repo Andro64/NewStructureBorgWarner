@@ -387,6 +387,9 @@
     <Resource Include="Resources\Operational_Images\WSMT1\KYC_Scanner.jpg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
+    <Resource Include="Resources\Operational_Images\WSAT1\image_not_found.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
     <Content Include="Resources\Operational_Images\servo_working.jfif">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

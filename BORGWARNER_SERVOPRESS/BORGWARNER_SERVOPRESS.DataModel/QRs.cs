@@ -8,7 +8,7 @@ namespace BORGWARNER_SERVOPRESS.DataModel
 {
     public class QRs
     {
-        public string scan1 { get; set; }
-        public string scan2 { get; set; }
+        public string scan1 { get; set; } = string.Empty;
+        public string scan2 { get; set; } = string.Empty;
     }
 }

@@ -1,5 +1,8 @@
 ﻿using BORGWARNER_SERVOPRESS.DataAccessLayer;
 using BORGWARNER_SERVOPRESS.DataModel;
+using SkiaSharp;
+using Svg;
+using Svg.Skia;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -19,6 +22,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
         TCP_IP TCPcamara;
         eTypeConnection typeCamera;
         CommandCamara commands;
+        DateTime readingTime;
 
         public VisionSystem(SessionApp _sessionApp, eTypeConnection _typeCamera)
         {
@@ -34,8 +38,8 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
                 commands = sessionApp.commandCamaras.FirstOrDefault(x => x.id_type_connection.Equals((int)typeCamera));
                 camara = new Camara()
                 {
-                    IP = commands.ip, //sessionApp.connectionsWorkStation.FirstOrDefault(x => x.idTypeDevice.Equals((int)eTypeDevices.Camara) && x.idTypeConnection.Equals((int)typeCamera)).IP,
-                    Port = commands.port//sessionApp.connectionsWorkStation.FirstOrDefault(x => x.idTypeDevice.Equals((int)eTypeDevices.Camara) && x.idTypeConnection.Equals((int)typeCamera)).Port
+                    IP = commands.ip,
+                    Port = commands.port
                 };
 
                 TCPcamara = new TCP_IP(camara.IP, camara.Port);
@@ -66,7 +70,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
         {
             return TCPcamara.conectado;
         }
-        private bool ReadingBait()
+        private bool ReadingBait(string serial)
         {
             try
             {
@@ -74,14 +78,17 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
                 string result = string.Empty;
                 if (commands.command_setstring != "")
                 {
-                    FileName = sessionApp.QR.scan1.Substring(0, (sessionApp.QR.scan1.Length - 1));
-                    TCPcamara.EnviarComando(commands.command_setstring + FileName + (char)13 + (char)10);
-                    Thread.Sleep(150);
+                    if (serial != string.Empty)
+                    {
+                        FileName = serial.Substring(0, (serial.Length - 1));
+                        TCPcamara.EnviarComando(commands.command_setstring + FileName + (char)13 + (char)10);
+                        //Thread.Sleep(150);
+                    }
                 }
 
                 TCPcamara.EnviarComando(commands.command_setevent + (char)13 + (char)10);
                 TCPcamara.EnviarComando(commands.command_getvalue_test + (char)13 + (char)10);
-                Thread.Sleep(500);
+                //Thread.Sleep(500);
                 result = TCPcamara.Leer();
                 return ValidateResponse(result);
             }
@@ -98,8 +105,9 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
             {
                 string result = string.Empty;
                 TCPcamara.EnviarComando(commands.command_getvalue_real + (char)13 + (char)10);
-                Thread.Sleep(500);
+                //Thread.Sleep(500);
                 result = TCPcamara.Leer();
+                readingTime = DateTime.Now;
                 return ValidateResponse(result);
             }
             catch (Exception ex)
@@ -110,14 +118,12 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
         }
 
 
-        public BitmapImage getNameImageResultFromCamera()
+        public BitmapImage getNameImageResultFromCamera(bool pass)
         {
-            Thread.Sleep(300);
-            BitmapImage file = GetLatestCreatedImage(commands.path_image);
             //Thread.Sleep(300);
-            //string nameFile = file.Remove(file.Length - 3) + "jpg";
-            Thread.Sleep(500);
-            //sessionApp.PathImageResultFromCamera = file;
+            string path = pass ? commands.path_image : commands.path_image_show_errors;
+            BitmapImage file = GetLatestCreatedImage(path);
+            //Thread.Sleep(500);            
             return file;
         }
         public void Disconnect()
@@ -125,14 +131,14 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
             TCPcamara.Desconectar();
         }
 
-        public bool FirstInspectionAttempt()
+        public bool FirstInspectionAttempt(string serial)
         {
             Connect();
             if (!isConnect())
             {
                 return false;
             }
-            if (!ReadingBait())
+            if (!ReadingBait(serial))
             {
                 return false;
             }
@@ -231,27 +237,91 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
             return TCPcamara.Leer();
         }
 
+        private BitmapImage TransformSVGtoPNG(string svgFilePath)
+        {
+            // Load SVG file
+            using (var svg = new SKSvg())
+            {
+                svg.Load(svgFilePath);
+
+                // Create a SKBitmap with the desired dimensions
+                var width = (int)svg.Picture.CullRect.Width;
+                var height = (int)svg.Picture.CullRect.Height;
+                var bitmap = new SKBitmap(width, height);
+
+                // Render the SVG to the SKBitmap
+                using (var canvas = new SKCanvas(bitmap))
+                {
+                    canvas.Clear(SKColors.Transparent);
+                    canvas.DrawPicture(svg.Picture);
+                }
+
+                // Convert SKBitmap to BitmapImage
+                using (var image = SKImage.FromBitmap(bitmap))
+                using (var data = image.Encode(SKEncodedImageFormat.Png, 100))
+                {
+                    var stream = new MemoryStream();
+                    data.SaveTo(stream);
+
+                    BitmapImage bitmapImage = new BitmapImage();
+                    bitmapImage.BeginInit();
+                    bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
+                    bitmapImage.StreamSource = stream;
+                    bitmapImage.EndInit();
+
+                    return bitmapImage;
+                }
+            }
+        }
         private BitmapImage GetLatestCreatedImage(string path)
         {
-            BitmapImage bitmapImage = new BitmapImage(); 
+            BitmapImage bitmapImage = new BitmapImage();
             string filename = string.Empty;
-            string file = string.Empty;
+            string file = string.Empty;            
             DirectoryInfo dir = new DirectoryInfo(path);
             var files = dir.GetFiles().OrderByDescending(f => f.LastWriteTime).ToList();
-                
+
+
             if (files.Count > 0)
             {
-                filename = files.First().FullName;                
-                //filename = filename.Replace(".bmp", ".svg");                
-                bitmapImage.BeginInit(); 
-                bitmapImage.UriSource = new Uri(filename);
-                bitmapImage.EndInit(); 
+                filename = files.First().FullName;
+                file = Path.GetFileNameWithoutExtension(filename);
+                int numfiles = files.Count(x => x.Name.Contains(file));
+
+                FileInfo fileInfo = new FileInfo(filename);
+                TimeSpan OneMinute = TimeSpan.FromMinutes(1);
+                TimeSpan createdSpamFile = readingTime - fileInfo.CreationTime;
+                if (createdSpamFile > OneMinute) //Para revisar que el archivo sea el creado por la camara y no un respaldo
+                {
+                    bitmapImage.BeginInit();
+                    bitmapImage.UriSource = new Uri(sessionApp.PathOperationalImages + "image_not_found.jpg");
+                    bitmapImage.EndInit();
+                    Debug.WriteLine($"{DateTime.Now} - " + $"El tiempo entre la toma de la imagen y la lectura es mayor a un minuto: {createdSpamFile}");
+                    return bitmapImage;
+                }
+                if (numfiles >= 2)
+                {
+                    filename = filename.Replace(".bmp", ".svg");
+                    filename = filename.Replace(".jpg", ".svg");
+                    filename = filename.Replace(".jpeg", ".svg");
+                }
+                if (filename.Contains(".svg"))
+                {                    
+                    bitmapImage = TransformSVGtoPNG(filename);
+                }
+                else
+                {
+                    bitmapImage.BeginInit();
+                    bitmapImage.UriSource = new Uri(filename);
+                    bitmapImage.EndInit();
+                }
             }
             else
             {
                 bitmapImage.BeginInit();
-                bitmapImage.UriSource = new Uri(sessionApp.PathDirectoryResourcesOfThisProyect + "image_not_found.jpg");
+                bitmapImage.UriSource = new Uri(sessionApp.PathOperationalImages + "image_not_found.jpg");
                 bitmapImage.EndInit();
+                Debug.WriteLine($"{DateTime.Now} - " + "No encontre archivos que mostrar");
             }
             return bitmapImage;
         }

@@ -13,6 +13,7 @@ CREATE TABLE command_camera (
     id_type_camera INT NOT NULL,
     id_connections_by_workstation INT NOT NULL,
     path_image VARCHAR(255) NOT NULL,
+    path_image_show_errors VARCHAR(255) NOT NULL,
     command_user VARCHAR(45) NOT NULL,
     command_setstring VARCHAR(45) NOT NULL,
     command_setevent VARCHAR(45) NOT NULL,
@@ -26,12 +27,11 @@ CREATE TABLE command_camera (
     command_getvalue_real_2 VARCHAR(45) NOT NULL
 );
 
-INSERT INTO command_camera (id_type_camera,id_connections_by_workstation,path_image,command_user,command_setstring,command_setevent,command_getvalue_test,command_getvalue_real,
+INSERT INTO command_camera (id_type_camera,id_connections_by_workstation,path_image,path_image_show_errors,command_user,command_setstring,command_setevent,command_getvalue_test,command_getvalue_real,
 							command_getjob,command_setjob,command_getvalue_test_1,command_getvalue_real_1,command_getvalue_test_2,command_getvalue_real_2) 
-VALUES 	(2,45,'C:\Users\MyUser\Desktop\COGNEX\Cognex_0','admin','SSMath_1.B4','SE8','GVMath_1.C4','GVMath_1.B4','','','','','',''),
-		(2,46,'C:\Users\MyUser\Desktop\COGNEX\Cognex_1\Conector2Good','admin','SSMath_1.B6','SE8','GVMath_1.D5','GVMath_1.D4','','','','','',''),
-		(1,44,'C:\Users\MyUser\Desktop\COGNEX\Cognex_2\Conector3Good','admin','SSInput','SE8','GVCarnada','GVOutput','','','','','','');
-
+VALUES 	(2,45,'C:\\Users\\MyUser\\Desktop\\COGNEX\\Cognex_1\\Conector2Good','C:\\Users\\MyUser\\Desktop\\COGNEX\\Cognex_1\\Conector2Bad','admin','SSMath_1.B4','SE8','GVMath_1.C4','GVMath_1.B4','','','','','',''),
+		(2,46,'C:\\Users\\MyUser\\Desktop\\COGNEX\\Cognex_2\\Conector3Good','C:\\Users\\MyUser\\Desktop\\COGNEX\\Cognex_2\\Conector3Bad','admin','SSMath_1.B6','SE8','GVMath_1.D5','GVMath_1.D4','','','','','',''),
+		(1,44,'C:\\Users\\MyUser\\Desktop\\COGNEX\\Cognex_0','C:\\Users\\MyUser\\Desktop\\COGNEX\\Cognex_0','admin','SSInput','SE8','GVCarnada','GVOutput','','','','','','');
 
 -----------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -48,6 +48,7 @@ SELECT 	command_camera.id,
         connections_by_workstation.ip as ip,
         connections_by_workstation.port_robot as port,
         path_image,
+        path_image_show_errors,
 		command_user,
         command_setstring,
         command_setevent,
@@ -67,5 +68,8 @@ LEFT JOIN type_connection ON connections_by_workstation.id_type_connection = typ
  
  END$$
 DELIMITER ;
+
+
+CALL SP_GET_COMMAND_CAMERAS();
 
 -----------------------------------------------------------------------------------------------------------------------------------------------
