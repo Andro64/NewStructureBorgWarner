@@ -26,6 +26,14 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
             tcpClient = new TcpClient();
             communicationErgoArm = new CommunicationErgoArm(sessionApp);
         }
+        public void Connect()
+        {
+            communicationErgoArm.Connect();
+        }
+        public bool isConected()
+        {
+           return communicationErgoArm.isConnect();
+        }
         public void startReadPositionRespectScrew(Screw screw)
         {
             cancellationToken_ErgoArm = new CancellationTokenSource();
@@ -33,6 +41,14 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
             {
                 communicationErgoArm.getDataPosition(cancellationToken_ErgoArm.Token, screw);
             }).Wait();
+        }
+        public void startReadPositionRespectScrew()
+        {
+            cancellationToken_ErgoArm = new CancellationTokenSource();
+            Task.Run(async () =>
+            {
+                communicationErgoArm.getDataPosition(cancellationToken_ErgoArm.Token);
+            });
         }
         public void endReadPostion()
         {

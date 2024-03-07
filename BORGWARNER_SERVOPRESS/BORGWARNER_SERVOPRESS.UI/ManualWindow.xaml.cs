@@ -344,13 +344,20 @@ namespace BORGWARNER_SERVOPRESS.UI
         
         private void Screwdriver_Btn_Click(object sender, RoutedEventArgs e)
         {
-
+            try
+            {
+                tryDevices.TryErgoArm();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"{DateTime.Now} - Error" + ex.Message);
+            }
         }
                
 
         private void TestScrewdriver_Btn_Click(object sender, RoutedEventArgs e)
         {
-
+            tryDevices.FinishTestErgoArm();
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)

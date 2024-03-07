@@ -141,42 +141,45 @@
                           ItemsSource ="{Binding ResultData}"  
                           SelectedItem="{Binding RegisterSelected}" 
                           AutoGenerateColumns="True"   HorizontalAlignment="Left" Height="342" Margin="45,69,0,0" VerticalAlignment="Top" Width="692" Background="#FF2D425B"/>
-                <Label x:Name="lblIdScrew" Content="Número de Tornillo:" HorizontalAlignment="Left" Margin="780,124,0,0" VerticalAlignment="Top"/>
+                <Button x:Name="btnActiveErgoArm" 
+                        Content="Activar ErgoArm" Click="btnActivar_ErgoArm_Click"
+                        Style="{StaticResource BaseButton}" HorizontalAlignment="Left" Height="31" Margin="780,100,0,0" VerticalAlignment="Top" Width="120"/>
+                <Label x:Name="lblIdScrew" Content="Número de Tornillo:" HorizontalAlignment="Left" Margin="780,146,0,0" VerticalAlignment="Top"/>
                 <TextBox x:Name="txtIDScrew" 
                          PreviewTextInput="TextBox_PreviewTextInput"
                          Text="{Binding RegisterSelected.id_screw, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
                          Style="{StaticResource BaseTextBox}" 
-                         HorizontalAlignment="Left" Height="23" Margin="908,124,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="176"/>
-                <Label x:Name="lblEncoder" Content="Codificador 1:" HorizontalAlignment="Left" Margin="780,161,0,0" VerticalAlignment="Top"/>
+                         HorizontalAlignment="Left" Height="23" Margin="908,146,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="176"/>
+                <Label x:Name="lblEncoder" Content="Codificador 1:" HorizontalAlignment="Left" Margin="780,183,0,0" VerticalAlignment="Top"/>
                 <TextBox x:Name="txtEncoder1" 
                          PreviewTextInput="TextBox_PreviewTextInput"
                          Text="{Binding RegisterSelected.encoder1, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged,  StringFormat={}{0:0.000000}}"                          
                          Style="{StaticResource BaseTextBox}" 
-                         HorizontalAlignment="Left" Height="23" Margin="908,161,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="176"/>
-                <Label x:Name="lblEncoder2" Content="Codificador 2:" HorizontalAlignment="Left" Margin="780,199,0,0" VerticalAlignment="Top"/>
+                         HorizontalAlignment="Left" Height="23" Margin="908,183,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="176"/>
+                <Label x:Name="lblEncoder2" Content="Codificador 2:" HorizontalAlignment="Left" Margin="780,221,0,0" VerticalAlignment="Top"/>
                 <TextBox x:Name="txtEncoder2" 
                          PreviewTextInput="TextBox_PreviewTextInput"
                          Text="{Binding RegisterSelected.encoder2, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged , StringFormat={}{0:0.000000}}" 
                          Style="{StaticResource BaseTextBox}" 
-                         HorizontalAlignment="Left" Height="23" Margin="908,199,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="176"/>
-                <Label x:Name="lblTolerance" Content="Tolerancia:" HorizontalAlignment="Left" Margin="780,238,0,0" VerticalAlignment="Top"/>
+                         HorizontalAlignment="Left" Height="23" Margin="908,221,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="176"/>
+                <Label x:Name="lblTolerance" Content="Tolerancia:" HorizontalAlignment="Left" Margin="780,260,0,0" VerticalAlignment="Top"/>
                 <TextBox x:Name="txtTolerance" 
                          PreviewTextInput="TextBox_PreviewTextInput"
                          Text="{Binding RegisterSelected.tolerance, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
                          Style="{StaticResource BaseTextBox}" 
-                         HorizontalAlignment="Left" Height="23" Margin="908,237,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="176"/>
-                <Label x:Name="lblModelScrew" Content="Modelo de tornillo:" HorizontalAlignment="Left" Margin="780,277,0,0" VerticalAlignment="Top"/>
+                         HorizontalAlignment="Left" Height="23" Margin="908,259,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="176"/>
+                <Label x:Name="lblModelScrew" Content="Modelo de tornillo:" HorizontalAlignment="Left" Margin="780,299,0,0" VerticalAlignment="Top"/>
                 <!--<TextBox x:Name="txtModelScrew" 
                          Text="{Binding RegisterSelected.quantity_screws, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
                          Style="{StaticResource BaseTextBox}" 
                          HorizontalAlignment="Left" Height="23" Margin="908,377,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="176"/>-->
                 <Button x:Name="btnToSave" 
                         Command="{Binding SaveCommand}" Content="Guardar cambios" 
-                        Style="{StaticResource BaseButton}" HorizontalAlignment="Left" Height="31" Margin="780,318,0,0" VerticalAlignment="Top" Width="304"/>
+                        Style="{StaticResource BaseButton}" HorizontalAlignment="Left" Height="31" Margin="780,340,0,0" VerticalAlignment="Top" Width="304"/>
                 <Button x:Name="btnToCancel" 
                         Command="{Binding CreateCommand}" Content="Cancelar" 
                         Style="{StaticResource BaseButton}" 
-                        HorizontalAlignment="Left" Height="31" Margin="780,363,0,0" VerticalAlignment="Top" Width="304" Click="btnToCancel_Click"/>
+                        HorizontalAlignment="Left" Height="31" Margin="780,385,0,0" VerticalAlignment="Top" Width="304" Click="btnToCancel_Click"/>
                 <Label Content="Registra una nueva posición del tornillo" HorizontalAlignment="Left" Margin="780,60,0,0" VerticalAlignment="Top" FontSize="18"/>
                 <Button x:Name="btnToClean" 
                         Command="{Binding CreateCommand}" Content="Limpiar"  
@@ -205,7 +208,7 @@
                           SelectedValue="{Binding RegisterSelected.id_model_screw}"
                           SelectedItem="{Binding ModelScrewSelected}"                           
                           Style="{StaticResource BaseComboBox}" 
-                          HorizontalAlignment="Left" Margin="908,277,0,0" VerticalAlignment="Top" Width="176"  Height="23"/>
+                          HorizontalAlignment="Left" Margin="908,299,0,0" VerticalAlignment="Top" Width="176"  Height="23"/>
 
             </Grid>
         </Grid>

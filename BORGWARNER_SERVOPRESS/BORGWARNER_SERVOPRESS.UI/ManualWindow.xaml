@@ -355,9 +355,9 @@
                                         </Grid.RowDefinitions>
 
                                         <Label Content="ENCODER 1" Grid.Row="0" Grid.Column="0"/>
-                                        <TextBox x:Name="Encoder1" TextWrapping="Wrap" Style="{StaticResource BaseTextBox}" Grid.Row="1" Grid.Column="0"/>
+                                        <TextBox x:Name="Encoder1" Text="{Binding Encoder1}" TextWrapping="Wrap" Style="{StaticResource BaseTextBox}" Grid.Row="1" Grid.Column="0"/>
                                         <Label Content="ENCODER 2" Grid.Row="0" Grid.Column="1"/>
-                                        <TextBox x:Name="Encoder2" TextWrapping="Wrap" Style="{StaticResource BaseTextBox}" Grid.Row="1" Grid.Column="1"/>
+                                        <TextBox x:Name="Encoder2" Text="{Binding Encoder2}" TextWrapping="Wrap" Style="{StaticResource BaseTextBox}" Grid.Row="1" Grid.Column="1"/>
                                         <Label Content="Z Position" Visibility="Hidden" Grid.Row="0" Grid.Column="1"/>
                                         <TextBox x:Name="Encoder3" Visibility="Hidden" TextWrapping="Wrap" Style="{StaticResource BaseTextBox}" Grid.Row="1" Grid.Column="1"/>
                                     </Grid>

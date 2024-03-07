@@ -1,4 +1,5 @@
-﻿using BORGWARNER_SERVOPRESS.BussinessLogicLayer.Views;
+﻿using BORGWARNER_SERVOPRESS.BussinessLogicLayer;
+using BORGWARNER_SERVOPRESS.BussinessLogicLayer.Views;
 using BORGWARNER_SERVOPRESS.DataModel;
 using System.Collections.Generic;
 using System.Windows;
@@ -13,6 +14,7 @@ namespace BORGWARNER_SERVOPRESS.UI
     public partial class PositionScrewWindow : Window
     {
         private SessionApp sessionApp;
+        private TryDevices tryDevices;
         private ViewPositionScrew ViewPositionScrew;
         private PageManager pageManager;        
         List<string> controlNames;
@@ -26,6 +28,7 @@ namespace BORGWARNER_SERVOPRESS.UI
         {
             var messageBoxService = new MessageBoxService();
             ViewPositionScrew = new ViewPositionScrew(sessionApp, messageBoxService);
+            tryDevices = new TryDevices(sessionApp);
             //Se carga el modelo
             DataContext = ViewPositionScrew;
             pageManager = new PageManager(this);          
@@ -146,7 +149,23 @@ namespace BORGWARNER_SERVOPRESS.UI
             }
         }
 
+        private bool isPressed_ErgoArm= false;
+        private void btnActivar_ErgoArm_Click(object sender, RoutedEventArgs e)
+        {
+            if (!isPressed_ErgoArm)
+            {
+                btnActiveErgoArm.Content = "Desactivar ErgoArm";
+                btnActiveErgoArm.Style = FindResource("SelectedButton") as Style;
+                tryDevices.TryErgoArm();                
+            }
+            else
+            {
+                btnActiveErgoArm.Content = "Activar ErgoArm";
+                btnActiveErgoArm.Style = FindResource("BaseButton") as Style;
+                tryDevices.FinishTestErgoArm();                
+            }
 
-
+            isPressed_ErgoArm = !isPressed_ErgoArm; // Invierte el estado del botón
+        }
     }
 }

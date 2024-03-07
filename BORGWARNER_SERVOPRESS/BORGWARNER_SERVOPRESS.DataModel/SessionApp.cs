@@ -22,7 +22,7 @@ namespace BORGWARNER_SERVOPRESS.DataModel
         public QRs QR { get; set; }
         public string PathImageResultFromCamera { get; set; }
         public int ModelScrewSelected { get; set; }
-        public PositionErgoArm positionErgoArm { get; set; }        
+        public PositionErgoArm positionErgoArm { get; set; } = new PositionErgoArm();     
         public string MessageOfProcess { get; set; }
         public string ImageOfProcess { get; set; }
         public string PathDirectoryResourcesOfThisProyect { get; set; }

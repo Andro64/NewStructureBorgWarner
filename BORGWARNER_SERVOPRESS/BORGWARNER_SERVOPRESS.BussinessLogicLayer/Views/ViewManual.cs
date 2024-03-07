@@ -42,6 +42,34 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.Views
                 }
             }
         }
+
+        private string _encoder1;
+        public string Encoder1
+        {
+            get { return _encoder1; }
+            set
+            {
+                if (_encoder1 != value)
+                {
+                    _encoder1 = value;
+                    OnPropertyChanged(nameof(Encoder1));
+                }
+            }
+        }
+        private string _encoder2;
+        public string Encoder2
+        {
+            get { return _encoder2; }
+            set
+            {
+                if (_encoder2 != value)
+                {
+                    _encoder2 = value;
+                    OnPropertyChanged(nameof(Encoder2));
+                }
+            }
+        }
+
         private string _scannerSelected;
         public string ScannerSelected
         {
@@ -124,6 +152,8 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.Views
             UserName = sessionApp.user.userName;
             Profile = sessionApp.user.profile_description;
             NameWorksation = sessionApp.typeWorkstation.description;
+            Encoder1 = "Hola";
+            Encoder2 = "Andro";
         }
 
         public void ShowDate()
@@ -135,6 +165,9 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.Views
             timer.Tick += (sender, args) =>
             {
                 Timestamp = DateTime.Now.ToString();
+                //Por el momento metemos aqui los mensaje
+                Encoder1 = sessionApp.positionErgoArm.encoder1.ToString();
+                Encoder2 = sessionApp.positionErgoArm.encoder2.ToString();
             };
             timer.Start();
         }

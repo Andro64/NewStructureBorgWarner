@@ -8,8 +8,8 @@ namespace BORGWARNER_SERVOPRESS.DataModel
 {
     public class PositionErgoArm
     {
-        public double encoder1 { get; set; }
-        public double encoder2 { get; set; }
+        public double encoder1 { get; set; } = 0;
+        public double encoder2 { get; set; } = 0;
         public bool InHome { get; set; }
         public bool InPositionReadyToProcess { get; set; }
     }

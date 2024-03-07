@@ -282,6 +282,8 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.Views
             timer.Tick += (sender, args) =>
             {
                 Timestamp = DateTime.Now.ToString();
+                RegisterSelected.encoder1 = sessionApp.positionErgoArm.encoder1;
+                RegisterSelected.encoder2 = sessionApp.positionErgoArm.encoder2;
             };
             timer.Start();
         }
