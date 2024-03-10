@@ -112,14 +112,14 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
             {
 
                 Debug.WriteLine($"{DateTime.Now} - " + "No paso");
-                bitmapImage = visionSystem.getNameImageResultFromCamera(false);
+                bitmapImage = visionSystem.getImageResultFromCamera(false);
                 visionSystem.Disconnect();
                 Debug.WriteLine($"{DateTime.Now} - " + "Fallo el intento");
             }
             else
             {
                 Debug.WriteLine($"{DateTime.Now} - " + "Si paso");
-                bitmapImage = visionSystem.getNameImageResultFromCamera(true);
+                bitmapImage = visionSystem.getImageResultFromCamera(true);
                 visionSystem.Disconnect();
             }
             //#endif

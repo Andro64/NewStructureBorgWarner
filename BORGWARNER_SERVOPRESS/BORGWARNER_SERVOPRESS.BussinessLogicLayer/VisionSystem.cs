@@ -117,12 +117,19 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
             return false;
         }
 
-
-        public BitmapImage getNameImageResultFromCamera(bool pass)
+        public BitmapImage getImageResultFromCamera(bool pass)
         {
             //Thread.Sleep(300);
             string path = pass ? commands.path_image : commands.path_image_show_errors;
             BitmapImage file = GetLatestCreatedImage(path);
+            //Thread.Sleep(500);            
+            return file;
+        }
+        public string getNameImageResultFromCamera(bool pass)
+        {
+            //Thread.Sleep(300);
+            string path = pass ? commands.path_image : commands.path_image_show_errors;
+            string file = GetLatestCreatedImagePath(path);
             //Thread.Sleep(500);            
             return file;
         }
@@ -324,6 +331,42 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
                 Debug.WriteLine($"{DateTime.Now} - " + "No encontre archivos que mostrar");
             }
             return bitmapImage;
+        }
+        private string GetLatestCreatedImagePath(string path)
+        {            
+            string filename = string.Empty;
+            string file = string.Empty;
+            DirectoryInfo dir = new DirectoryInfo(path);
+            var files = dir.GetFiles().OrderByDescending(f => f.LastWriteTime).ToList();
+
+
+            if (files.Count > 0)
+            {
+                filename = files.First().FullName;
+                file = Path.GetFileNameWithoutExtension(filename);
+                int numfiles = files.Count(x => x.Name.Contains(file));
+
+                FileInfo fileInfo = new FileInfo(filename);
+                TimeSpan OneMinute = TimeSpan.FromMinutes(1);
+                TimeSpan createdSpamFile = readingTime - fileInfo.CreationTime;
+                if (createdSpamFile > OneMinute) //Para revisar que el archivo sea el creado por la camara y no un respaldo
+                {                    
+                    Debug.WriteLine($"{DateTime.Now} - " + $"El tiempo entre la toma de la imagen y la lectura es mayor a un minuto: {createdSpamFile}");
+                    return sessionApp.PathOperationalImages + "image_not_found.jpg";
+                }
+                if (numfiles >= 2)
+                {
+                    filename = filename.Replace(".bmp", ".svg");
+                    filename = filename.Replace(".jpg", ".svg");
+                    filename = filename.Replace(".jpeg", ".svg");
+                }
+                return filename;
+            }
+            else
+            {
+                Debug.WriteLine($"{DateTime.Now} - " + "No encontre archivos que mostrar");
+                return sessionApp.PathOperationalImages + "image_not_found.jpg";
+            }            
         }
     }
 }

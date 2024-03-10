@@ -9,21 +9,21 @@ namespace BORGWARNER_SERVOPRESS.DataModel
     public class IOCardType_M2
     {
         #region InPuts     
-        public bool HousingatPallet { get; set; }
+        public bool Trigger_Scanner { get; set; }
         public bool MaskatHousing { get; set; }
-        public bool UltraCapBoardReadytoScan { get; set; }
+        public bool PA2 { get; set; }
         public bool PA3 { get; set; }
-        public bool CylFixingExtd { get; set; }
-        public bool CylFixingRetd { get; set; }
+        public bool Cyl_Fixing_Pall_Ext { get; set; }
+        public bool Cyl_Fixing_Pall_Ret { get; set; }
         public bool PB2 { get; set; }
         public bool PB3 { get; set; }
         #endregion
 
         #region OutPuts
-        public bool CylFixingExt { get; set; }
-        public bool CylFixingRet { get; set; }
-        public bool PalletStopperRet { get; set; }
-        public bool Prestopper { get; set; }
+        public bool PalletFixingExt { get; set; }
+        public bool PalletFixingRet { get; set; }
+        public bool Cyl_Stopper { get; set; }
+        public bool Cyl_Pres_Stopper { get; set; }
         public bool K4 { get; set; }
         public bool K5 { get; set; }
         public bool K6 { get; set; }

@@ -219,7 +219,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
             showMessageAndImage("Esperamos pallet en Pre-Stopper", "pallet.jpg");
             await CheckSensorAndWait(() => sensorsIO.PalletInStopper(), "Esperamos pallet en Pre-Stopper");
             if (isCancellationRequested) {return; };
-            await CheckSensorAndWait(() => sensorsIO.ExtendedPalletClamp(), "Esperamos CLAMP DE PALLET EXTENDIDO");
+            //await CheckSensorAndWait(() => sensorsIO.ExtendedPalletClamp(), "Esperamos CLAMP DE PALLET EXTENDIDO");
             if (isCancellationRequested) { return; };
             await CheckSensorAndWait(() => sensorsIO.PlacedHousing(), "Esperamos que el OPERADOR COLOCAQUE EL HOUSING");
             if (isCancellationRequested) { return; };

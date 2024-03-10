@@ -48,4 +48,9 @@ namespace BORGWARNER_SERVOPRESS.DataModel
         Warning,
         Error
     }
+    public enum eTypeSendToFIS
+    {
+        BREQ,
+        BCMP
+    }
 }

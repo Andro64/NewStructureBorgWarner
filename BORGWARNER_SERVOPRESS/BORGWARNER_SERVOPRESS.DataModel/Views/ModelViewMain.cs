@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Media.Imaging;
 
 namespace BORGWARNER_SERVOPRESS.DataModel.Views
 {    
@@ -67,6 +68,20 @@ namespace BORGWARNER_SERVOPRESS.DataModel.Views
                 {
                     _imageProcess = value;
                     OnPropertyChanged(nameof(ImageOfProcess));
+                }
+            }
+        }
+        private BitmapImage _BitMapImageOfProcess;
+
+        public BitmapImage BitMapImageOfProcess
+        {
+            get { return _BitMapImageOfProcess; }
+            set
+            {
+                if (_BitMapImageOfProcess != value)
+                {
+                    _BitMapImageOfProcess = value;
+                    OnPropertyChanged(nameof(BitMapImageOfProcess));
                 }
             }
         }

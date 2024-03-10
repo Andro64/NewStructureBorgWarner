@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+using System.Windows.Media.Imaging;
 
 namespace BORGWARNER_SERVOPRESS.DataModel
 {
@@ -25,6 +25,7 @@ namespace BORGWARNER_SERVOPRESS.DataModel
         public PositionErgoArm positionErgoArm { get; set; } = new PositionErgoArm();     
         public string MessageOfProcess { get; set; }
         public string ImageOfProcess { get; set; }
+        public BitmapImage BitmapImageOfProcess { get; set; }
         public string PathDirectoryResourcesOfThisProyect { get; set; }
         public string PathOperationalImages { get; set; }
         public List<TotalRegistersByTables> lstTotalRegistersByTables { get; set; }

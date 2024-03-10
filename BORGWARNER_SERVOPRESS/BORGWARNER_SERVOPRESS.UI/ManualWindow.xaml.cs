@@ -223,7 +223,7 @@ namespace BORGWARNER_SERVOPRESS.UI
         private void Card1_ouput5_Click(object sender, RoutedEventArgs e)
         {
             sessionApp.Sensors_M1 = new IOCardType_M1();
-            sessionApp.Sensors_M1.K5 = true;
+            sessionApp.Sensors_M1.K4 = true;
             tryDevices.TrySendDataSensorsM1();
         }
 
@@ -244,25 +244,29 @@ namespace BORGWARNER_SERVOPRESS.UI
         private void Card2_ouput0_Click(object sender, RoutedEventArgs e)
         {
             sessionApp.Sensors_M2 = new IOCardType_M2();
-            sessionApp.Sensors_M2.CylFixingExt = true;
+            //sessionApp.Sensors_M2.CylFixingExt = true;
+            sessionApp.Sensors_M2.Cyl_Fixing_Pall_Ext = true;
             tryDevices.TrySendDataSensorsM2();
         }
         private void Card2_ouput1_Click(object sender, RoutedEventArgs e)
         {
             sessionApp.Sensors_M2 = new IOCardType_M2();
-            sessionApp.Sensors_M2.CylFixingRet = true;
+            //sessionApp.Sensors_M2.CylFixingRet = true;
+            sessionApp.Sensors_M2.Cyl_Fixing_Pall_Ret = true;
             tryDevices.TrySendDataSensorsM2();
         }
         private void Card2_ouput2_Click(object sender, RoutedEventArgs e)
         {
             sessionApp.Sensors_M2 = new IOCardType_M2();
-            sessionApp.Sensors_M2.PalletStopperRet = true;
+            //sessionApp.Sensors_M2.PalletStopperRet = true;
+            sessionApp.Sensors_M2.Cyl_Stopper = true;
             tryDevices.TrySendDataSensorsM2();
         }
         private void Card2_ouput3_Click(object sender, RoutedEventArgs e)
         {
             sessionApp.Sensors_M2 = new IOCardType_M2();
-            sessionApp.Sensors_M2.Prestopper = true;
+            //sessionApp.Sensors_M2.Prestopper = true;
+            sessionApp.Sensors_M2.Cyl_Pres_Stopper = true;
             tryDevices.TrySendDataSensorsM2();
         }
         private void Card2_ouput4_Click(object sender, RoutedEventArgs e)
@@ -294,20 +298,20 @@ namespace BORGWARNER_SERVOPRESS.UI
         private void Card3_ouput0_Click(object sender, RoutedEventArgs e)
         {
             sessionApp.Sensors_M3 = new IOCardType_M3();
-            sessionApp.Sensors_M3.STAvailable = true;
+            sessionApp.Sensors_M3.ST12Available = true;
             tryDevices.TrySendDataSensorsM3();
         }
         private void Card3_ouput1_Click(object sender, RoutedEventArgs e)
         {
             sessionApp.Sensors_M3 = new IOCardType_M3();
-            sessionApp.Sensors_M3.LampCamaraR = true;
+            sessionApp.Sensors_M3.LampRCam = true;
             tryDevices.TrySendDataSensorsM3();
         }
 
         private void Card3_ouput2_Click(object sender, RoutedEventArgs e)
         {
             sessionApp.Sensors_M3 = new IOCardType_M3();
-            sessionApp.Sensors_M3.LampCamaraL = true;
+            sessionApp.Sensors_M3.LampLCam = true;
             tryDevices.TrySendDataSensorsM3();
         }
         private void Card3_ouput3_Click(object sender, RoutedEventArgs e)
@@ -337,7 +341,7 @@ namespace BORGWARNER_SERVOPRESS.UI
         private void Card3_ouput7_Click(object sender, RoutedEventArgs e)
         {
             sessionApp.Sensors_M3 = new IOCardType_M3();
-            sessionApp.Sensors_M3.K7 = true;
+            sessionApp.Sensors_M3.ReleScrap = true;
             tryDevices.TrySendDataSensorsM3();
         }
         #endregion
@@ -412,31 +416,31 @@ namespace BORGWARNER_SERVOPRESS.UI
                     Card1_Input_0.Fill = ellipseBrush;
 
                     Debug.WriteLine($"{DateTime.Now} - " + $"**********Pintando *******************");
-                    pageManager.ChangeBackgroundColor(sessionApp.Sensors_M1.PA0 ? Brushes.Blue : Brushes.LightBlue, new List<string> { "Card1_Input_0" });
+                    pageManager.ChangeBackgroundColor(sessionApp.Sensors_M1.Main_Pressure ? Brushes.Blue : Brushes.LightBlue, new List<string> { "Card1_Input_0" });
                     pageManager.ChangeBackgroundColor(sessionApp.Sensors_M1.OptoBtn ? Brushes.Blue : Brushes.LightBlue, new List<string> { "Card1_Input_1" });
-                    pageManager.ChangeBackgroundColor(sessionApp.Sensors_M1.PalletatPreStation ? Brushes.Blue : Brushes.LightBlue, new List<string> { "Card1_Input_2" });
-                    pageManager.ChangeBackgroundColor(sessionApp.Sensors_M1.PalletatStation ? Brushes.Blue : Brushes.LightBlue, new List<string> { "Card1_Input_3" });
-                    pageManager.ChangeBackgroundColor(sessionApp.Sensors_M1.PB0 ? Brushes.Blue : Brushes.LightBlue, new List<string> { "Card1_Input_4" });
-                    pageManager.ChangeBackgroundColor(sessionApp.Sensors_M1.PB1 ? Brushes.Blue : Brushes.LightBlue, new List<string> { "Card1_Input_5" });
-                    pageManager.ChangeBackgroundColor(sessionApp.Sensors_M1.MaskatHolder ? Brushes.Blue : Brushes.LightBlue, new List<string> { "Card1_Input_6" });
+                    pageManager.ChangeBackgroundColor(sessionApp.Sensors_M1.Pallet_Pre_Stopper ? Brushes.Blue : Brushes.LightBlue, new List<string> { "Card1_Input_2" });
+                    pageManager.ChangeBackgroundColor(sessionApp.Sensors_M1.Pallet_Stopper ? Brushes.Blue : Brushes.LightBlue, new List<string> { "Card1_Input_3" });
+                    pageManager.ChangeBackgroundColor(sessionApp.Sensors_M1.Screw_Present_Oth ? Brushes.Blue : Brushes.LightBlue, new List<string> { "Card1_Input_4" });
+                    pageManager.ChangeBackgroundColor(sessionApp.Sensors_M1.Screw_Level_Oth ? Brushes.Blue : Brushes.LightBlue, new List<string> { "Card1_Input_5" });
+                    pageManager.ChangeBackgroundColor(sessionApp.Sensors_M1.MaskInHolder ? Brushes.Blue : Brushes.LightBlue, new List<string> { "Card1_Input_6" });
                     pageManager.ChangeBackgroundColor(sessionApp.Sensors_M1.SecurityOK ? Brushes.Blue : Brushes.LightBlue, new List<string> { "Card1_Input_7" });
 
-                    pageManager.ChangeBackgroundColor(sessionApp.Sensors_M2.HousingatPallet ? Brushes.Blue : Brushes.LightBlue, new List<string> { "Card2_Input_0" });
+                    pageManager.ChangeBackgroundColor(sessionApp.Sensors_M2.Trigger_Scanner ? Brushes.Blue : Brushes.LightBlue, new List<string> { "Card2_Input_0" });
                     pageManager.ChangeBackgroundColor(sessionApp.Sensors_M2.MaskatHousing ? Brushes.Blue : Brushes.LightBlue, new List<string> { "Card2_Input_1" });
-                    pageManager.ChangeBackgroundColor(sessionApp.Sensors_M2.UltraCapBoardReadytoScan ? Brushes.Blue : Brushes.LightBlue, new List<string> { "Card2_Input_2" });
+                    pageManager.ChangeBackgroundColor(sessionApp.Sensors_M2.PA2 ? Brushes.Blue : Brushes.LightBlue, new List<string> { "Card2_Input_2" });
                     pageManager.ChangeBackgroundColor(sessionApp.Sensors_M2.PA3 ? Brushes.Blue : Brushes.LightBlue, new List<string> { "Card2_Input_3" });
-                    pageManager.ChangeBackgroundColor(sessionApp.Sensors_M2.CylFixingExtd ? Brushes.Blue : Brushes.LightBlue, new List<string> { "Card2_Input_4" });
-                    pageManager.ChangeBackgroundColor(sessionApp.Sensors_M2.CylFixingRetd ? Brushes.Blue : Brushes.LightBlue, new List<string> { "Card2_Input_5" });
+                    pageManager.ChangeBackgroundColor(sessionApp.Sensors_M2.Cyl_Fixing_Pall_Ext ? Brushes.Blue : Brushes.LightBlue, new List<string> { "Card2_Input_4" });
+                    pageManager.ChangeBackgroundColor(sessionApp.Sensors_M2.Cyl_Fixing_Pall_Ret ? Brushes.Blue : Brushes.LightBlue, new List<string> { "Card2_Input_5" });
                     pageManager.ChangeBackgroundColor(sessionApp.Sensors_M2.PB2 ? Brushes.Blue : Brushes.LightBlue, new List<string> { "Card2_Input_6" });
                     pageManager.ChangeBackgroundColor(sessionApp.Sensors_M2.PB3 ? Brushes.Blue : Brushes.LightBlue, new List<string> { "Card2_Input_7" });                    
 
-                    pageManager.ChangeBackgroundColor(sessionApp.Sensors_M3.ST02Available ? Brushes.Blue : Brushes.LightBlue, new List<string> { "Card3_Input_0" });
+                    pageManager.ChangeBackgroundColor(sessionApp.Sensors_M3.PA0 ? Brushes.Blue : Brushes.LightBlue, new List<string> { "Card3_Input_0" });
                     pageManager.ChangeBackgroundColor(sessionApp.Sensors_M3.PA1 ? Brushes.Blue : Brushes.LightBlue, new List<string> { "Card3_Input_1" });
                     pageManager.ChangeBackgroundColor(sessionApp.Sensors_M3.PA2 ? Brushes.Blue : Brushes.LightBlue, new List<string> { "Card3_Input_2" });
-                    pageManager.ChangeBackgroundColor(sessionApp.Sensors_M3.PA3 ? Brushes.Blue : Brushes.LightBlue, new List<string> { "Card3_Input_3" });
+                    pageManager.ChangeBackgroundColor(sessionApp.Sensors_M3.ST13Available ? Brushes.Blue : Brushes.LightBlue, new List<string> { "Card3_Input_3" });
                     pageManager.ChangeBackgroundColor(sessionApp.Sensors_M3.PB0 ? Brushes.Blue : Brushes.LightBlue, new List<string> { "Card3_Input_4" });                    
                     pageManager.ChangeBackgroundColor(sessionApp.Sensors_M3.PB1 ? Brushes.Blue : Brushes.LightBlue, new List<string> { "Card3_Input_5" });
-                    pageManager.ChangeBackgroundColor(sessionApp.Sensors_M3.ScrewPresence ? Brushes.Blue : Brushes.LightBlue, new List<string> { "Card3_Input_6" });
+                    pageManager.ChangeBackgroundColor(sessionApp.Sensors_M3.Scrap_presence ? Brushes.Blue : Brushes.LightBlue, new List<string> { "Card3_Input_6" });
                     pageManager.ChangeBackgroundColor(sessionApp.Sensors_M3.PB3 ? Brushes.Blue : Brushes.LightBlue, new List<string> { "Card3_Input_7" });
 
                 });
