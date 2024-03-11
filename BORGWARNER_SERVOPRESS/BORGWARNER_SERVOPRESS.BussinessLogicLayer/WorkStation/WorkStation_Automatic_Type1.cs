@@ -77,12 +77,18 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
             }
             return isPASS_From_FIS;
         }
+
+        /*
         public override async Task StartProcess()
         {
             Debug.WriteLine($"{DateTime.Now} - " + "Path de Imagenes:" + sessionApp.PathOperationalImages);
 
             await Task.Run(() =>
             {
+
+                RequestCreateTextBox($"18.5 Nw | 23 °", 340, -150);
+                RequestCreateTextBox($"18.5 Nw | 23 °", 0, -150);
+                RequestCreateTextBox($"18.5 Nw | 23 °", 305, -70);
                 showMessageAndImage("Inicia Proceso de atornillado", "GNC_HousingWithScanner.png");
                 Thread.Sleep(3000);
                 showMessageAndImage("Esperamos pallet en Pre-Stopper", @"C:\Users\MyUser\Desktop\COGNEX\Cognex_1\Conector2Bad\4203641232680057733.svg",true);
@@ -114,7 +120,8 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
                 sessionApp.TaksRunExecuting = false;
             });
         }
-        /*
+        */
+        
         public override async Task StartProcess()
         {
             Scanner scanner;
@@ -122,7 +129,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
             Screws screws;
             ErgoArm ergoArm;
             ScrewDriver screwdriver;
-            BitmapImage bitmapImage = new BitmapImage();
+            string resultImageVisionSystem;
 
             string serial;
             string resultFIS;
@@ -202,31 +209,31 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
                         visionSystem = new VisionSystem(sessionApp, eTypeConnection.Camara_1);
                         if (!visionSystem.FirstInspectionAttempt(serial))
                         {
-                            bitmapImage = visionSystem.getNameImageResultFromCamera(false);
+                            resultImageVisionSystem = visionSystem.getNameImageResultFromCamera(false);
                             visionSystem.Disconnect();
                             if (!sensorsIO.WasPressedOpto())
                             {
                                 await sensorsIO.WaitingResponse(_cancellationTokenSource, sensorsIO.WasPressedOpto());
                                 Debug.WriteLine($"{DateTime.Now} - " + "Fallo primer intento ESPERA ACTIVACION DE OPTO ");
-                                showMessageAndImage("Fallo primer intento, reacomode y presione OPTO");
+                                showMessageAndImage("Fallo primer intento, reacomode y presione OPTO", resultImageVisionSystem);
                                 if (isCancellationRequested) { return; };
 
                                 if (!visionSystem.SecondInspectionAttempt())
                                 {
-                                    bitmapImage = visionSystem.getNameImageResultFromCamera(false);
+                                    resultImageVisionSystem = visionSystem.getNameImageResultFromCamera(false);
                                     visionSystem.Disconnect();
                                     if (!sensorsIO.WasPressedOpto())
                                     {
                                         await sensorsIO.WaitingResponse(_cancellationTokenSource, sensorsIO.WasPressedOpto());
                                         Debug.WriteLine($"{DateTime.Now} - " + "Fallo segundo intento ESPERA ACTIVACION DE OPTO ");
-                                        showMessageAndImage("Fallo segundo intento,reacomode y presione OPTO");
+                                        showMessageAndImage("Fallo segundo intento,reacomode y presione OPTO", resultImageVisionSystem);
                                         if (isCancellationRequested) { return; };
 
                                         if (!visionSystem.ThirdInspectionAttempt())
                                         {
-                                            bitmapImage = visionSystem.getNameImageResultFromCamera(false);
+                                            resultImageVisionSystem = visionSystem.getNameImageResultFromCamera(false);
                                             visionSystem.Disconnect();
-                                            showMessageAndImage("Fallaron los 3 intentos");
+                                            showMessageAndImage("Fallaron los 3 intentos", resultImageVisionSystem);
                                             Debug.WriteLine($"{DateTime.Now} - " + "Fallaron los 3 intentos");  ///Falta poner que hace en este caso
                                             isCancellationRequested = true;
                                             return;
@@ -236,9 +243,9 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
                             }
                         }
 
-                        bitmapImage = visionSystem.getNameImageResultFromCamera(true);
+                        resultImageVisionSystem = visionSystem.getNameImageResultFromCamera(true);
                         visionSystem.Disconnect();
-                        showMessageAndImage("inspección número 1 ha sido exitosa.");
+                        showMessageAndImage("inspección número 1 ha sido exitosa.", resultImageVisionSystem);
                         Thread.Sleep(300);
                         Debug.WriteLine($"{DateTime.Now} - " + "INSPECCION 1 DE VISION OK ");
                         if (isCancellationRequested) { return; };
@@ -249,31 +256,31 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
                         visionSystem = new VisionSystem(sessionApp, eTypeConnection.Camara_2);
                         if (!visionSystem.FirstInspectionAttempt(serial))
                         {
-                            bitmapImage = visionSystem.getNameImageResultFromCamera(false);
+                            resultImageVisionSystem = visionSystem.getNameImageResultFromCamera(false);
                             visionSystem.Disconnect();
                             if (!sensorsIO.WasPressedOpto())
                             {
                                 await sensorsIO.WaitingResponse(_cancellationTokenSource, sensorsIO.WasPressedOpto());
                                 Debug.WriteLine($"{DateTime.Now} - " + "Fallo primer intento ESPERA ACTIVACION DE OPTO ");
-                                showMessageAndImage("Fallo primer intento, reacomode y presione OPTO");
+                                showMessageAndImage("Fallo primer intento, reacomode y presione OPTO", resultImageVisionSystem);
                                 if (isCancellationRequested) { return; };
 
                                 if (!visionSystem.SecondInspectionAttempt())
                                 {
-                                    bitmapImage = visionSystem.getNameImageResultFromCamera(false);
+                                    resultImageVisionSystem = visionSystem.getNameImageResultFromCamera(false);
                                     visionSystem.Disconnect();
                                     if (!sensorsIO.WasPressedOpto())
                                     {
                                         await sensorsIO.WaitingResponse(_cancellationTokenSource, sensorsIO.WasPressedOpto());
                                         Debug.WriteLine($"{DateTime.Now} - " + "Fallo segundo intento ESPERA ACTIVACION DE OPTO ");
-                                        showMessageAndImage("Fallo segundo intento,reacomode y presione OPTO");
+                                        showMessageAndImage("Fallo segundo intento,reacomode y presione OPTO", resultImageVisionSystem);
                                         if (isCancellationRequested) { return; };
 
                                         if (!visionSystem.ThirdInspectionAttempt())
                                         {
-                                            bitmapImage = visionSystem.getNameImageResultFromCamera(false);
+                                            resultImageVisionSystem = visionSystem.getNameImageResultFromCamera(false);
                                             visionSystem.Disconnect();
-                                            showMessageAndImage("Fallaron los 3 intentos");
+                                            showMessageAndImage("Fallaron los 3 intentos", resultImageVisionSystem);
                                             Debug.WriteLine($"{DateTime.Now} - " + "Fallaron los 3 intentos");  ///Falta poner que hace en este caso
                                             isCancellationRequested = true;
                                             return;
@@ -283,9 +290,9 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
                             }
                         }
 
-                        bitmapImage = visionSystem.getNameImageResultFromCamera(true);
+                        resultImageVisionSystem = visionSystem.getNameImageResultFromCamera(true);
                         visionSystem.Disconnect();
-                        showMessageAndImage("inspección número 2 ha sido exitosa.");
+                        showMessageAndImage("inspección número 2 ha sido exitosa.", resultImageVisionSystem);
                         Thread.Sleep(300);
                         Debug.WriteLine($"{DateTime.Now} - " + "INSPECCION 2 DE VISION OK ");
                         if (isCancellationRequested) { return; };
@@ -296,32 +303,32 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
                         visionSystem = new VisionSystem(sessionApp, eTypeConnection.Camara_3);
                         if (!visionSystem.FirstInspectionAttempt(serial))
                         {
-                            bitmapImage = visionSystem.getNameImageResultFromCamera(false);
+                            resultImageVisionSystem = visionSystem.getNameImageResultFromCamera(false);
                             visionSystem.Disconnect();
                             if (!sensorsIO.WasPressedOpto())
                             {
                                 await sensorsIO.WaitingResponse(_cancellationTokenSource, sensorsIO.WasPressedOpto());
                                 Debug.WriteLine($"{DateTime.Now} - " + "Fallo primer intento ESPERA ACTIVACION DE OPTO ");
-                                showMessageAndImage("Fallo primer intento, reacomode y presione OPTO");
+                                showMessageAndImage("Fallo primer intento, reacomode y presione OPTO", resultImageVisionSystem);
                                 if (isCancellationRequested) { return; };
 
                                 if (!visionSystem.SecondInspectionAttempt())
                                 {
-                                    bitmapImage = visionSystem.getNameImageResultFromCamera(false);
+                                    resultImageVisionSystem = visionSystem.getNameImageResultFromCamera(false);
                                     visionSystem.Disconnect();
                                     if (!sensorsIO.WasPressedOpto())
                                     {
                                         await sensorsIO.WaitingResponse(_cancellationTokenSource, sensorsIO.WasPressedOpto());
                                         Debug.WriteLine($"{DateTime.Now} - " + "Fallo segundo intento ESPERA ACTIVACION DE OPTO ");
-                                        showMessageAndImage("Fallo segundo intento,reacomode y presione OPTO");
+                                        showMessageAndImage("Fallo segundo intento,reacomode y presione OPTO", resultImageVisionSystem);
                                         if (isCancellationRequested) { return; };
 
                                         if (!visionSystem.ThirdInspectionAttempt())
                                         {
-                                            bitmapImage = visionSystem.getNameImageResultFromCamera(false);
+                                            resultImageVisionSystem = visionSystem.getNameImageResultFromCamera(false);
                                             visionSystem.Disconnect();
                                             showMessageAndImage("Fallaron los 3 intentos");
-                                            Debug.WriteLine($"{DateTime.Now} - " + "Fallaron los 3 intentos");  ///Falta poner que hace en este caso
+                                            Debug.WriteLine($"{DateTime.Now} - " + "Fallaron los 3 intentos", resultImageVisionSystem);  ///Falta poner que hace en este caso
                                             isCancellationRequested = true;
                                             return;
                                         }
@@ -330,9 +337,9 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
                             }
                         }
 
-                        bitmapImage = visionSystem.getNameImageResultFromCamera(true);
+                        resultImageVisionSystem = visionSystem.getNameImageResultFromCamera(true);
                         visionSystem.Disconnect();
-                        showMessageAndImage("inspección número 3 ha sido exitosa.");
+                        showMessageAndImage("inspección número 3 ha sido exitosa.", resultImageVisionSystem);
                         Thread.Sleep(300);
                         Debug.WriteLine($"{DateTime.Now} - " + "INSPECCION 3 DE VISION OK ");
                         if (isCancellationRequested) { return; };
@@ -391,7 +398,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
                                     }
                                 }
                                 tightenincount++;
-                                RequestCreateTextBox($"{screw.tighteningprocess.Torque} Nw | {screw.tighteningprocess.Angle} °", 0, -150);
+                                RequestCreateTextBox($"{screw.tighteningprocess.Torque} Nw | {screw.tighteningprocess.Angle} °", screw.text_position_X, screw.text_position_Y);
                             }
 //--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
                             Debug.WriteLine($"{DateTime.Now} - " + "PIDE A OPERADOR COLOCAR BRAZO EN HOME Y RETIRAR MASCARA");
@@ -487,7 +494,10 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
                 showMessageAndImage("Error: Fallo la confirmación de FIS");
             }
         }
-            */
+           
+
+
+
         public async Task CheckSensorAndWait(Func<bool> sensorCheck, string debugMessage)
         {
             if (!sensorCheck())
@@ -508,12 +518,20 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
         }
         public override void RequestCreateTextBox(string msg, int PositionX, int PositionY)
         {
-            throw new NotImplementedException();
+            OnCreateTextBoxRequested(new TextBoxInfoEventArgs
+            {
+                Text = msg,
+                Position = new System.Windows.Point(PositionX, PositionY)
+            });
         }
 
         public override void RequestRemoveTextBox()
         {
-            throw new NotImplementedException();
+           
+        }
+        protected virtual void OnCreateTextBoxRequested(TextBoxInfoEventArgs e)
+        {
+            CreateTextBoxRequested?.Invoke(this, e);
         }
     }
 }

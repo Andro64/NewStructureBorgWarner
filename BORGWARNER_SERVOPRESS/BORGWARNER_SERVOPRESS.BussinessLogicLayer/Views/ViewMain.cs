@@ -35,12 +35,15 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.Views
             {
                 _modelViewMain.Timestamp = DateTime.Now.ToString();                
                 _modelViewMain.MessageProcess = sessionApp.MessageOfProcess;
-                _modelViewMain.ImageOfProcess = sessionApp.ImageOfProcess;
+                _modelViewMain.ImageOfProcess = "D:\\Repo3\\BORGWARNER_SERVOPRESS\\BORGWARNER_SERVOPRESS.UI\\Resources\\Operational_Images\\WSMT1\\GNC_Mask.png";//sessionApp.ImageOfProcess;
                 if (sessionApp.ImageOfProcess != null)
                 {
                     if (sessionApp.ImageOfProcess.Contains(".svg"))
                     {
-                        _modelViewMain.BitMapImageOfProcess = TransformSVGtoPNG(sessionApp.ImageOfProcess);
+                        //if (File.Exists(sessionApp.ImageOfProcess))
+                        //{
+                            _modelViewMain.BitMapImageOfProcess = new BitmapImage(new Uri("D:\\Repo3\\BORGWARNER_SERVOPRESS\\BORGWARNER_SERVOPRESS.UI\\Resources\\Operational_Images\\WSMT1\\GNC_Mask.png"));
+                        //}
                     }
                     else
                     {

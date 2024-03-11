@@ -45,6 +45,8 @@ namespace BORGWARNER_SERVOPRESS.UI
             workstation.CreateTextBoxRequested += BusinessLayer_CreateTextBoxRequested;
             workstation.RemoveTextBoxRequested += TextBoxRemoveContentGrid;
             Loaded += MainWindow_Loaded;
+
+            
         }
 
         private void BusinessLayer_CreateTextBoxRequested(object sender, TextBoxInfoEventArgs e)

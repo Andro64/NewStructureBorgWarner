@@ -38,7 +38,9 @@ namespace BORGWARNER_SERVOPRESS.DataAccessLayer
                     encoder2 = row.Field<double>("encoder2"),
                     tolerance = row.Field<double>("tolerance"),
                     id_model_screw = row.Field<int>("id_model_screw"),
-                    desc_model = row.Field<string>("name_model")
+                    desc_model = row.Field<string>("name_model"),
+                    text_position_X = row.Field<int>("text_position_X"),
+                    text_position_Y = row.Field<int>("text_position_Y")
                 }).ToList();
 
             }
