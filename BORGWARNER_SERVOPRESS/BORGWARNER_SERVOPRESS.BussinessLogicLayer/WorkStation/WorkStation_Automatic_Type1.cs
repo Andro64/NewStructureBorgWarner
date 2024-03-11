@@ -527,7 +527,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
 
         public override void RequestRemoveTextBox()
         {
-           
+            RemoveTextBoxRequested?.Invoke(this, EventArgs.Empty);
         }
         protected virtual void OnCreateTextBoxRequested(TextBoxInfoEventArgs e)
         {
