@@ -100,7 +100,7 @@ namespace BORGWARNER_SERVOPRESS.UI
                         
             viewMain.ShowData();
             viewMain.ShowMessage();
-            pageManager.IsReadOnlyControls(new List<string> { "from_fis_textblock", "to_fis_textblock", "cycletime" });
+            pageManager.IsReadOnlyControls(new List<string> { "from_fis_textblock", "to_fis_textblock", "txtHousing", "txt_HVDC_BUSBAR", "txtHarness", "txtTopCover", "cycletime" });
         }
 
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)

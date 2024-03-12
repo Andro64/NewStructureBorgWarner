@@ -128,8 +128,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
         */
 
         public override async Task StartProcess()
-        {
-            Scanner scanner;
+        {            
             VisionSystem visionSystem;
             Screws screws;
             ErgoArm ergoArm;
@@ -171,9 +170,15 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
             if (isCancellationRequested) { return; };
 
             showMessageAndImage("Escaneando código QR del Housing.");
-            serial = new Scanner(sessionApp, eTypeConnection.Scan_1).ScanQR("LON");
+            Scanner scanner = new Scanner(sessionApp, eTypeConnection.Scan_1);
+            serial = scanner.ScanQR("LON");
             sessionApp.QR.HOUSING = serial;
             if (isCancellationRequested) { return; };
+            if(serial == "ERROR" || serial == string.Empty)
+            {
+                scanner.ScanQR("LOFF");
+                scanner.DisconnectScanner();
+            }
             
 
             if (Validation_by_FIS(serial, "Se envía BREQ del housing a FIS.", eTypeSendToFIS.BREQ))
@@ -243,7 +248,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
                                             resultImageVisionSystem = visionSystem.getNameImageResultFromCamera(false);
                                             visionSystem.Disconnect();
                                             showMessageAndImage("Los 3 intentos han fallado.", resultImageVisionSystem);
-                                            Debug.WriteLine($"{DateTime.Now} - " + "Los 3 intentos han fallado.");  ///Falta poner que hace en este caso
+                                            Debug.WriteLine($"{DateTime.Now} - " + "Los 3 intentos han fallado.");  
                                             isCancellationRequested = true;
                                             return;
                                         }
@@ -290,7 +295,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
                                             resultImageVisionSystem = visionSystem.getNameImageResultFromCamera(false);
                                             visionSystem.Disconnect();
                                             showMessageAndImage("Los 3 intentos han fallado.", resultImageVisionSystem);
-                                            Debug.WriteLine($"{DateTime.Now} - " + "Los 3 intentos han fallado.");  ///Falta poner que hace en este caso
+                                            Debug.WriteLine($"{DateTime.Now} - " + "Los 3 intentos han fallado.");  
                                             isCancellationRequested = true;
                                             return;
                                         }
@@ -337,7 +342,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
                                             resultImageVisionSystem = visionSystem.getNameImageResultFromCamera(false);
                                             visionSystem.Disconnect();
                                             showMessageAndImage("Los 3 intentos han fallado.");
-                                            Debug.WriteLine($"{DateTime.Now} - " + "Los 3 intentos han fallado.", resultImageVisionSystem);  ///Falta poner que hace en este caso
+                                            Debug.WriteLine($"{DateTime.Now} - " + "Los 3 intentos han fallado.", resultImageVisionSystem);  
                                             isCancellationRequested = true;
                                             return;
                                         }
