@@ -86,6 +86,19 @@ namespace BORGWARNER_SERVOPRESS.DataModel.Views
             }
         }
 
+        private QRs _QRs_Scanned;
+        public QRs QRs_Scanned
+        {
+            get { return _QRs_Scanned; }
+            set
+            {
+                if (_QRs_Scanned != value)
+                {
+                    _QRs_Scanned = value;
+                    OnPropertyChanged(nameof(QRs_Scanned));
+                }
+            }
+        }
         private string _userName;
         public string UserName
         {

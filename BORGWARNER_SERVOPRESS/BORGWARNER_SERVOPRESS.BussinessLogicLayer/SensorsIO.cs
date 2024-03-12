@@ -106,9 +106,21 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
             sessionApp.Sensors_M2.PalletFixingExt = true;
             SendDataOutpusM2();
         }
+        public void RetractPalletClamp()
+        {
+            sessionApp.Sensors_M2.PalletFixingExt = false;
+            SendDataOutpusM2();
+            Thread.Sleep(10);
+            sessionApp.Sensors_M2.PalletFixingRet = true;
+            SendDataOutpusM2();
+        }
         public bool isExtendedClamp()
         {
             return sessionApp.Sensors_M2.Cyl_Fixing_Pall_Ext;
+        }
+        public bool isRetractedClamp()
+        {
+            return sessionApp.Sensors_M2.Cyl_Fixing_Pall_Ret;
         }
         public bool PlacedHousing()
         {
@@ -120,7 +132,11 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
             isWaiting = true;
             return sessionApp.Sensors_M2.Trigger_Scanner;
         }
-
+        public bool ST13Available()
+        {
+            isWaiting = true;
+            return sessionApp.Sensors_M3.ST13Available;
+        }
 
         public bool UltraCapBoardPadinPlace()
         {
@@ -149,7 +165,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
         }
         public bool MaskInHolder()
         {
-            return sessionApp.Sensors_M1.K4;//buscar  el sensor correcto
+            return sessionApp.Sensors_M1.MaskInHolder;
         }
         public bool DetectsRetractedPalletClamp()
         {
@@ -169,6 +185,11 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
         {
             sessionApp.Sensors_M1.Vacuum = false;
             SendDataOutpusM1();
+        }
+        public void StopCylinder()
+        {
+            sessionApp.Sensors_M2.Cyl_Stopper = true;
+            SendDataOutpusM2();
         }
         private bool isWaiting = true;
         public async Task WaitingResponse(CancellationTokenSource cancellationTokenSource, bool sensorToCheck)

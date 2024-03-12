@@ -33,6 +33,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.Views
             {
                 _modelViewMain.Timestamp = DateTime.Now.ToString();                
                 _modelViewMain.MessageProcess = sessionApp.MessageOfProcess;
+                _modelViewMain.QRs_Scanned = sessionApp.QR;
                 _modelViewMain.ImageOfProcess = sessionApp.ImageOfProcess;
                 if (sessionApp.ImageOfProcess != null)
                 {

@@ -96,7 +96,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
             //    Thread.Sleep(3000);
             //    showMessageAndImage("Fallo segundo intento ESPERA ACTIVACION DE OPTO ", "GNC_ValidatePalletEnteringStation.jpg");
             //    Thread.Sleep(3000);
-            //    showMessageAndImage("Fallaron los 3 intentos ");
+            //    showMessageAndImage("Los 3 intentos han fallado. ");
             //    Thread.Sleep(3000);  ///Falta poner que hace en este caso
 
             // /*    sessionApp.MessageOfProcess = "PIDE A OPERADOR TOMAR ULTRA CAP BOARD Y COLOCAR EN NIDO";
@@ -120,7 +120,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
             //    sessionApp.MessageOfProcess = "Fallo segundo intento ESPERA ACTIVACION DE OPTO ";
             //    sessionApp.ImageOfProcess = sessionApp.PathOperationalImages + "button.jpg";
             //    Thread.Sleep(3000);
-            //    sessionApp.MessageOfProcess = "Fallaron los 3 intentos ";
+            //    sessionApp.MessageOfProcess = "Los 3 intentos han fallado. ";
             //    Thread.Sleep(3000);  ///Falta poner que hace en este caso
             //    sessionApp.MessageOfProcess = "2 PIDE A OPERADOR TOMAR TOMAR MASCARA Y COLOCAR SOBRE HOUSING";
             //    sessionApp.ImageOfProcess = sessionApp.PathOperationalImages + "pressure.jpg";
@@ -140,7 +140,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
             //    sessionApp.MessageOfProcess = "Fallo segundo intento de atornillado ESPERA ACTIVACION DE OPTO ";
             //    sessionApp.ImageOfProcess = sessionApp.PathOperationalImages + "button.jpg";
             //    Thread.Sleep(3000);
-            //    sessionApp.MessageOfProcess = "Fallaron los 3 intentos de atornillado";
+            //    sessionApp.MessageOfProcess = "Los 3 intentos han fallado. de atornillado";
             //    Thread.Sleep(3000);  ///Falta poner que hace en este caso
             //    sessionApp.MessageOfProcess = "PIDE A OPERADOR COLOCAR BRAZO EN HOME Y RETIRAR MASCARA";
             //    sessionApp.ImageOfProcess = sessionApp.PathOperationalImages + "pressure.jpg";
@@ -157,7 +157,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
             //    sessionApp.MessageOfProcess = "Fallo segundo intento ESPERA ACTIVACION DE OPTO ";
             //    sessionApp.ImageOfProcess = sessionApp.PathOperationalImages + "button.jpg";
             //    Thread.Sleep(3000);
-            //    sessionApp.MessageOfProcess = "Fallaron los 3 intentos ";
+            //    sessionApp.MessageOfProcess = "Los 3 intentos han fallado. ";
             //    Thread.Sleep(3000);  ///Falta poner que hace en este caso
             //    sessionApp.MessageOfProcess = "INSPECCION OK ENVIA BCMP A FIS";
             //    Thread.Sleep(3000);
@@ -288,7 +288,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
 
                                 if (!visionSystem.ThirdInspectionAttempt())
                                 {
-                                    Debug.WriteLine($"{DateTime.Now} - "  + "Fallaron los 3 intentos ");  ///Falta poner que hace en este caso
+                                    Debug.WriteLine($"{DateTime.Now} - "  + "Los 3 intentos han fallado. ");  ///Falta poner que hace en este caso
                                 }
                             }
                         }
@@ -338,7 +338,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
 
                                     if (!visionSystem.ThirdInspectionAttempt())
                                     {
-                                        Debug.WriteLine($"{DateTime.Now} - "  + "Fallaron los 3 intentos ");  ///Falta poner que hace en este caso
+                                        Debug.WriteLine($"{DateTime.Now} - "  + "Los 3 intentos han fallado. ");  ///Falta poner que hace en este caso
                                     }
                                 }
                             }
@@ -386,7 +386,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
 
                                                 if (screwdriver.ThirdTighteningAttempt(screw))
                                                 {
-                                                    Debug.WriteLine($"{DateTime.Now} - "  + "Fallaron los 3 intentos de atornillado");  ///Falta poner que hace en este caso
+                                                    Debug.WriteLine($"{DateTime.Now} - "  + "Los 3 intentos han fallado. de atornillado");  ///Falta poner que hace en este caso
                                                 }
                                             }
                                         }
@@ -429,7 +429,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
 
                                         if (!visionSystem.ThirdInspectionAttempt())
                                         {
-                                            Debug.WriteLine($"{DateTime.Now} - "  + "Fallaron los 3 intentos ");  ///Falta poner que hace en este caso
+                                            Debug.WriteLine($"{DateTime.Now} - "  + "Los 3 intentos han fallado. ");  ///Falta poner que hace en este caso
                                         }
                                     }
                                 }
