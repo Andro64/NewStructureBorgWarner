@@ -2,6 +2,7 @@
 using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -30,19 +31,26 @@ namespace BORGWARNER_SERVOPRESS.DataAccessLayer
         {
             MYSQL_DB mYSQL = new MYSQL_DB(sessionApp.connStr);
             DataFIS dataFIS = new DataFIS();
-            string response;
-            //string msg = "BREQ|id=" + serial.Substring(0, serial.Length - 1) + "|process=" + fis.Process + "|station=" + fis.Station;            
-            string msg = "BREQ|id=" + serial + "|process=" + fis.Process + "|station=" + fis.Station;
+            try
+            {               
+                string response;
+                //string msg = "BREQ|id=" + serial.Substring(0, serial.Length - 1) + "|process=" + fis.Process + "|station=" + fis.Station;            
+                string msg = "BREQ|id=" + serial.Substring(0, serial.Length - 1) + "|process=" + fis.Process + "|station=" + fis.Station;
 
-            dataFIS.to_fis = msg;
-            response = Sockets.Client(fis.IP, Convert.ToInt32(fis.Port), msg);
-            dataFIS.from_fis = response;
-            Object[] values = { serial, msg, response };
-            using (MySqlConnection conn = new MySqlConnection(sessionApp.connStr))
+                dataFIS.to_fis = msg;
+                response = Sockets.Client(fis.IP, Convert.ToInt32(fis.Port), msg);
+                dataFIS.from_fis = response;
+                Object[] values = { serial, msg, response };
+                using (MySqlConnection conn = new MySqlConnection(sessionApp.connStr))
+                {
+                    conn.Open();
+                    mYSQL.Insert(conn, "fis_history", "model,to_fis,from_fis", values);
+                    conn.Close();
+                }
+            }
+            catch(Exception ex)
             {
-                conn.Open();
-                mYSQL.Insert(conn, "fis_history", "model,to_fis,from_fis", values);
-                conn.Close();
+                Debug.WriteLine("Error" + ex.Message);
             }
             return dataFIS;
         }

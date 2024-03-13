@@ -150,53 +150,17 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
                 return false;
             }
             return ReadingReal();
-
-
-            /*
-            string readingReuslt;
-            readingReuslt = tryCommunicationCamera("SFEXP 5.00" + (char)13 + (char)10);
-            Thread.Sleep(100);
-
-            if (ValidateResponse(readingReuslt)) 
-            { 
-                Thread.Sleep(10); 
-            }
-
-            return validateInspectionResult("GVOutput" + (char)13 + (char)10);       */
-
         }
 
-        public bool SecondInspectionAttempt()
+        public bool SecondInspectionAttempt(string serial)
         {
-            string readingReuslt;
-
-            readingReuslt = tryCommunicationCamera("SFEXP 20.00" + (char)13 + (char)10);
-            Thread.Sleep(100);
-
-            if (ValidateResponse(readingReuslt))
-            {
-                Thread.Sleep(10);
-            }
-
-            if (validateConnectorCable() && validateRountingCable())
-            {
-                return true;
-            }
-            return false;
+            return FirstInspectionAttempt(serial);
         }
 
 
-        public bool ThirdInspectionAttempt()
+        public bool ThirdInspectionAttempt(string serial)
         {
-            string readingReuslt;
-            readingReuslt = tryCommunicationCamera("SFEXP 10.00" + (char)13 + (char)10);
-            Thread.Sleep(100);
-
-            if (ValidateResponse(readingReuslt))
-            {
-                Thread.Sleep(10);
-            }
-            return validateInspectionResult("GVResultado" + (char)13 + (char)10);
+            return FirstInspectionAttempt(serial);
         }
 
         private bool validateConnectorCable()

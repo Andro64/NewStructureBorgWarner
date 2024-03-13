@@ -81,6 +81,11 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
         public bool PalletInStopper()
         {
             isWaiting = true;
+            return (sessionApp.Sensors_M1.Pallet_Stopper) && sessionApp.Sensors_M1.SecurityOK && sessionApp.Sensors_M1.Main_Pressure;
+        }
+        public bool PalletOutStopper()
+        {
+            isWaiting = true;
             return (!sessionApp.Sensors_M1.Pallet_Stopper) && sessionApp.Sensors_M1.SecurityOK && sessionApp.Sensors_M1.Main_Pressure;
         }
         public async Task SecurePallet(CancellationTokenSource cancellationTokenSource)
@@ -130,6 +135,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
         public bool isTriggerScanner()
         {
             isWaiting = true;
+            sessionApp.sensorToCheck = sessionApp.Sensors_M2.Trigger_Scanner;
             return sessionApp.Sensors_M2.Trigger_Scanner;
         }
         public bool ST13Available()
@@ -149,6 +155,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
         }
         public bool WasPressedOpto()
         {
+            isWaiting = true;            
             return sessionApp.Sensors_M1.OptoBtn;
         }
         public bool UltraCapBoardReadyToScan()
@@ -192,7 +199,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
             SendDataOutpusM2();
         }
         private bool isWaiting = true;
-        public async Task WaitingResponse(CancellationTokenSource cancellationTokenSource, bool sensorToCheck)
+        public async Task WaitingResponse(CancellationTokenSource cancellationTokenSource, Func<bool> sensorToCheck)
         {
             //while(!sensorToCheck)
             //{
@@ -204,14 +211,15 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
 
             await Task.Run(async () =>
             {
-                while (!sensorToCheck && isWaiting)
+                while (!sensorToCheck() && isWaiting)
                 {
+                   
                     cancellationTokenSource.Token.ThrowIfCancellationRequested();
                     Debug.WriteLine("Esperando......");
                     await Task.Delay(5);
                 }
             }, cancellationTokenSource.Token);
-            if (!sensorToCheck)
+            if (!sensorToCheck())
             {
                 Debug.WriteLine("Ya no estoy esperando.");
                 //isWaiting = true;
@@ -223,7 +231,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
             {
                 var stopwatch = Stopwatch.StartNew();
 
-                while (!sensorToCheck && isWaiting)
+                while (!sessionApp.sensorToCheck && isWaiting)//while (!sensorToCheck && isWaiting)
                 {
                     cancellationTokenSource.Token.ThrowIfCancellationRequested();
                     Debug.WriteLine("Esperando......");

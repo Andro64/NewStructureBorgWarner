@@ -9,7 +9,7 @@ using System.Windows.Media.Imaging;
 namespace BORGWARNER_SERVOPRESS.DataModel
 {
     public class SessionApp
-    {        
+    {
         public string connStr { get; set; }
         public int statusCiclo { get; set; }
         public List<Settings> settings { get; set; }
@@ -22,14 +22,15 @@ namespace BORGWARNER_SERVOPRESS.DataModel
         public QRs QR { get; set; }
         public string PathImageResultFromCamera { get; set; }
         public int ModelScrewSelected { get; set; }
-        public PositionErgoArm positionErgoArm { get; set; } = new PositionErgoArm();     
+        public PositionErgoArm positionErgoArm { get; set; } = new PositionErgoArm();
         public string MessageOfProcess { get; set; }
         public string ImageOfProcess { get; set; }
         public BitmapImage BitmapImageOfProcess { get; set; }
         public string PathDirectoryResourcesOfThisProyect { get; set; }
         public string PathOperationalImages { get; set; }
         public List<TotalRegistersByTables> lstTotalRegistersByTables { get; set; }
-        public bool TaksRunExecuting { get; set; }        
+        public bool TaksRunExecuting { get; set; }
         public ModelViewTypeWorkstation typeWorkstation { get; set; }
-}
+        public bool sensorToCheck {get;set;}
+    }
 }

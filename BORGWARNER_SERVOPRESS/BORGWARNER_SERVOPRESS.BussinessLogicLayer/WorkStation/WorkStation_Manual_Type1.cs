@@ -192,13 +192,14 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
             {
                 Debug.WriteLine($"{DateTime.Now} - {debugMessage}");
                 _cancellationTokenSource = new CancellationTokenSource();
-                await sensorsIO.WaitingResponse(_cancellationTokenSource, sensorCheck());                
+                await sensorsIO.WaitingResponse(_cancellationTokenSource, sensorCheck);                
             }
         }
 
         //public override async Task StartProcess()
         public async Task MensajesPantalla()
         {
+            /*
             Scanner scanner;
             CommunicationFIS fIS;
             VisionSystem visionSystem;
@@ -275,7 +276,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
                     if (!sensorsIO.WasPressedOpto())
                     {
                         _cancellationTokenSource = new CancellationTokenSource();
-                        await sensorsIO.WaitingResponse(_cancellationTokenSource, sensorsIO.WasPressedOpto());
+                        //await sensorsIO.WaitingResponse(_cancellationTokenSource, sensorsIO.WasPressedOpto());
                         Debug.WriteLine($"{DateTime.Now} - "  + "Fallo primer intento ESPERA ACTIVACION DE OPTO ");
 
                         if (!visionSystem.SecondInspectionAttempt())
@@ -283,7 +284,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
                             if (!sensorsIO.WasPressedOpto())
                             {
                                 _cancellationTokenSource = new CancellationTokenSource();
-                                await sensorsIO.WaitingResponse(_cancellationTokenSource, sensorsIO.WasPressedOpto());
+                                //await sensorsIO.WaitingResponse(_cancellationTokenSource, sensorsIO.WasPressedOpto());
                                 Debug.WriteLine($"{DateTime.Now} - "  + "Fallo segundo intento ESPERA ACTIVACION DE OPTO ");
 
                                 if (!visionSystem.ThirdInspectionAttempt())
@@ -301,7 +302,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
 
                 if (!sensorsIO.UltraCapBoardReadyToScan())
                 {
-                    await sensorsIO.WaitingResponse(_cancellationTokenSource, sensorsIO.UltraCapBoardReadyToScan());
+                    //await sensorsIO.WaitingResponse(_cancellationTokenSource, sensorsIO.UltraCapBoardReadyToScan());
                     Debug.WriteLine($"{DateTime.Now} - "  + "ESPERA ULTRA CAP BOARD SE COLOQUE EN NIDO ");
                 }
 
@@ -317,7 +318,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
                     Debug.WriteLine($"{DateTime.Now} - "  + "PIDE A OPERADOR TOMAR HARNESS, CONECTAR A ULTRA CAP BOARD, COLOCAR EN HOUSING, REALIZAR RUTEO DE HARNESS SOBRE HOUSING Y PRESIONAR OPTO");
                     if (!sensorsIO.UCBdConnected_RoutingHarness_PlaceInHousing())
                     {
-                        await sensorsIO.WaitingResponse(_cancellationTokenSource, sensorsIO.UCBdConnected_RoutingHarness_PlaceInHousing());
+                        //await sensorsIO.WaitingResponse(_cancellationTokenSource, sensorsIO.UCBdConnected_RoutingHarness_PlaceInHousing());
                         Debug.WriteLine($"{DateTime.Now} - "  + "ESPERA ACTIVACION DE OPTO ");
                     }
 
@@ -326,14 +327,14 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
                     {
                         if (!sensorsIO.WasPressedOpto())
                         {
-                            await sensorsIO.WaitingResponse(_cancellationTokenSource, sensorsIO.WasPressedOpto());
+                            //await sensorsIO.WaitingResponse(_cancellationTokenSource, sensorsIO.WasPressedOpto());
                             Debug.WriteLine($"{DateTime.Now} - "  + "Fallo primer intento ESPERA ACTIVACION DE OPTO ");
 
                             if (!visionSystem.SecondInspectionAttempt())
                             {
                                 if (!sensorsIO.WasPressedOpto())
                                 {
-                                    await sensorsIO.WaitingResponse(_cancellationTokenSource, sensorsIO.WasPressedOpto());
+                                    //await sensorsIO.WaitingResponse(_cancellationTokenSource, sensorsIO.WasPressedOpto());
                                     Debug.WriteLine($"{DateTime.Now} - "  + "Fallo segundo intento ESPERA ACTIVACION DE OPTO ");
 
                                     if (!visionSystem.ThirdInspectionAttempt())
@@ -350,7 +351,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
                     Debug.WriteLine($"{DateTime.Now} - "  + "2 PIDE A OPERADOR TOMAR TOMAR MASCARA Y COLOCAR SOBRE HOUSING");
                     if (!sensorsIO.PlacedHousing())
                     {
-                        await sensorsIO.WaitingResponse(_cancellationTokenSource, sensorsIO.PlacedHousing());
+                        //await sensorsIO.WaitingResponse(_cancellationTokenSource, sensorsIO.PlacedHousing());
                         Debug.WriteLine($"{DateTime.Now} - "  + "Esperamos que el OPERADOR COLOCAQUE MASCARA SOBRE HOUSING");
                     }
                     sensorsIO.ActivateSignalToScrewDispenser();
@@ -375,13 +376,13 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
                                 {
                                     if (!sensorsIO.WasPressedOpto())
                                     {
-                                        await sensorsIO.WaitingResponse(_cancellationTokenSource, sensorsIO.WasPressedOpto());
+                                        //await sensorsIO.WaitingResponse(_cancellationTokenSource, sensorsIO.WasPressedOpto());
                                         Debug.WriteLine($"{DateTime.Now} - "  + "Fallo primer intento de atornillado  ESPERA ACTIVACION DE OPTO ");
                                         if (!screwdriver.SecondTighteningAttempt(screw))
                                         {
                                             if (!sensorsIO.WasPressedOpto())
                                             {
-                                                await sensorsIO.WaitingResponse(_cancellationTokenSource, sensorsIO.WasPressedOpto());
+                                                //await sensorsIO.WaitingResponse(_cancellationTokenSource, sensorsIO.WasPressedOpto());
                                                 Debug.WriteLine($"{DateTime.Now} - "  + "Fallo segundo intento de atornillado ESPERA ACTIVACION DE OPTO ");
 
                                                 if (screwdriver.ThirdTighteningAttempt(screw))
@@ -403,12 +404,12 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
 
                         if(!sensorsIO.MaskInHolder())
                         {
-                            await sensorsIO.WaitingResponse(_cancellationTokenSource, sensorsIO.MaskInHolder());
+                            //await sensorsIO.WaitingResponse(_cancellationTokenSource, sensorsIO.MaskInHolder());
                         }
                         Debug.WriteLine($"{DateTime.Now} - "  + "PIDE A OPERADOR TOMAR INSULADOR, COLOCAR SOBRE ULTRA CAP BOARD Y ACTIVAR OPTO");
                         if (!sensorsIO.WasPressedOpto())
                         {
-                            await sensorsIO.WaitingResponse(_cancellationTokenSource, sensorsIO.WasPressedOpto());
+                            //await sensorsIO.WaitingResponse(_cancellationTokenSource, sensorsIO.WasPressedOpto());
                             Debug.WriteLine($"{DateTime.Now} - "  + "OPTO ACTIVADO");
                         }
 
@@ -417,14 +418,14 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
                         {
                             if (!sensorsIO.WasPressedOpto())
                             {
-                                await sensorsIO.WaitingResponse(_cancellationTokenSource, sensorsIO.WasPressedOpto());
+                                //await sensorsIO.WaitingResponse(_cancellationTokenSource, sensorsIO.WasPressedOpto());
                                 Debug.WriteLine($"{DateTime.Now} - "  + "Fallo primer intento ESPERA ACTIVACION DE OPTO ");
 
                                 if (!visionSystem.SecondInspectionAttempt())
                                 {
                                     if (!sensorsIO.WasPressedOpto())
                                     {
-                                        await sensorsIO.WaitingResponse(_cancellationTokenSource, sensorsIO.WasPressedOpto());
+                                        //await sensorsIO.WaitingResponse(_cancellationTokenSource, sensorsIO.WasPressedOpto());
                                         Debug.WriteLine($"{DateTime.Now} - "  + "Fallo segundo intento ESPERA ACTIVACION DE OPTO ");
 
                                         if (!visionSystem.ThirdInspectionAttempt())
@@ -445,7 +446,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
                         Debug.WriteLine($"{DateTime.Now} - "  + "DETECTA CLAMP DE PALLET RETRAIDO");
                         if (!sensorsIO.DetectsRetractedPalletClamp())
                         {
-                            await sensorsIO.WaitingResponse(_cancellationTokenSource, sensorsIO.DetectsRetractedPalletClamp());
+                            //await sensorsIO.WaitingResponse(_cancellationTokenSource, sensorsIO.DetectsRetractedPalletClamp());
                         }
                         Debug.WriteLine($"{DateTime.Now} - "  + "LIBERA PALLET");
 
@@ -461,7 +462,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
 
             }//Falta si no PASS 
             sessionApp.TaksRunExecuting = false;
-        }
+        */}
         
     }
 }

@@ -26,6 +26,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
         public WorkStation_Automatic_Type1(SessionApp _sessionApp)
         {
             sessionApp = _sessionApp;
+            sensorsIO = new SensorsIO(sessionApp);
         }
 
         public override void CancelProcess()
@@ -54,22 +55,22 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
             DataFIS dataFIS;
             bool isPASS_From_FIS = false;
 
-            if (bool.Parse(sessionApp.settings.FirstOrDefault(x => x.setting.Equals("EneableFIS")).valueSetting))
+            if (sessionApp.settings.FirstOrDefault(x => x.setting.Equals("EneableFIS")).valueSetting == "1")
             {
                 showMessageAndImage(show_message);
                 fIS = new CommunicationFIS(sessionApp);
                 switch (typeSendToFIS)
                 {
-                    case eTypeSendToFIS.BREQ:
-                        sessionApp.QR.To_FIS = serial;                        
+                    case eTypeSendToFIS.BREQ:                        
                         dataFIS = fIS.SendBREQToFIS(serial);
+                        sessionApp.QR.To_FIS = dataFIS.to_fis;
                         sessionApp.QR.From_FIS = dataFIS.from_fis;
                         isPASS_From_FIS = dataFIS.from_fis.Contains("PASS");
                         
                         break;
-                    case eTypeSendToFIS.BCMP:
-                        sessionApp.QR.To_FIS = serial;
+                    case eTypeSendToFIS.BCMP:                        
                         dataFIS = fIS.BCMP(serial, isPass);
+                        sessionApp.QR.To_FIS = dataFIS.to_fis;
                         sessionApp.QR.From_FIS = dataFIS.from_fis;
                         isPASS_From_FIS = dataFIS.from_fis.Contains("ACK");
                         break;
@@ -139,7 +140,8 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
             string resultFIS;
             int quantityScrews;
 
-
+            sensorsIO.startRead();
+            _cancellationTokenSource = new CancellationTokenSource();
 
             showMessageAndImage("A la espera del producto.", "Housing.png");
             await CheckSensorAndWait(() => sensorsIO.PalletInStopper(), "Esperamos pallet en Pre-Stopper");
@@ -181,7 +183,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
             }
             
 
-            if (Validation_by_FIS(serial, "Se envía BREQ del housing a FIS.", eTypeSendToFIS.BREQ))
+            if (Validation_by_FIS(sessionApp.QR.HOUSING, "Se envía BREQ del housing a FIS.", eTypeSendToFIS.BREQ))
             {
                 showMessageAndImage("Inspección completada...");
                 Thread.Sleep(300);
@@ -194,7 +196,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
                 sessionApp.QR.HVDC_BUSBAR = serial;
                 if (isCancellationRequested) { return; };
 
-                if (Validation_by_FIS(serial, "Se envía BREQ a FIS.", eTypeSendToFIS.BREQ))
+                if (Validation_by_FIS(sessionApp.QR.HOUSING, "Se envía BREQ a FIS.", eTypeSendToFIS.BREQ))
                 {
                     showMessageAndImage("Inspección completada...");
                     Thread.Sleep(300);
@@ -208,7 +210,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
                     sessionApp.QR.HARNESS = serial;
                     if (isCancellationRequested) { return; };
 
-                    if (Validation_by_FIS(serial, "Se envía BREQ árnes a FIS", eTypeSendToFIS.BREQ))
+                    if (Validation_by_FIS(sessionApp.QR.HOUSING, "Se envía BREQ árnes a FIS", eTypeSendToFIS.BREQ))
                     {
                         showMessageAndImage("Inspección completada...");
                         Thread.Sleep(300);
@@ -227,23 +229,25 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
                             visionSystem.Disconnect();
                             if (!sensorsIO.WasPressedOpto())
                             {
-                                await sensorsIO.WaitingResponse(_cancellationTokenSource, sensorsIO.WasPressedOpto());
+                                
+                                
                                 Debug.WriteLine($"{DateTime.Now} - " + "Fallo primer intento ESPERA ACTIVACION DE OPTO.");
                                 showMessageAndImage("El primer intento falló. Por favor, reacomode y presione el sensor óptico(OPTO).", resultImageVisionSystem);
+                                await CheckSensorAndWait(() => sensorsIO.WasPressedOpto(), "El primer intento falló. Por favor, reacomode y presione el sensor óptico(OPTO).");
                                 if (isCancellationRequested) { return; };
 
-                                if (!visionSystem.SecondInspectionAttempt())
+                                if (!visionSystem.SecondInspectionAttempt(serial))
                                 {
                                     resultImageVisionSystem = visionSystem.getNameImageResultFromCamera(false);
                                     visionSystem.Disconnect();
                                     if (!sensorsIO.WasPressedOpto())
-                                    {
-                                        await sensorsIO.WaitingResponse(_cancellationTokenSource, sensorsIO.WasPressedOpto());
+                                    {                                        
                                         Debug.WriteLine($"{DateTime.Now} - " + "Fallo segundo intento ESPERA ACTIVACION DE OPTO.");
                                         showMessageAndImage("El segundo intento falló. Por favor, reacomode y presione el sensor óptico(OPTO).", resultImageVisionSystem);
+                                        await CheckSensorAndWait(() => sensorsIO.WasPressedOpto(), "El segundo intento falló. Por favor, reacomode y presione el sensor óptico(OPTO).");
                                         if (isCancellationRequested) { return; };
 
-                                        if (!visionSystem.ThirdInspectionAttempt())
+                                        if (!visionSystem.ThirdInspectionAttempt(serial))
                                         {
                                             resultImageVisionSystem = visionSystem.getNameImageResultFromCamera(false);
                                             visionSystem.Disconnect();
@@ -273,24 +277,24 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
                             resultImageVisionSystem = visionSystem.getNameImageResultFromCamera(false);
                             visionSystem.Disconnect();
                             if (!sensorsIO.WasPressedOpto())
-                            {
-                                await sensorsIO.WaitingResponse(_cancellationTokenSource, sensorsIO.WasPressedOpto());
+                            {                                
                                 Debug.WriteLine($"{DateTime.Now} - " + "Fallo primer intento ESPERA ACTIVACION DE OPTO. ");
                                 showMessageAndImage("El primer intento falló. Por favor, reacomode y presione el sensor óptico(OPTO).", resultImageVisionSystem);
+                                await CheckSensorAndWait(() => sensorsIO.WasPressedOpto(), "El primer intento falló. Por favor, reacomode y presione el sensor óptico(OPTO).");
                                 if (isCancellationRequested) { return; };
 
-                                if (!visionSystem.SecondInspectionAttempt())
+                                if (!visionSystem.SecondInspectionAttempt(serial))
                                 {
                                     resultImageVisionSystem = visionSystem.getNameImageResultFromCamera(false);
                                     visionSystem.Disconnect();
                                     if (!sensorsIO.WasPressedOpto())
-                                    {
-                                        await sensorsIO.WaitingResponse(_cancellationTokenSource, sensorsIO.WasPressedOpto());
+                                    {                                        
                                         Debug.WriteLine($"{DateTime.Now} - " + "Fallo segundo intento ESPERA ACTIVACION DE OPTO.");
                                         showMessageAndImage("El segundo intento falló. Por favor, reacomode y presione el sensor óptico(OPTO).", resultImageVisionSystem);
+                                        await CheckSensorAndWait(() => sensorsIO.WasPressedOpto(), "El segundo intento falló. Por favor, reacomode y presione el sensor óptico(OPTO).");
                                         if (isCancellationRequested) { return; };
 
-                                        if (!visionSystem.ThirdInspectionAttempt())
+                                        if (!visionSystem.ThirdInspectionAttempt(serial))
                                         {
                                             resultImageVisionSystem = visionSystem.getNameImageResultFromCamera(false);
                                             visionSystem.Disconnect();
@@ -320,24 +324,24 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
                             resultImageVisionSystem = visionSystem.getNameImageResultFromCamera(false);
                             visionSystem.Disconnect();
                             if (!sensorsIO.WasPressedOpto())
-                            {
-                                await sensorsIO.WaitingResponse(_cancellationTokenSource, sensorsIO.WasPressedOpto());
+                            {                                
                                 Debug.WriteLine($"{DateTime.Now} - " + "Fallo primer intento ESPERA ACTIVACION DE OPTO.");
                                 showMessageAndImage("El primer intento falló. Reacomode y presione el sensor óptico(OPTO)", resultImageVisionSystem);
+                                await CheckSensorAndWait(() => sensorsIO.WasPressedOpto(), "El primer intento falló. Por favor, reacomode y presione el sensor óptico(OPTO).");
                                 if (isCancellationRequested) { return; };
 
-                                if (!visionSystem.SecondInspectionAttempt())
+                                if (!visionSystem.SecondInspectionAttempt(serial))
                                 {
                                     resultImageVisionSystem = visionSystem.getNameImageResultFromCamera(false);
                                     visionSystem.Disconnect();
                                     if (!sensorsIO.WasPressedOpto())
-                                    {
-                                        await sensorsIO.WaitingResponse(_cancellationTokenSource, sensorsIO.WasPressedOpto());
+                                    {                                        
                                         Debug.WriteLine($"{DateTime.Now} - " + "Fallo segundo intento ESPERA ACTIVACION DE OPTO.");
                                         showMessageAndImage("El segundo intento falló. Reacomode y presione el sensor óptico(OPTO).", resultImageVisionSystem);
+                                        await CheckSensorAndWait(() => sensorsIO.WasPressedOpto(), "El segundo intento falló. Por favor, reacomode y presione el sensor óptico(OPTO).");
                                         if (isCancellationRequested) { return; };
 
-                                        if (!visionSystem.ThirdInspectionAttempt())
+                                        if (!visionSystem.ThirdInspectionAttempt(serial))
                                         {
                                             resultImageVisionSystem = visionSystem.getNameImageResultFromCamera(false);
                                             visionSystem.Disconnect();
@@ -390,6 +394,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
                                         //{
                                         //await sensorsIO.WaitingResponse(_cancellationTokenSource, sensorsIO.WasPressedOpto());
                                         //Debug.WriteLine($"{DateTime.Now} - " + "Fallo primer intento de atornillado  ESPERA ACTIVACION DE OPTO ");
+                                        await CheckSensorAndWait(() => sensorsIO.WasPressedOpto(), "Fallo primer intento de atornillado  ESPERA ACTIVACION DE OPTO");
                                         if (!screwdriver.SecondTighteningAttempt(screw))
                                         {
                                             sensorsIO.Turn_ON_Vacuumm();
@@ -401,7 +406,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
                                             //{
                                             //    await sensorsIO.WaitingResponse(_cancellationTokenSource, sensorsIO.WasPressedOpto());
                                             //    Debug.WriteLine($"{DateTime.Now} - " + "Fallo segundo intento de atornillado ESPERA ACTIVACION DE OPTO ");
-
+                                            await CheckSensorAndWait(() => sensorsIO.WasPressedOpto(), "Fallo segundo intento de atornillado  ESPERA ACTIVACION DE OPTO");
                                             if (screwdriver.ThirdTighteningAttempt(screw))
                                             {
                                                 Debug.WriteLine($"{DateTime.Now} - " + "Los 3 intentos de atornillado han fallado.");  ///Falta poner que hace en este caso
@@ -464,7 +469,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
 
                                         showMessageAndImage("Por favor, retire el pallet de la estación.");
                                         sensorsIO.StopCylinder();
-                                        await CheckSensorAndWait(() => !sensorsIO.PalletInStopper(), "Esperamos la estación 13."); // Revisar si lo hace en negativo                                        
+                                        await CheckSensorAndWait(() => sensorsIO.PalletOutStopper(), "Esperamos la estación 13."); 
                                         if (isCancellationRequested) { return; };
                                         showMessageAndImage("Pallet Retirado.");
                                         Thread.Sleep(1000);
@@ -488,28 +493,32 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
                     }
                     else
                     {
-                        showMessageAndImage("Error: Fallo la confirmación de FIS");
+                        showMessageAndImage("Error: Fallo la confirmación de FIS");                        
                     }
                 }
                 else
                 {
-                    showMessageAndImage("Error: Fallo la confirmación de FIS");
+                    showMessageAndImage("Error: Fallo la confirmación de FIS");                    
                 }
             }
             else
             {
-                showMessageAndImage("Error: Fallo la confirmación de FIS");
+                showMessageAndImage("Error: Fallo la confirmación de FIS");                
             }
+            endOfProcess();
         }
 
-
+        public void endOfProcess()
+        {
+            sessionApp.TaksRunExecuting = false;
+        }
         public async Task CheckSensorAndWait(Func<bool> sensorCheck, string debugMessage)
         {
             if (!sensorCheck())
             {
                 Debug.WriteLine($"{DateTime.Now} - {debugMessage}");
                 _cancellationTokenSource = new CancellationTokenSource();
-                await sensorsIO.WaitingResponse(_cancellationTokenSource, sensorCheck());
+                await sensorsIO.WaitingResponse(_cancellationTokenSource, sensorCheck);
             }
         }
         public async Task CheckSensorAndWaitByTime(Func<bool> sensorCheck, string debugMessage, int time)
