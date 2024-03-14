@@ -47,7 +47,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
             return false;
         }
 
-        public bool FirstTighteningAttempt(Screw screw)
+        public bool FirstTighteningAttempt(Screw screw, TypeExecutionScrew typeExecutionScrew)
         {
             connect();
             if (isScrewDriverConnected())
@@ -55,7 +55,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
                 if (InRange()) 
                 {
                     enableScrewdriver();
-                    if (ScrewingProgram_by_Model("400V PIM/250KW",false,false) == "0005")
+                    if (ScrewingProgram_by_Model(typeExecutionScrew) == "0005")
                     {
                         if (screwingSubscription() == "0005")
                         {
@@ -72,39 +72,13 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
             return false;            
         }
 
-        public bool SecondTighteningAttempt(Screw screw)
-        {
-            connect();
-            if (isScrewDriverConnected())
-            {
-                if (screwingSubscription() == "0005")
-                {
-                    if (ScrewingCompleted(screw))
-                    {
-                        disconnect();
-                        return screw.tighteningprocess.status;
-                    }
-                }
-            }
-            disconnect();
-            return false;
+        public bool SecondTighteningAttempt(Screw screw, TypeExecutionScrew typeExecutionScrew)
+        {            
+            return FirstTighteningAttempt(screw, typeExecutionScrew);
         }
-        public bool ThirdTighteningAttempt(Screw screw)
-        {
-            connect();
-            if (isScrewDriverConnected())
-            {
-                if (screwingSubscription() == "0005")
-                {
-                    if (ScrewingCompleted(screw))
-                    {
-                        disconnect();
-                        return screw.tighteningprocess.status;
-                    }
-                }
-            }
-            disconnect();
-            return false;
+        public bool ThirdTighteningAttempt(Screw screw, TypeExecutionScrew typeExecutionScrew)
+        {            
+            return FirstTighteningAttempt(screw, typeExecutionScrew);
         }
         public void disconnect()
         {
@@ -135,39 +109,9 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
             }
             return string.Empty;
         }
-        public string ScrewingProgram_by_Model(string model, bool rework, bool debug)
+        public string ScrewingProgram_by_Model(TypeExecutionScrew typeExecutionScrew)
         {
-            string ScrewingProgram = string.Empty;
-            if (model == "400V PIM/250KW")
-            {
-                if (!rework && !debug)
-                {
-                    ScrewingProgram = "01";
-                }
-                else if (rework)
-                {
-                    ScrewingProgram = "05";
-                }
-                else if (debug)
-                {
-                    ScrewingProgram = "25";
-                }
-            }
-            else if (model == "modelo2")
-            {
-                if (!rework && !debug)
-                {
-                    ScrewingProgram = "11";
-                }
-                else if (rework)
-                {
-                    ScrewingProgram = "15";
-                }
-                else if (debug)
-                {
-                    ScrewingProgram = "25";
-                }
-            }
+            string ScrewingProgram = communicationScrewDriver.getProgramScrewDriver(typeExecutionScrew);
             communicationScrewDriver.sendCodesScrewDriver(connection, "002300180010000000000" + ScrewingProgram + "\0");
             string response = communicationScrewDriver.responseScrewDriver(connection, 4, 4);
             return response;

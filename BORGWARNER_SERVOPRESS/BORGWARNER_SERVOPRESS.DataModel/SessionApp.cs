@@ -32,5 +32,6 @@ namespace BORGWARNER_SERVOPRESS.DataModel
         public bool TaksRunExecuting { get; set; }
         public ModelViewTypeWorkstation typeWorkstation { get; set; }
         public bool sensorToCheck {get;set;}
+        public TypeExecutionScrew typeExecutionScrew { get; set; } = new TypeExecutionScrew();
     }
 }

@@ -102,5 +102,25 @@ namespace BORGWARNER_SERVOPRESS.DataAccessLayer
 
             return result;
         }
+        public string getProgramScrewDriver(TypeExecutionScrew typeExecutionScrew)
+        {
+            string numProgram = string.Empty;
+
+            try
+            {
+                MYSQL_DB mYSQL = new MYSQL_DB(sessionApp.connStr);
+                DataTable resultData = mYSQL.ExecuteSP("SP_GET_SCREWS_PAG", new MySqlParameter[] {
+                    new MySqlParameter("p_rework", MySqlDbType.Int32) { Value = typeExecutionScrew.Rework },
+                    new MySqlParameter("p_debug", MySqlDbType.Int32) { Value = typeExecutionScrew.Debug },
+                    new MySqlParameter("p_removeScrew", MySqlDbType.Int32) { Value = typeExecutionScrew.RemoveScrew } });
+                numProgram = resultData.AsEnumerable().Select(x => x.Field<string>("ProgramaAtornillador")).FirstOrDefault();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"{DateTime.Now} - " + ex.Message);
+                throw;
+            }
+            return numProgram;
+        }
     }
 }

@@ -135,3 +135,63 @@ DELIMITER ;
 
 
 CALL SP_DEL_SCREWS(7);
+
+-----------------------------------------------------------------------------------------------------------------------------------------------							
+
+DROP PROCEDURE IF EXISTS SP_GET_SCREW_PROGRAM;
+DELIMITER //
+CREATE PROCEDURE SP_GET_SCREW_PROGRAM(
+		IN p_rework BOOL,
+		IN p_debug BOOL,
+		IN p_removeScrew BOOL		
+)
+BEGIN
+	DECLARE model_screw_id INT;
+    DECLARE ProgramaAtornillador VARCHAR(255);
+      
+    SELECT  models_screw.id INTO model_screw_id
+	      /*models_screw.name_model as models_screw_name_model,
+			models_screw.id as models_screw_id INTO model_screw_id*/
+    FROM settings_by_workstation 
+    LEFT JOIN models_screw ON models_screw.id = settings_by_workstation.value_setting
+    WHERE id_TypeWorkstation = (SELECT id FROM workstation) AND setting = "Model_Screw";
+      
+    IF model_screw_id = 1 THEN
+        IF NOT p_rework AND NOT p_debug AND NOT p_removeScrew THEN
+            SET ProgramaAtornillador = '01';
+        ELSEIF p_rework AND NOT p_removeScrew THEN
+            SET ProgramaAtornillador = '01';
+        ELSEIF p_debug AND NOT p_removeScrew THEN
+            SET ProgramaAtornillador = '25';
+        ELSEIF p_removeScrew THEN
+            SET ProgramaAtornillador = '10';
+        END IF;
+    ELSEIF model_screw_id = 3 THEN
+        IF NOT p_rework AND NOT p_debug AND NOT p_removeScrew THEN
+            SET ProgramaAtornillador = '11';
+        ELSEIF p_rework AND NOT p_removeScrew THEN
+            SET ProgramaAtornillador = '15';
+        ELSEIF p_debug AND NOT p_removeScrew THEN
+            SET ProgramaAtornillador = '25';
+        ELSEIF p_removeScrew THEN
+            SET ProgramaAtornillador = '10';
+        END IF;
+    ELSEIF model_screw_id = 2 THEN
+        IF NOT p_rework AND NOT p_debug AND NOT p_removeScrew THEN
+            SET ProgramaAtornillador = '01';
+        ELSEIF p_rework AND NOT p_removeScrew THEN
+            SET ProgramaAtornillador = '01';
+        ELSEIF p_debug AND NOT p_removeScrew THEN
+            SET ProgramaAtornillador = '25';
+        ELSEIF p_removeScrew THEN
+            SET ProgramaAtornillador = '10';
+        END IF;
+    END IF;
+    
+    SELECT ProgramaAtornillador;
+    
+END //
+
+DELIMITER ;
+
+CALL SP_GET_SCREW_PROGRAM(false,false,true);

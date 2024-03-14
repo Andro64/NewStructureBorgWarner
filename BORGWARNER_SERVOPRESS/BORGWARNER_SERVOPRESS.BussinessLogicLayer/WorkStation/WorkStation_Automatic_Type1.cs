@@ -413,7 +413,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
                                 if (sessionApp.positionErgoArm.InPositionReadyToProcess)
                                 {
                                     Debug.WriteLine($"{DateTime.Now} - " + "BRAZO ERGONOMICO EN POSICION");
-                                    if (!screwdriver.FirstTighteningAttempt(screw))
+                                    if (!screwdriver.FirstTighteningAttempt(screw, sessionApp.typeExecutionScrew))
                                     {
                                         sensorsIO.Turn_ON_Vacuumm();
                                         await showMessageAndImage($"El atornillado número : {tightenincount} ha fallado. Por favor, retire el tornillo y colóquelo en desposito de tonrillos desechados.", "Scrap2.jpg");
@@ -425,7 +425,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
                                         //await sensorsIO.WaitingResponse(_cancellationTokenSource, sensorsIO.WasPressedOpto());
                                         //Debug.WriteLine($"{DateTime.Now} - " + "Fallo primer intento de atornillado  ESPERA ACTIVACION DE OPTO ");
                                         await CheckSensorAndWait(() => sensorsIO.WasPressedOpto(), "Fallo primer intento de atornillado  ESPERA ACTIVACION DE OPTO");
-                                        if (!screwdriver.SecondTighteningAttempt(screw))
+                                        if (!screwdriver.SecondTighteningAttempt(screw, sessionApp.typeExecutionScrew))
                                         {
                                             sensorsIO.Turn_ON_Vacuumm();
                                             await showMessageAndImage($"El atornillado número : {tightenincount} ha fallado. Por favor, retire el tornillo y colóquelo en desposito de tonrillos desechados.", "Scrap2.jpg");
@@ -437,7 +437,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
                                             //    await sensorsIO.WaitingResponse(_cancellationTokenSource, sensorsIO.WasPressedOpto());
                                             //    Debug.WriteLine($"{DateTime.Now} - " + "Fallo segundo intento de atornillado ESPERA ACTIVACION DE OPTO ");
                                             await CheckSensorAndWait(() => sensorsIO.WasPressedOpto(), "Fallo segundo intento de atornillado  ESPERA ACTIVACION DE OPTO");
-                                            if (screwdriver.ThirdTighteningAttempt(screw))
+                                            if (screwdriver.ThirdTighteningAttempt(screw, sessionApp.typeExecutionScrew))
                                             {
                                                 await showMessageAndImage($"Los 3 intentos de atornillado han fallado.");
                                                 Debug.WriteLine($"{DateTime.Now} - " + "Los 3 intentos de atornillado han fallado.");  ///Falta poner que hace en este caso

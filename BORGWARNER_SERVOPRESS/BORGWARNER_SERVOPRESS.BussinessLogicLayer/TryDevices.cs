@@ -139,7 +139,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
             foreach (var screw in lstScrewsToProcess)
             {
                 screw.tighteningprocess = new TighteningProcess();
-                if (!screwdriver.FirstTighteningAttempt(screw))
+                if (!screwdriver.FirstTighteningAttempt(screw, sessionApp.typeExecutionScrew))
                 {
                 }
                 tightenincount++;
