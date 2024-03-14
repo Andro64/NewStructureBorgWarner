@@ -12,7 +12,8 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.Views
     public class ViewMain
     {
         private ModelViewMain _modelViewMain;
-        SessionApp sessionApp;        
+        SessionApp sessionApp;
+        string namefileLast;
        
         public ViewMain(SessionApp _sessionApp)
         {
@@ -33,25 +34,31 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.Views
             {
                 _modelViewMain.Timestamp = DateTime.Now.ToString();                
                 _modelViewMain.MessageProcess = sessionApp.MessageOfProcess;
-                _modelViewMain.QRs_Scanned = sessionApp.QR;
+                if (sessionApp.QR != null)
+                {
+                    _modelViewMain.QRs_Scanned = sessionApp.QR;
+                    _modelViewMain.HOUSING = sessionApp.QR.HOUSING;
+                    _modelViewMain.HVDC_BUSBAR = sessionApp.QR.HVDC_BUSBAR;
+                    _modelViewMain.HARNESS = sessionApp.QR.HARNESS;
+                    _modelViewMain.TOP_COVER = sessionApp.QR.TOP_COVER;
+                }
                 _modelViewMain.ImageOfProcess = sessionApp.ImageOfProcess;
                 if (sessionApp.ImageOfProcess != null)
                 {
                     if (File.Exists(sessionApp.ImageOfProcess))
                     {
-                        if (sessionApp.ImageOfProcess.Contains(".svg"))
+                        if (namefileLast != sessionApp.ImageOfProcess)
                         {
-                            _modelViewMain.BitMapImageOfProcess = new ImageProcess().TransformSVGtoPNG(sessionApp.ImageOfProcess);
-                        }
-                        else
-                        {
-                            BitmapImage image = new BitmapImage();
-                            image.BeginInit();
-                            image.CacheOption = BitmapCacheOption.OnLoad;
-                            image.UriSource = new Uri(sessionApp.ImageOfProcess); //;new BitmapImage(new Uri(sessionApp.ImageOfProcess));                            
-                            image.EndInit();
-
-                            _modelViewMain.BitMapImageOfProcess = image; //new BitmapImage(new Uri(sessionApp.ImageOfProcess));                            
+                            if (sessionApp.ImageOfProcess.Contains(".svg"))
+                            {
+                                _modelViewMain.BitMapImageOfProcess = new ImageProcess().TransformSVGtoPNG(sessionApp.ImageOfProcess);
+                                namefileLast = sessionApp.ImageOfProcess;
+                            }
+                            else
+                            {
+                                _modelViewMain.BitMapImageOfProcess = new BitmapImage(new Uri(sessionApp.ImageOfProcess));
+                                namefileLast = sessionApp.ImageOfProcess;
+                            }
                         }
                     }
 

@@ -146,8 +146,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
 
             sensorsIO.startRead();
             _cancellationTokenSource = new CancellationTokenSource();
-
-
+                       
             await showMessageAndImage("A la espera del producto.", "Housing.png");
             await CheckSensorAndWait(() => sensorsIO.PalletInStopper(), "Esperamos pallet en Pre-Stopper");
 

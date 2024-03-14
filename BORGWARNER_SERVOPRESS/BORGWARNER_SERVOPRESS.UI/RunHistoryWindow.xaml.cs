@@ -49,7 +49,7 @@ namespace BORGWARNER_SERVOPRESS.UI
 
         private void settings_option_btn_Click(object sender, RoutedEventArgs e)
         {
-            new SettingsWindow(sessionApp).ShowDialog();
+            new SettingsWindow(sessionApp).Show();
             this.Close();
         }
 
@@ -63,49 +63,49 @@ namespace BORGWARNER_SERVOPRESS.UI
         #region Menu
         private void mn_btn_run_Click(object sender, RoutedEventArgs e)
         {
-            new MainWindow(sessionApp).ShowDialog();
+            new MainWindow(sessionApp).Show();
             this.Close();
         }
 
         private void mn_btn_fis_Click(object sender, RoutedEventArgs e)
         {
-            new FISWindow(sessionApp).ShowDialog();
+            new FISWindow(sessionApp).Show();
             this.Close();
         }
 
         private void mn_btn_history_Click(object sender, RoutedEventArgs e)
         {
-            new RunHistoryWindow(sessionApp).ShowDialog();
+            new RunHistoryWindow(sessionApp).Show();
             this.Close();
         }
 
         private void mn_btn_modelos_screw_Click(object sender, RoutedEventArgs e)
         {
-            new ModelsScrewWindow(sessionApp).ShowDialog();
+            new ModelsScrewWindow(sessionApp).Show();
             this.Close();
         }
 
         private void mn_btn_manual_Click(object sender, RoutedEventArgs e)
         {
-            new ManualWindow(sessionApp).ShowDialog();
+            new ManualWindow(sessionApp).Show();
             this.Close();
         }
 
         private void mn_btn_positions_Click(object sender, RoutedEventArgs e)
         {
-            new PositionScrewWindow(sessionApp).ShowDialog();
+            new PositionScrewWindow(sessionApp).Show();
             this.Close();
         }
 
         private void users_option_btn_Click(object sender, RoutedEventArgs e)
         {
-            new UsersWindow(sessionApp).ShowDialog();
+            new UsersWindow(sessionApp).Show();
             this.Close();
         }
 
         private void home_option_btn_Click(object sender, RoutedEventArgs e)
         {
-            new MainWindow(sessionApp).ShowDialog();
+            new MainWindow(sessionApp).Show();
             this.Close();
         }
         #endregion

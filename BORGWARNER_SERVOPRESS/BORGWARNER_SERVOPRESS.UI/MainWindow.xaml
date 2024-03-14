@@ -190,19 +190,19 @@
                                                             Style="{StaticResource BaseTextBox}" VerticalAlignment="Top" Height="auto" Grid.Column="4" Grid.Row="2" Grid.ColumnSpan="5" Margin="55,10,10,0" />
 
                         <Label Content="HOUSING:" HorizontalAlignment="Left"  VerticalAlignment="Bottom" Grid.Column="1" Grid.Row="3"  Grid.ColumnSpan="2" />
-                        <TextBox x:Name="txtHousing" Text="{Binding QRs_Scanned.HOUSING, UpdateSourceTrigger=PropertyChanged}"  
+                        <TextBox x:Name="txtHousing" Text="{Binding HOUSING, UpdateSourceTrigger=PropertyChanged}"  
                                                          Style="{StaticResource BaseTextBox}" VerticalAlignment="Top" Height="auto" Width="150" Grid.Column="2" Grid.Row="3" Margin="62,14,12,0"  />
 
                         <Label Content="HVDC BUSBAR:" HorizontalAlignment="Left"  VerticalAlignment="Bottom" Grid.Column="3" Grid.Row="3"  Grid.ColumnSpan="2" />
-                        <TextBox x:Name="txt_HVDC_BUSBAR"    Text="{Binding QRs_Scanned.HVDC_BUSBAR, UpdateSourceTrigger=PropertyChanged}"  
+                        <TextBox x:Name="txt_HVDC_BUSBAR"    Text="{Binding HVDC_BUSBAR, UpdateSourceTrigger=PropertyChanged}"  
                                                             Style="{StaticResource BaseTextBox}" VerticalAlignment="Top" Height="auto" Width="150" Grid.Column="4" Grid.Row="3" Margin="97,12,3,0" />
 
                         <Label Content="HARNESS:" HorizontalAlignment="Left" VerticalAlignment="Bottom" Grid.Column="5" Grid.Row="3"  Grid.ColumnSpan="2" />
-                        <TextBox x:Name="txtHarness"    Text="{Binding QRs_Scanned.HARNESS, UpdateSourceTrigger=PropertyChanged}"  
+                        <TextBox x:Name="txtHarness"    Text="{Binding HARNESS, UpdateSourceTrigger=PropertyChanged}"  
                                                             Style="{StaticResource BaseTextBox}" VerticalAlignment="Top" Height="auto" Width="150" Grid.Column="6" Grid.Row="3" Margin="67,12,10,0"  />
 
                         <Label Content="TOP COVER:" HorizontalAlignment="Left" VerticalAlignment="Bottom" Grid.Column="7" Grid.Row="3"  Grid.ColumnSpan="2" />
-                        <TextBox x:Name="txtTopCover"    Text="{Binding QRs_Scanned.TOP_COVER, UpdateSourceTrigger=PropertyChanged}"  
+                        <TextBox x:Name="txtTopCover"    Text="{Binding TOP_COVER, UpdateSourceTrigger=PropertyChanged}"  
                                                             Style="{StaticResource BaseTextBox}" VerticalAlignment="Top"  Height="auto" Width="150" Grid.Column="8" Grid.Row="3" Margin="75,12,0,0" />
 
 

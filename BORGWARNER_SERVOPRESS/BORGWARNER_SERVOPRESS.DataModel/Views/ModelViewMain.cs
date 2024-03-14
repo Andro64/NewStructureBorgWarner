@@ -86,6 +86,59 @@ namespace BORGWARNER_SERVOPRESS.DataModel.Views
             }
         }
 
+        private string _HOUSING;
+        public string HOUSING
+        {
+            get { return _HOUSING; }
+            set
+            {
+                if (_HOUSING != value)
+                {
+                    _HOUSING = value;
+                    OnPropertyChanged(nameof(HOUSING));
+                }
+            }
+        }
+
+        private string _HVDC_BUSBAR;
+        public string HVDC_BUSBAR
+        {
+            get { return _HVDC_BUSBAR; }
+            set
+            {
+                if (_HVDC_BUSBAR != value)
+                {
+                    _HVDC_BUSBAR = value;
+                    OnPropertyChanged(nameof(HVDC_BUSBAR));
+                }
+            }
+        }
+        private string _HARNESS;
+        public string HARNESS
+        {
+            get { return _HARNESS; }
+            set
+            {
+                if (_HARNESS != value)
+                {
+                    _HARNESS = value;
+                    OnPropertyChanged(nameof(HARNESS));
+                }
+            }
+        }
+        private string _TOP_COVER;
+        public string TOP_COVER
+        {
+            get { return _TOP_COVER; }
+            set
+            {
+                if (_TOP_COVER != value)
+                {
+                    _TOP_COVER = value;
+                    OnPropertyChanged(nameof(TOP_COVER));
+                }
+            }
+        }
         private QRs _QRs_Scanned;
         public QRs QRs_Scanned
         {
