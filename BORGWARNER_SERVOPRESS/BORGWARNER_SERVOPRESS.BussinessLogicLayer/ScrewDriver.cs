@@ -52,12 +52,19 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
             connect();
             if (isScrewDriverConnected())
             {
-                if (screwingSubscription() == "0005")
+                if (InRange()) 
                 {
-                    if (ScrewingCompleted(screw))
+                    enableScrewdriver();
+                    if (ScrewingProgram_by_Model("400V PIM/250KW",false,false) == "0005")
                     {
-                        disconnect();
-                        return screw.tighteningprocess.status;                        
+                        if (screwingSubscription() == "0005")
+                        {
+                            if (ScrewingCompleted(screw))
+                            {
+                                disconnect();
+                                return screw.tighteningprocess.status;
+                            }
+                        }
                     }
                 }
             }
@@ -110,7 +117,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
         }
         public void connect()
         {
-            connection = communicationScrewDriver.connectScrewDriver(eTypeDevices.ErgoArm, eTypeConnection.Main);
+            connection = communicationScrewDriver.connectScrewDriver(eTypeDevices.Screw, eTypeConnection.Main);
             connectedScrewDriver = connection.Connected;
         }
         public bool isScrewDriverConnected()
@@ -121,17 +128,17 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
         {
             if (connection.Connected)
             {
-                communicationScrewDriver.sendCodesScrewDriver(connection, @"00200001001000000000\0");
+                communicationScrewDriver.sendCodesScrewDriver(connection, "00200001001000000000\0");
                 string response = communicationScrewDriver.responseScrewDriver(connection, 4, 4);
                 Debug.WriteLine($"{DateTime.Now} - "  + response);
                 return response;
             }
             return string.Empty;
         }
-        public void ScrewingProgram_by_Model(string model, bool rework, bool debug)
+        public string ScrewingProgram_by_Model(string model, bool rework, bool debug)
         {
             string ScrewingProgram = string.Empty;
-            if (model == "modelo1")
+            if (model == "400V PIM/250KW")
             {
                 if (!rework && !debug)
                 {
@@ -161,11 +168,13 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
                     ScrewingProgram = "25";
                 }
             }
-            communicationScrewDriver.sendCodesScrewDriver(connection, @"002300180010000000000" + ScrewingProgram + @"\0");
+            communicationScrewDriver.sendCodesScrewDriver(connection, "002300180010000000000" + ScrewingProgram + "\0");
+            string response = communicationScrewDriver.responseScrewDriver(connection, 4, 4);
+            return response;
         }
         public string enableScrewdriver()
         {
-            communicationScrewDriver.sendCodesScrewDriver(connection, @"00200043000000000000\0");
+            communicationScrewDriver.sendCodesScrewDriver(connection, "00200043000000000000\0");
             string response = communicationScrewDriver.responseScrewDriver(connection, 4, 4);
             Debug.WriteLine($"{DateTime.Now} - "  + response);
             return response;
@@ -173,7 +182,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
         public string screwingSubscription()
         {
             //communicationScrewDriver.sendCodesScrewDriver(connection, @"00200043000000000000\0");
-            communicationScrewDriver.sendCodesScrewDriver(connection, @"00200060000000000000\0");
+            communicationScrewDriver.sendCodesScrewDriver(connection, "00200060000000000000\0");
             string response = communicationScrewDriver.responseScrewDriver(connection, 4, 4);
             Debug.WriteLine($"{DateTime.Now} - "  + response);
             return response;

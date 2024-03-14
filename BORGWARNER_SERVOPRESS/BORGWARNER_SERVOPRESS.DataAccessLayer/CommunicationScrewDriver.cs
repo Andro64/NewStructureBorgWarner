@@ -15,8 +15,7 @@ namespace BORGWARNER_SERVOPRESS.DataAccessLayer
 {
     public class CommunicationScrewDriver
     {
-        SessionApp sessionApp;
-        List<ConnectionWorkStation> connections;
+        SessionApp sessionApp;        
         public CommunicationScrewDriver(SessionApp _sessionApp)
         {
             sessionApp = _sessionApp;            
@@ -43,8 +42,7 @@ namespace BORGWARNER_SERVOPRESS.DataAccessLayer
             ConnectionWorkStation connectionScrewDriver;
             try
             {
-                connectionScrewDriver = connections.
-                FirstOrDefault(x => x.idTypeConnection.Equals((int)connectionSelected) && x.idTypeDevice.Equals((int)ScrewDriverSelected));
+                connectionScrewDriver = sessionApp.connectionsWorkStation.FirstOrDefault(x => x.idTypeConnection.Equals((int)connectionSelected) && x.idTypeDevice.Equals((int)ScrewDriverSelected));
             }
             catch (Exception ex)
             {

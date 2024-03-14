@@ -125,9 +125,25 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
             //#endif
             return bitmapImage;
         }
+        public void getModelScrew()
+        {
+            sessionApp.ModelScrewSelected = int.Parse(sessionApp.settings.FirstOrDefault(x => x.setting.Equals("Model_Screw")).valueSetting);
+        }
         public void TryScrewdriver()
         {
-
+            screws = new Screws(sessionApp);
+            getModelScrew();
+            List<Screw> lstScrewsToProcess = screws.retriveScrewsToProcess(sessionApp.ModelScrewSelected);
+            screwdriver = new ScrewDriver(sessionApp);
+            int tightenincount = 1;
+            foreach (var screw in lstScrewsToProcess)
+            {
+                screw.tighteningprocess = new TighteningProcess();
+                if (!screwdriver.FirstTighteningAttempt(screw))
+                {
+                }
+                tightenincount++;
+            }
         }
         public void TryStartSensor()
         {

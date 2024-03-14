@@ -44,8 +44,14 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.Views
                             _modelViewMain.BitMapImageOfProcess = new ImageProcess().TransformSVGtoPNG(sessionApp.ImageOfProcess);
                         }
                         else
-                        {                            
-                            _modelViewMain.BitMapImageOfProcess = new BitmapImage(new Uri(sessionApp.ImageOfProcess));                            
+                        {
+                            BitmapImage image = new BitmapImage();
+                            image.BeginInit();
+                            image.CacheOption = BitmapCacheOption.OnLoad;
+                            image.UriSource = new Uri(sessionApp.ImageOfProcess); //;new BitmapImage(new Uri(sessionApp.ImageOfProcess));                            
+                            image.EndInit();
+
+                            _modelViewMain.BitMapImageOfProcess = image; //new BitmapImage(new Uri(sessionApp.ImageOfProcess));                            
                         }
                     }
 

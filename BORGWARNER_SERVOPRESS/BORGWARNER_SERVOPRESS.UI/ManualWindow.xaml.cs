@@ -350,7 +350,8 @@ namespace BORGWARNER_SERVOPRESS.UI
         {
             try
             {
-                tryDevices.TryErgoArm();
+                tryDevices.TryScrewdriver();
+                //tryDevices.TryErgoArm();
             }
             catch (Exception ex)
             {

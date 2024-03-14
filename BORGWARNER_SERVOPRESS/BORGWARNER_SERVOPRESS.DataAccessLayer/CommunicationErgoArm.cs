@@ -47,7 +47,7 @@ namespace BORGWARNER_SERVOPRESS.DataAccessLayer
             const ushort startingAddressOfInputRegisters = 0;
             const ushort numberRegisterToRead = 2;
             sessionApp.positionErgoArm = new PositionErgoArm();
-            while (!cancellationToken.IsCancellationRequested)
+            while (!sessionApp.positionErgoArm.InPositionReadyToProcess && !cancellationToken.IsCancellationRequested)
             {
                 ushort[] dataErgoArm = modbusIPMaster.ReadInputRegisters(startingAddressOfInputRegisters, numberRegisterToRead);
                 sessionApp.positionErgoArm.encoder1 = -(Convert.ToDouble(dataErgoArm[0]) * 0.0036) + 110.94;
@@ -86,14 +86,17 @@ namespace BORGWARNER_SERVOPRESS.DataAccessLayer
         {
             double MinPositionEncoder1 = screw.encoder1 - screw.tolerance;
             double MaxPositionEncoder1 = screw.encoder1 + screw.tolerance;
-            double MinPositionEncoder2 = screw.encoder1 - screw.tolerance;
-            double MaxPositionEncoder2 = screw.encoder1 + screw.tolerance;
+            double MinPositionEncoder2 = screw.encoder2 - screw.tolerance;
+            double MaxPositionEncoder2 = screw.encoder2 + screw.tolerance;
 
             if ((sessionApp.positionErgoArm.encoder1 > MinPositionEncoder1) && (sessionApp.positionErgoArm.encoder1 < MaxPositionEncoder1) && (sessionApp.positionErgoArm.encoder2 > MinPositionEncoder2) && (sessionApp.positionErgoArm.encoder2 < MaxPositionEncoder2))
             {
                 sessionApp.positionErgoArm.InPositionReadyToProcess = true;
             }
-            sessionApp.positionErgoArm.InPositionReadyToProcess = false;
+            else
+            {
+                sessionApp.positionErgoArm.InPositionReadyToProcess = false;
+            }
         }
 
         public bool isConnect()

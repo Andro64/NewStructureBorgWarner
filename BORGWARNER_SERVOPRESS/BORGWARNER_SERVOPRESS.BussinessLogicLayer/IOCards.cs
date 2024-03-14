@@ -148,17 +148,17 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
                         if (_ioCard is IOCardType_M1)
                         {
                             properties[i].SetValue(sessionApp.Sensors_M1, CardInputs1[i]);
-                            Debug.WriteLine($"{DateTime.Now} - "  + "Leyendo Sensores ioCard1: " + cont.ToString());
+                            //Debug.WriteLine($"{DateTime.Now} - "  + "Leyendo Sensores ioCard1: " + cont.ToString());
                         }
                         if (_ioCard is IOCardType_M2)
                         {
                             properties[i].SetValue(sessionApp.Sensors_M2, CardInputs2[i]);
-                            Debug.WriteLine($"{DateTime.Now} - "  + "Leyendo Sensores ioCard2: " + cont.ToString());
+                            //Debug.WriteLine($"{DateTime.Now} - "  + "Leyendo Sensores ioCard2: " + cont.ToString());
                         }
                         if (_ioCard is IOCardType_M3)
                         {
                             properties[i].SetValue(sessionApp.Sensors_M3, CardInputs3[i]);
-                            Debug.WriteLine($"{DateTime.Now} - "  + "Leyendo Sensores ioCard3: " + cont.ToString());
+                            //Debug.WriteLine($"{DateTime.Now} - "  + "Leyendo Sensores ioCard3: " + cont.ToString());
                         }                        
                     }
                 }
