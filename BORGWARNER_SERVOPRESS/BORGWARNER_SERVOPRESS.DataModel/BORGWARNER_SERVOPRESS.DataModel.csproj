@@ -59,12 +59,14 @@
     <Compile Include="IOCardType_M3.cs" />
     <Compile Include="ModelScrew.cs" />
     <Compile Include="PositionErgoArm.cs" />
+    <Compile Include="Programs_ScrewDriver.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="QRs.cs" />
     <Compile Include="RunHistory.cs" />
     <Compile Include="ScannerDataProcessedEventArgs.cs" />
     <Compile Include="Screw.cs" />
     <Compile Include="Screwdriver.cs" />
+    <Compile Include="ScrewingResult.cs" />
     <Compile Include="SessionApp.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="TighteningProcess.cs" />

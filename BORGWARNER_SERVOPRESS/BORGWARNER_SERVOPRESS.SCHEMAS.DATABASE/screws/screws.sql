@@ -195,3 +195,44 @@ END //
 DELIMITER ;
 
 CALL SP_GET_SCREW_PROGRAM(false,false,true);
+
+-----------------------------------------------------------------------------------------------------------------------------------------------							
+
+
+CREATE TABLE programs_screws (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  id_model_screw int NOT NULL,
+  screwing VARCHAR(4) NOT NULL,
+  rescrewing VARCHAR(4) NOT NULL,
+  unscrewing VARCHAR(4) NOT NULL,
+  simulated VARCHAR(4) NOT NULL  
+) ;
+
+INSERT INTO programs_screws VALUES 	(1,43,'01','01','10','25'),
+									(2,1 ,'01','01','10','25'),
+                                    (3,2 ,'11','15','25','10');
+select * from programs_screws;                                    
+
+-----------------------------------------------------------------------------------------------------------------------------------------------							
+
+DROP PROCEDURE IF EXISTS SP_GET_SCREW_PROGRAMS;
+
+DELIMITER //
+CREATE PROCEDURE SP_GET_SCREW_PROGRAMS()
+BEGIN
+	SELECT 
+		programs_screws.id,
+		id_model_screw,
+		screwing,
+		rescrewing,
+		unscrewing,
+		simulated 
+    FROM settings_by_workstation
+    LEFT JOIN programs_screws  ON programs_screws.id_model_screw = settings_by_workstation.value_setting
+    WHERE id_TypeWorkstation = (SELECT id FROM workstation) AND setting = "Model_Screw";
+      
+END //
+
+DELIMITER ;
+
+CALL SP_GET_SCREW_PROGRAMS();

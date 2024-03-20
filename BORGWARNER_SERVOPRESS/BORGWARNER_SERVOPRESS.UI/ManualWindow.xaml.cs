@@ -347,27 +347,27 @@ namespace BORGWARNER_SERVOPRESS.UI
         #endregion
         
         private void Screwdriver_Btn_Click(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                tryDevices.TryScrewdriver();
-                //tryDevices.TryErgoArm();
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine($"{DateTime.Now} - Error" + ex.Message);
-            }
+        {           
+           
         }
-               
 
+        private bool isPressed_ActiveErgoArm = false;
         private void TestScrewdriver_Btn_Click(object sender, RoutedEventArgs e)
         {
-            tryDevices.FinishTestErgoArm();
-        }
+            if (!isPressed_ActiveErgoArm)
+            {
+                TestScrewdriver_Btn.Content = "Desactivar ErgoArm";
+                TestScrewdriver_Btn.Style = FindResource("SelectedButton") as Style;
+                tryDevices.TryErgoArm();                
+            }
+            else
+            {
+                TestScrewdriver_Btn.Content = "Activar ErgoArm";
+                TestScrewdriver_Btn.Style = FindResource("BaseButton") as Style;
+                tryDevices.FinishTestErgoArm();                
+            }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-
+            isPressed_ActiveErgoArm = !isPressed_ActiveErgoArm; // Invierte el estado del botón
         }
 
         private bool isPressed_CardIO = false;
@@ -512,6 +512,29 @@ namespace BORGWARNER_SERVOPRESS.UI
                 {
                     MessageBox.Show("No se ha seleccionado ningún elemento.");
                 }               
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"{DateTime.Now} - Error" + ex.Message);
+            }
+        }
+
+        private async void btnTorque_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                if (ProgramaSel.SelectedItem != null)
+                {                    
+                    TighteningProcess tightening = await tryDevices.TryScrewdriver(ProgramaSel.SelectedItem.ToString());
+                    if (tightening != null)
+                    {
+                        if (tightening.Torque != null && tightening.Angle != null)
+                        {
+                            Screwdriver_Torque.Text = $"{ tightening.Torque.Substring(0, 2)}.{ tightening.Torque.Substring(2, 2)} Nm";
+                            Screwdriver_Angle.Text = $"{tightening.Angle.TrimStart('0')}°";
+                        }
+                    }
+                }
             }
             catch (Exception ex)
             {

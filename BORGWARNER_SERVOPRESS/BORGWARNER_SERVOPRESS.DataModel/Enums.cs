@@ -6,6 +6,13 @@ using System.Threading.Tasks;
 
 namespace BORGWARNER_SERVOPRESS.DataModel
 {
+    public enum eTypePrograms
+    {
+        screwing,
+        rescrewing,
+        unscrewing,
+        simulated
+    }
     public enum eTypeConnection
     {
         Main = 1,

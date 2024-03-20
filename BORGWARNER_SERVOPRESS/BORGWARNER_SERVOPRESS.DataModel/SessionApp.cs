@@ -33,5 +33,8 @@ namespace BORGWARNER_SERVOPRESS.DataModel
         public ModelViewTypeWorkstation typeWorkstation { get; set; }
         public bool sensorToCheck {get;set;}
         public TypeExecutionScrew typeExecutionScrew { get; set; } = new TypeExecutionScrew();
+        public Programs_ScrewDriver programs_ScrewDriver { get; set; }
+        public string messageTorque { get; set; }
+        public bool isScrewingFinished { get; set; }
     }
 }

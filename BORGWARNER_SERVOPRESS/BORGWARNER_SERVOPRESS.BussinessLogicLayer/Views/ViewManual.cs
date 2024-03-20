@@ -1,4 +1,5 @@
-﻿using BORGWARNER_SERVOPRESS.DataModel;
+﻿using BORGWARNER_SERVOPRESS.DataAccessLayer;
+using BORGWARNER_SERVOPRESS.DataModel;
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -66,6 +67,19 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.Views
                 {
                     _encoder2 = value;
                     OnPropertyChanged(nameof(Encoder2));
+                }
+            }
+        }
+        private string _MessageTorque;
+        public string MessageTorque
+        {
+            get { return _MessageTorque; }
+            set
+            {
+                if (_MessageTorque != value)
+                {
+                    _MessageTorque = value;
+                    OnPropertyChanged(nameof(MessageTorque));
                 }
             }
         }
@@ -139,11 +153,11 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.Views
         private void populatePrograms()
         {
             lstPrograms = new ObservableCollection<string>();
-
-            for (int i = 1; i <= 10; i++)
-            {
-                lstPrograms.Add(i.ToString().PadLeft(2, '0'));
-            }
+            Programs_ScrewDriver programs_Screwdriver  = new CommunicationScrewDriver(sessionApp).getPrograms_ScrewDriver();
+            lstPrograms.Add(programs_Screwdriver.screwing);
+            lstPrograms.Add(programs_Screwdriver.rescrewing);
+            lstPrograms.Add(programs_Screwdriver.unscrewing);
+            lstPrograms.Add(programs_Screwdriver.simulated);
 
             ProgramsSelected = lstPrograms.FirstOrDefault();
         }
@@ -152,8 +166,8 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.Views
             UserName = sessionApp.user.userName;
             Profile = sessionApp.user.profile_description;
             NameWorksation = sessionApp.typeWorkstation.description;
-            Encoder1 = "Hola";
-            Encoder2 = "Andro";
+            Encoder1 = "";
+            Encoder2 = "";            
         }
 
         public void ShowDate()
@@ -168,6 +182,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.Views
                 //Por el momento metemos aqui los mensaje
                 Encoder1 = sessionApp.positionErgoArm.encoder1.ToString();
                 Encoder2 = sessionApp.positionErgoArm.encoder2.ToString();
+                MessageTorque = sessionApp.messageTorque;
             };
             timer.Start();
         }

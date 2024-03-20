@@ -413,53 +413,56 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
                                 if (sessionApp.positionErgoArm.InPositionReadyToProcess)
                                 {
                                     Debug.WriteLine($"{DateTime.Now} - " + "BRAZO ERGONOMICO EN POSICION");
-                                    if (!screwdriver.FirstTighteningAttempt(screw, sessionApp.typeExecutionScrew))
+                                    if (!screwdriver.FirstTighteningAttempt(screw))
                                     {
+                                        screwdriver.Unscrewing(screw);
                                         sensorsIO.Turn_ON_Vacuumm();
                                         await showMessageAndImage($"El atornillado número : {tightenincount} ha fallado. Por favor, retire el tornillo y colóquelo en desposito de tonrillos desechados.", "Scrap2.jpg");
                                         await CheckSensorAndWait(() => sensorsIO.ScrewInScrap(), "Esperamos que el operador coloque el tornillo en el scrap");
                                         if (isCancellationRequested) { return; };
 
-                                        //if (!sensorsIO.WasPressedOpto())
-                                        //{
-                                        //await sensorsIO.WaitingResponse(_cancellationTokenSource, sensorsIO.WasPressedOpto());
-                                        //Debug.WriteLine($"{DateTime.Now} - " + "Fallo primer intento de atornillado  ESPERA ACTIVACION DE OPTO ");
+                                        
                                         await CheckSensorAndWait(() => sensorsIO.WasPressedOpto(), "Fallo primer intento de atornillado  ESPERA ACTIVACION DE OPTO");
-                                        if (!screwdriver.SecondTighteningAttempt(screw, sessionApp.typeExecutionScrew))
+                                        if (!screwdriver.SecondTighteningAttempt(screw))
                                         {
+                                            screwdriver.Unscrewing(screw);
                                             sensorsIO.Turn_ON_Vacuumm();
                                             await showMessageAndImage($"El atornillado número : {tightenincount} ha fallado. Por favor, retire el tornillo y colóquelo en desposito de tonrillos desechados.", "Scrap2.jpg");
                                             await CheckSensorAndWait(() => sensorsIO.ScrewInScrap(), "Esperamos que el operador coloque el tornillo en el scrap");
                                             if (isCancellationRequested) { return; };
 
-                                            //if (!sensorsIO.WasPressedOpto())
-                                            //{
-                                            //    await sensorsIO.WaitingResponse(_cancellationTokenSource, sensorsIO.WasPressedOpto());
-                                            //    Debug.WriteLine($"{DateTime.Now} - " + "Fallo segundo intento de atornillado ESPERA ACTIVACION DE OPTO ");
+                                        
                                             await CheckSensorAndWait(() => sensorsIO.WasPressedOpto(), "Fallo segundo intento de atornillado  ESPERA ACTIVACION DE OPTO");
-                                            if (screwdriver.ThirdTighteningAttempt(screw, sessionApp.typeExecutionScrew))
+                                            if (screwdriver.ThirdTighteningAttempt(screw))
                                             {
+                                                screwdriver.Unscrewing(screw);
+                                                sensorsIO.Turn_ON_Vacuumm();
+                                                await showMessageAndImage($"El atornillado número : {tightenincount} ha fallado. Por favor, retire el tornillo y colóquelo en desposito de tonrillos desechados.", "Scrap2.jpg");
+                                                await CheckSensorAndWait(() => sensorsIO.ScrewInScrap(), "Esperamos que el operador coloque el tornillo en el scrap");
+                                                if (isCancellationRequested) { return; };
+
                                                 await showMessageAndImage($"Los 3 intentos de atornillado han fallado.");
-                                                Debug.WriteLine($"{DateTime.Now} - " + "Los 3 intentos de atornillado han fallado.");  ///Falta poner que hace en este caso
+                                                Debug.WriteLine($"{DateTime.Now} - " + "Los 3 intentos de atornillado han fallado.");
+                                                ergoArm.endReadPostion();
                                                 endOfProcess();
-                                            }
-                                            //}
-                                        }
-                                        //}
+                                            }                                            
+                                        }                                        
                                     }
                                 }
                                 tightenincount++;
                                 RequestCreateTextBox($"{screw.tighteningprocess.Torque} Nw | {screw.tighteningprocess.Angle} °", screw.text_position_X, screw.text_position_Y);
-                            }//Finaliza el proceso de atornillado                            
+                            }//Finaliza el proceso de atornillado
+                            ergoArm.endReadPostion();
                             await showMessageAndImage("Por favor, coloque el atornillador en la posición 1.", "HousingWithMask.png");
-                            Thread.Sleep(1000);
+                            Thread.Sleep(3000);
                             RequestRemoveTextBox();
-                            //await showMessageAndImage("Por favor, retire la máscara y colóquela en su base", "MaskInHolder.jpg");                            
-                            //await CheckSensorAndWait(() => sensorsIO.MaskInHolder(), "Esperamos maskhousing");
-                            //if (isCancellationRequested) { return; };
+
+                            await showMessageAndImage("Por favor, retire la máscara y colóquela en su base", "MaskInHolder.jpg");
+                            await CheckSensorAndWait(() => sensorsIO.MaskInHolder(), "Esperamos maskhousing");
+                            if (isCancellationRequested) { return; };
 
                             await showMessageAndImage("Por favor, tome la cubierta superior y colóquela frente al escáner.", "TopCover_Scanner.jpg");
-                            await CheckSensorAndWait(() => sensorsIO.MaskInHolder(), "Esperamos maskhousing");
+                            await CheckSensorAndWait(() => sensorsIO.isTriggerScanner(), "Esperamos maskhousing");
                             if (isCancellationRequested) { return; };
 
                             await showMessageAndImage("Escaneando código QR de la cubierta superior.");

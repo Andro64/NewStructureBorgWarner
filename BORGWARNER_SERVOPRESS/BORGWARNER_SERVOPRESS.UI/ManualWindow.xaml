@@ -306,14 +306,14 @@
                                     <ColumnDefinition />
                                 </Grid.ColumnDefinitions>
                                 <Grid.RowDefinitions>
-                                    <RowDefinition Height="20"/>
-                                    <RowDefinition Height="30"/>
-                                    <RowDefinition Height="30"/>
-                                    <RowDefinition Height="10"/>
+                                    <RowDefinition Height="auto"/>
+                                    <RowDefinition Height="45"/>
                                     <RowDefinition Height="30"/>
                                     <RowDefinition Height="10"/>
                                     <RowDefinition Height="30"/>
                                     <RowDefinition Height="10"/>
+                                    <RowDefinition Height="30"/>
+                                    <RowDefinition Height="auto"/>
                                     <RowDefinition Height="30"/>
                                     <RowDefinition Height="10"/>
                                     <RowDefinition Height="auto"/>
@@ -321,13 +321,14 @@
                                 </Grid.RowDefinitions>
                                 <!--<Button x:Name="Scanner_1" Style="{StaticResource BaseButton}" Content="Escáner 1" Click="Scanner_1_Click" Grid.Column="0" Grid.Row="1"/>-->
 
-                                <Button x:Name="Screwdriver_Btn" Style="{StaticResource BaseButton}" Content="Torque" Click="Screwdriver_Btn_Click" Grid.Column="0" Grid.Row="4"/>
-                                <TextBox x:Name="Screwdriver_Torque" Style="{StaticResource BaseTextBox}" Grid.Column="0" Grid.Row="6"/>
+                                <Button x:Name="Screwdriver_Btn" Style="{StaticResource BaseButton}" Content="Torque" Click="Screwdriver_Btn_Click" Grid.Column="0" Grid.Row="11"/>
+                                <Label x:Name="lblMessageTorque" Content ="{Binding MessageTorque}"  Grid.Column="0"  Grid.Row="1" Grid.ColumnSpan="2"/>
+                                <TextBox x:Name="Screwdriver_Torque" Style="{StaticResource BaseTextBox}" Grid.Column="0" Grid.Row="2"/>
 
-                                <TextBox x:Name="Screwdriver_Angle" Style="{StaticResource BaseTextBox}" Grid.Column="1" Grid.Row="6"/>
+                                <TextBox x:Name="Screwdriver_Angle" Style="{StaticResource BaseTextBox}" Grid.Column="1" Grid.Row="2"/>
 
-                                <Button x:Name="TestScrewdriver_Btn" Style="{StaticResource BaseButton}" Content="Pruebas atornillador" Click="TestScrewdriver_Btn_Click" Grid.Column="0" Grid.Row="8"/>
-                                <GroupBox x:Name="ProgSel" Style="{StaticResource SimpleGroupBox}" Header="Programa atornillador" Grid.ColumnSpan="2" Grid.Row="10">
+                                <Button x:Name="TestScrewdriver_Btn" Style="{StaticResource BaseButton}" Content="Activar ErgoArm" Click="TestScrewdriver_Btn_Click" Grid.Column="0" Grid.Row="6"/>
+                                <GroupBox x:Name="ProgSel" Style="{StaticResource SimpleGroupBox}" Header="Programa atornillador" Grid.ColumnSpan="2" Grid.Row="0">
                                     <Grid>
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition />
@@ -340,26 +341,27 @@
                                                   Style="{StaticResource BaseComboBox}" Grid.ColumnSpan="2" Grid.Column="1"/>
 
 
-                                        <Button Content="Seleccionar programa" Style="{StaticResource BaseButton}" Click="Button_Click"/>
+                                        <Button Content="Realizar Torque" Style="{StaticResource BaseButton}" Click="btnTorque_Click"/>
                                     </Grid>
                                 </GroupBox>
-                                <GroupBox x:Name="Ergo_Arm" Style="{StaticResource SimpleGroupBox}" Header="Ergo Arm Position" Grid.ColumnSpan="2" Grid.Row="11">
+                                <GroupBox x:Name="Ergo_Arm" Style="{StaticResource SimpleGroupBox}" Header="Posición del Ergo Arm" Grid.ColumnSpan="2" Grid.Row="7">
                                     <Grid>
                                         <Grid.ColumnDefinitions>
-                                            <ColumnDefinition/>
-                                            <ColumnDefinition/>
+                                            <ColumnDefinition Width="40*"/>
+                                            <ColumnDefinition Width="224*"/>
+                                            <ColumnDefinition Width="263*"/>
                                         </Grid.ColumnDefinitions>
                                         <Grid.RowDefinitions>
                                             <RowDefinition Height="auto"/>
                                             <RowDefinition Height="auto"/>
                                         </Grid.RowDefinitions>
 
-                                        <Label Content="ENCODER 1" Grid.Row="0" Grid.Column="0"/>
-                                        <TextBox x:Name="Encoder1" Text="{Binding Encoder1}" TextWrapping="Wrap" Style="{StaticResource BaseTextBox}" Grid.Row="1" Grid.Column="0"/>
-                                        <Label Content="ENCODER 2" Grid.Row="0" Grid.Column="1"/>
-                                        <TextBox x:Name="Encoder2" Text="{Binding Encoder2}" TextWrapping="Wrap" Style="{StaticResource BaseTextBox}" Grid.Row="1" Grid.Column="1"/>
-                                        <Label Content="Z Position" Visibility="Hidden" Grid.Row="0" Grid.Column="1"/>
-                                        <TextBox x:Name="Encoder3" Visibility="Hidden" TextWrapping="Wrap" Style="{StaticResource BaseTextBox}" Grid.Row="1" Grid.Column="1"/>
+                                        <Label Content="ENCODER 1" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2"/>
+                                        <TextBox x:Name="Encoder1" Text="{Binding Encoder1}" TextWrapping="Wrap" Style="{StaticResource BaseTextBox}" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"/>
+                                        <Label Content="ENCODER 2" Grid.Row="0" Grid.Column="2"/>
+                                        <TextBox x:Name="Encoder2" Text="{Binding Encoder2}" TextWrapping="Wrap" Style="{StaticResource BaseTextBox}" Grid.Row="1" Grid.Column="2"/>
+                                        <Label Content="Z Position" Visibility="Hidden" Grid.Row="0" Grid.Column="2"/>
+                                        <TextBox x:Name="Encoder3" Visibility="Hidden" TextWrapping="Wrap" Style="{StaticResource BaseTextBox}" Grid.Row="1" Grid.Column="2"/>
                                     </Grid>
                                 </GroupBox>
                             </Grid>
@@ -415,7 +417,7 @@
                                         SelectedItem="{Binding CameraSelected}"                                        
                                         Style="{StaticResource BaseComboBox}" 
                                         Grid.Row="1" Grid.Column="0" Margin="20,10,42.4,575.8" Grid.RowSpan="3"/>
-                            
+
                             <Button x:Name="Camara_1_Btn" Style="{StaticResource BaseButton}"  Content="Capturar Imagen" Click="Camara_1_Btn_Click" Grid.Column="1" Grid.Row="2"/>
                             <Image x:Name="Camara_1_Manual_Image" Grid.Row="3" Grid.ColumnSpan="4" Margin="10" Visibility="visible" Source="BW.png"/>
                         </Grid>

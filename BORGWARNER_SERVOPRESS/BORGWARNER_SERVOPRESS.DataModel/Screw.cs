@@ -17,7 +17,7 @@ namespace BORGWARNER_SERVOPRESS.DataModel
         public string desc_model { get; set; }
         public int text_position_X { get; set; }
         public int text_position_Y { get; set; }
-        public TighteningProcess tighteningprocess { get; set; }
+        public TighteningProcess tighteningprocess { get; set; } = new TighteningProcess();
 
     }
 }

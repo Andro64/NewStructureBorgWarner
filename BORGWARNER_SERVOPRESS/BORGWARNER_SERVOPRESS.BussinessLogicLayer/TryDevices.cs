@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
 
@@ -27,6 +28,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
         ScrewDriver screwdriver;
         SensorsIO sensorsIO;
         DataFIS dataFIS;
+        CancellationTokenSource _cancellationTokenSource; 
 
         string serial;
         string resultFIS;
@@ -129,21 +131,37 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
         {
             sessionApp.ModelScrewSelected = int.Parse(sessionApp.settings.FirstOrDefault(x => x.setting.Equals("Model_Screw")).valueSetting);
         }
-        public void TryScrewdriver()
+        public async Task<TighteningProcess> TryScrewdriver(string programValue)
         {
+            sessionApp.messageTorque = "...";
             screws = new Screws(sessionApp);
+            TighteningProcess tightening = new TighteningProcess();
+            _cancellationTokenSource = new CancellationTokenSource();
             getModelScrew();
             List<Screw> lstScrewsToProcess = screws.retriveScrewsToProcess(sessionApp.ModelScrewSelected);
             screwdriver = new ScrewDriver(sessionApp);
             int tightenincount = 1;
             foreach (var screw in lstScrewsToProcess)
             {
-                screw.tighteningprocess = new TighteningProcess();
-                if (!screwdriver.FirstTighteningAttempt(screw, sessionApp.typeExecutionScrew))
+                Debug.WriteLine($"************* Tornillo numero {tightenincount}**************");
+                sessionApp.messageTorque = $"Tornillo numero: {tightenincount}";
+                tightening = await screwdriver.tryScrewDriver(screw, _cancellationTokenSource, programValue);
+                
+                if (screw.tighteningprocess == null)
                 {
+                    return null;
+                }
+                if (screw.tighteningprocess.status)
+                //if (sessionApp.isScrewingFinished)
+                {
+                    screwdriver.Unscrewing(screw);
+                    return screw.tighteningprocess;
                 }
                 tightenincount++;
+                break;
             }
+            Debug.WriteLine($"************* Termine de atornillar **************");
+            return tightening;
         }
         public void TryStartSensor()
         {

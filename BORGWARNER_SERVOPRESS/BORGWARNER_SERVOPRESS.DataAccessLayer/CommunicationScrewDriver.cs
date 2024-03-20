@@ -61,14 +61,63 @@ namespace BORGWARNER_SERVOPRESS.DataAccessLayer
         }
         public string responseScrewDriver(Socket socket)
         {
-            if (socket.Connected)
+            try
             {
-                byte[] responseFromScrewDriver = new byte[1025];
-                socket.Receive(responseFromScrewDriver);
-                return Encoding.ASCII.GetString(responseFromScrewDriver);
+                if (socket.Connected)
+                {
+                    Debug.WriteLine("Estoy conectado responseScrewDriver");
+                    byte[] responseFromScrewDriver = new byte[1025];
+                    socket.Receive(responseFromScrewDriver);
+                    Debug.WriteLine("Aqui recibi del socket");
+                    string result =Encoding.ASCII.GetString(responseFromScrewDriver);
+                    Debug.WriteLine("Esta es la respuesta" + result);
+                    return result;
+                }
+            }
+            catch(Exception ex)
+            {
+                Debug.WriteLine("Error:" + ex.Message);
             }
             return string.Empty;
         }
+        public async Task<string> ResponseScrewDriverAsync(Socket socket)
+        {
+            Debug.WriteLine($"Entre: ResponseScrewDriverAsync ");
+            if (socket.Connected)
+            {
+                try
+                {
+                    byte[] responseFromScrewDriver = new byte[1025];
+                    int bytesRead = await ReceiveAsync(socket, responseFromScrewDriver);
+                    return Encoding.ASCII.GetString(responseFromScrewDriver, 0, bytesRead);
+                }
+                catch(Exception ex)
+                {
+                    Debug.WriteLine("Error(ResponseScrewDriverAsync):" + ex.Message);
+                }
+
+            }
+            return string.Empty;
+        }
+        private Task<int> ReceiveAsync(Socket socket, byte[] buffer)
+        {
+            Debug.WriteLine($"Entre: ReceiveAsync ");
+
+            try
+            {
+                return Task<int>.Factory.FromAsync(
+                    (callback, state) => socket.BeginReceive(buffer, 0, buffer.Length, SocketFlags.None, callback, state),
+                    socket.EndReceive,
+                    null);
+            }
+            catch (Exception ex)
+            {
+                // Maneja la excepción aquí
+                Debug.WriteLine($"Se produjo una excepción en ReceiveAsync: {ex.Message}");
+                throw; // Puedes relanzar la excepción o manejarla de otra manera según tus necesidades
+            }
+        }
+
         public string responseScrewDriver(Socket socket, int positionStart, int length)
         {
             if (socket.Connected)
@@ -109,10 +158,10 @@ namespace BORGWARNER_SERVOPRESS.DataAccessLayer
             try
             {
                 MYSQL_DB mYSQL = new MYSQL_DB(sessionApp.connStr);
-                DataTable resultData = mYSQL.ExecuteSP("SP_GET_SCREWS_PAG", new MySqlParameter[] {
-                    new MySqlParameter("p_rework", MySqlDbType.Int32) { Value = typeExecutionScrew.Rework },
-                    new MySqlParameter("p_debug", MySqlDbType.Int32) { Value = typeExecutionScrew.Debug },
-                    new MySqlParameter("p_removeScrew", MySqlDbType.Int32) { Value = typeExecutionScrew.RemoveScrew } });
+                DataTable resultData = mYSQL.ExecuteSP("SP_GET_SCREW_PROGRAM", new MySqlParameter[] {
+                    new MySqlParameter("p_rework", MySqlDbType.Bit) { Value = typeExecutionScrew.Rework },
+                    new MySqlParameter("p_debug", MySqlDbType.Bit) { Value = typeExecutionScrew.Debug },
+                    new MySqlParameter("p_removeScrew", MySqlDbType.Bit) { Value = typeExecutionScrew.RemoveScrew } });
                 numProgram = resultData.AsEnumerable().Select(x => x.Field<string>("ProgramaAtornillador")).FirstOrDefault();
             }
             catch (Exception ex)
@@ -121,6 +170,32 @@ namespace BORGWARNER_SERVOPRESS.DataAccessLayer
                 throw;
             }
             return numProgram;
+        }
+        public Programs_ScrewDriver getPrograms_ScrewDriver()
+        {
+            Programs_ScrewDriver programs = new Programs_ScrewDriver();
+            try
+            {
+                MYSQL_DB mYSQL = new MYSQL_DB(sessionApp.connStr);
+                DataTable resultData = mYSQL.ExecuteSP("SP_GET_SCREW_PROGRAMS");
+                programs = resultData.AsEnumerable().Select(row =>
+                new Programs_ScrewDriver
+                {
+                    id = row.Field<int>("id"),
+                    id_model_screw = row.Field<int>("id_model_screw"),
+                    screwing = row.Field<string>("screwing"),
+                    rescrewing = row.Field<string>("rescrewing"),
+                    unscrewing = row.Field<string>("unscrewing"),
+                    simulated = row.Field<string>("simulated")
+                }).FirstOrDefault();
+
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"{DateTime.Now} - " + ex.Message);
+                throw;
+            }
+            return programs;
         }
     }
 }
