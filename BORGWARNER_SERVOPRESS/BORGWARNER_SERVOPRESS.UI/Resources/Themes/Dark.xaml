@@ -35,6 +35,17 @@
 
     <!--#endregion-->
 
+    <Style x:Key="GreenBoldLabelStyle" TargetType="Label">
+        <Setter Property="Foreground" Value="MediumSpringGreen"/>
+        <Setter Property="FontWeight" Value="Bold"/>
+        <Setter Property="FontSize" Value="18"/>
+    </Style>
+    <Style x:Key="RedBoldLabelStyle" TargetType="Label">
+        <Setter Property="Foreground" Value="Red"/>
+        <Setter Property="FontWeight" Value="Bold"/>
+        <Setter Property="FontSize" Value="18"/>
+    </Style>
+
     <!--#region Buttons -->
 
     <Style x:Key="MainButton" TargetType="Button" >

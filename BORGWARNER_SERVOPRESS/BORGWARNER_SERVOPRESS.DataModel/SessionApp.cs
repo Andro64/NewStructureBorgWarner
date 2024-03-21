@@ -36,5 +36,6 @@ namespace BORGWARNER_SERVOPRESS.DataModel
         public Programs_ScrewDriver programs_ScrewDriver { get; set; }
         public string messageTorque { get; set; }
         public bool isScrewingFinished { get; set; }
+        public bool areImagePASSProcessFinished { get; set; }
     }
 }

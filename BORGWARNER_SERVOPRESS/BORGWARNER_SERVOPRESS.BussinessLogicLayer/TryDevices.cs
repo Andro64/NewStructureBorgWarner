@@ -103,42 +103,33 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
             ergoArm.endReadPostion();
         }
 
-        public BitmapImage TryVisionSystem(eTypeConnection typeCamera, string serial)
+        public VisionResult TryVisionSystem(eTypeConnection typeCamera, string serial)
         {
-            //BitmapImage bitmapImage = new BitmapImage();
+            VisionResult result = new VisionResult();
+            BitmapImage bitmapImage = new BitmapImage();
 
-            ////#if !DEBUG
+            //#if !DEBUG
             visionSystem = new VisionSystem(sessionApp, typeCamera);
 
-            //if (!visionSystem.FirstInspectionAttempt(serial))
-            //{
+            if (!visionSystem.FirstInspectionAttempt(serial))
+            {
+                Debug.WriteLine($"{DateTime.Now} - " + "No paso");
+                bitmapImage = visionSystem.getImageResultFromCamera(false);
+                visionSystem.Disconnect();
+                Debug.WriteLine($"{DateTime.Now} - " + "Fallo el intento");
+                result.Passed = false;
+            }
+            else
+            {
+                Debug.WriteLine($"{DateTime.Now} - " + "Si paso");
+                bitmapImage = visionSystem.getImageResultFromCamera(true);
+                visionSystem.Disconnect();
+                result.Passed = true;
+            }
+            //#endif
 
-            //    Debug.WriteLine($"{DateTime.Now} - " + "No paso");
-            //    bitmapImage = visionSystem.getImageResultFromCamera(false);
-            //    visionSystem.Disconnect();
-            //    Debug.WriteLine($"{DateTime.Now} - " + "Fallo el intento");
-            //}
-            //else
-            //{
-            //    Debug.WriteLine($"{DateTime.Now} - " + "Si paso");
-            //    bitmapImage = visionSystem.getImageResultFromCamera(true);
-            //    visionSystem.Disconnect();
-            //}
-            ////#endif
-            //return bitmapImage;
-
-            BitmapImage image1 = new  BitmapImage(new Uri(@"C:\Users\MyUser\Desktop\COGNEX\Cognex_0\4205740940310035577.jpg"));
-            BitmapImage image4 = new BitmapImage(new Uri(@"C:\Users\MyUser\Desktop\COGNEX\Cognex_0\VerticalLine.jpg"));
-            BitmapImage image2 = new BitmapImage(new Uri(@"C:\Users\MyUser\Desktop\COGNEX\Cognex_0\4205740940500013567.jpg"));
-            
-            BitmapImage image3 = new BitmapImage(new Uri(@"C:\Users\MyUser\Desktop\COGNEX\Cognex_0\4205740940500013545.jpg"));
-
-            // Crear una lista de imágenes
-            List<BitmapImage> images = new List<BitmapImage> { image1, image4,image2, image3 };
-
-            // Combinar las imágenes en un solo BitmapImage
-            BitmapImage combinedBitmap = visionSystem.CombineImages(images);
-            return combinedBitmap;
+            result.Image = bitmapImage;
+            return result;
         }
         
         public void getModelScrew()

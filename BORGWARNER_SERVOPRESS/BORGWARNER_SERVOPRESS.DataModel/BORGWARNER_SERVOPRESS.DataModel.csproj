@@ -81,6 +81,7 @@
     <Compile Include="Views\ModelViewSettings.cs" />
     <Compile Include="Views\ModelViewTypeWorkstation.cs" />
     <Compile Include="Views\ModelViewUsers.cs" />
+    <Compile Include="VisionResult.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

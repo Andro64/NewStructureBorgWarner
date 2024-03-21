@@ -131,7 +131,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
                 sessionApp.TaksRunExecuting = false;
             });
         }
-        */
+      */
 
         public override async Task StartProcess()
         {
@@ -139,6 +139,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
             Screws screws;
             ErgoArm ergoArm;
             ScrewDriver screwdriver;
+            List<string> imagesVisionSystem = new List<string>();
             string resultImageVisionSystem;
 
             string serial;
@@ -147,7 +148,8 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
 
             sensorsIO.startRead();
             _cancellationTokenSource = new CancellationTokenSource();
-                       
+            sessionApp.areImagePASSProcessFinished = false;
+
             await showMessageAndImage("A la espera del producto.", "Housing.png");
             await CheckSensorAndWait(() => sensorsIO.PalletInStopper(), "Esperamos pallet en Pre-Stopper");
 
@@ -284,6 +286,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
                         }
 
                         resultImageVisionSystem = visionSystem.getNameImageResultFromCamera(true);
+                        imagesVisionSystem.Add(resultImageVisionSystem);
                         visionSystem.Disconnect();
                         await showMessageAndImage("La inspección número 1 ha sido exitosa.", resultImageVisionSystem, true);
                         Thread.Sleep(3000);
@@ -332,6 +335,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
                         }
 
                         resultImageVisionSystem = visionSystem.getNameImageResultFromCamera(true);
+                        imagesVisionSystem.Add(resultImageVisionSystem);
                         visionSystem.Disconnect();
                         await showMessageAndImage("La inspección número 2 ha sido exitosa.", resultImageVisionSystem, true);
                         Thread.Sleep(3000);
@@ -380,9 +384,15 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
                         }
 
                         resultImageVisionSystem = visionSystem.getNameImageResultFromCamera(true);
+                        imagesVisionSystem.Add(resultImageVisionSystem);
                         visionSystem.Disconnect();
                         await showMessageAndImage("La inspección número 3 ha sido exitosa.", resultImageVisionSystem, true);
                         Thread.Sleep(3000);
+
+                        sessionApp.areImagePASSProcessFinished = true;
+                        Thread.Sleep(5000);
+                        sessionApp.areImagePASSProcessFinished = false;
+
                         Debug.WriteLine($"{DateTime.Now} - " + "INSPECCION 3 DE VISION OK ");
                         if (isCancellationRequested) { return; };
 
@@ -545,9 +555,17 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
                 await showMessageAndImage("Error: Fallo la confirmación de FIS");
             }
             endOfProcess();
-
-
         }
+       
+        /* 
+        public override async Task StartProcess()
+        {
+            RequestCreateTextBox($"T1: 260 Nw | 50 °", 450, 25);
+            RequestCreateTextBox($"T2: 460 Nw | 10 °",120, -55);
+            await showMessageAndImage("Por favor, posicione la máscara sobre el housing.", @"D:\Repo3\BORGWARNER_SERVOPRESS\BORGWARNER_SERVOPRESS.UI\Resources\Operational_Images\WSAT1\HousingWithMask.png",true);
+        }
+        */
+
         public void getModelScrew()
         {
             sessionApp.ModelScrewSelected = int.Parse(sessionApp.settings.FirstOrDefault(x => x.setting.Equals("Model_Screw")).valueSetting);

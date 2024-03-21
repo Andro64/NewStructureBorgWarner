@@ -491,6 +491,7 @@ namespace BORGWARNER_SERVOPRESS.UI
             }
         }
 
+        bool ispressed = false;
         private void Camara_1_Btn_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -501,7 +502,11 @@ namespace BORGWARNER_SERVOPRESS.UI
                     string cameraSelected = cboCameras.SelectedItem.ToString().Substring(0, cboCameras.SelectedItem.ToString().IndexOf(" - "));
                     if (Enum.TryParse(cameraSelected, out typeConnection))
                     {
-                        Camara_1_Manual_Image.Source = tryDevices.TryVisionSystem(typeConnection, serialCode.Text);                        
+                       VisionResult vision = tryDevices.TryVisionSystem(typeConnection, serialCode.Text);
+                       Camara_1_Manual_Image.Source = vision.Image;                                             
+                       lblMessageVision.Content = vision.Passed ? "APROBADO" : "NO APROBADO";
+                       lblMessageVision.Style = vision.Passed ? (Style)FindResource("GreenBoldLabelStyle") : (Style)FindResource("RedBoldLabelStyle");
+                        
                     }
                     else
                     {

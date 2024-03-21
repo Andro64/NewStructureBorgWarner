@@ -321,7 +321,7 @@
                                 </Grid.RowDefinitions>
                                 <!--<Button x:Name="Scanner_1" Style="{StaticResource BaseButton}" Content="Escáner 1" Click="Scanner_1_Click" Grid.Column="0" Grid.Row="1"/>-->
 
-                                <Button x:Name="Screwdriver_Btn" Style="{StaticResource BaseButton}" Content="Torque" Click="Screwdriver_Btn_Click" Grid.Column="0" Grid.Row="11"/>
+                                <!--<Button x:Name="Screwdriver_Btn" Style="{StaticResource BaseButton}" Content="Torque" Click="Screwdriver_Btn_Click" Grid.Column="0" Grid.Row="11"/>-->
                                 <Label x:Name="lblMessageTorque" Content ="{Binding MessageTorque}"  Grid.Column="0"  Grid.Row="1" Grid.ColumnSpan="2"/>
                                 <TextBox x:Name="Screwdriver_Torque" Style="{StaticResource BaseTextBox}" Grid.Column="0" Grid.Row="2"/>
 
@@ -407,19 +407,21 @@
                             </Grid.RowDefinitions>
                             <Grid.ColumnDefinitions>
                                 <!-- Definir dos columnas -->
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="40*"/>
+                                <ColumnDefinition Width="242*"/>
+                                <ColumnDefinition Width="281*"/>
+                                <ColumnDefinition Width="281*"/>
+                                <ColumnDefinition Width="281*"/>
                             </Grid.ColumnDefinitions>
                             <ComboBox x:Name="cboCameras" 
                                         ItemsSource="{Binding lstCameras}" 
                                         SelectedItem="{Binding CameraSelected}"                                        
                                         Style="{StaticResource BaseComboBox}" 
-                                        Grid.Row="1" Grid.Column="0" Margin="20,10,42.4,575.8" Grid.RowSpan="3"/>
+                                        Grid.Row="2" Grid.Column="0" Margin="20,0.4,42.6,575.8" Grid.RowSpan="2" Grid.ColumnSpan="2"/>
 
-                            <Button x:Name="Camara_1_Btn" Style="{StaticResource BaseButton}"  Content="Capturar Imagen" Click="Camara_1_Btn_Click" Grid.Column="1" Grid.Row="2"/>
-                            <Image x:Name="Camara_1_Manual_Image" Grid.Row="3" Grid.ColumnSpan="4" Margin="10" Visibility="visible" Source="BW.png"/>
+                            <Button x:Name="Camara_1_Btn" Style="{StaticResource BaseButton}"  Content="Capturar Imagen" Click="Camara_1_Btn_Click" Grid.Column="2" Grid.Row="2" Margin="0.4,0.4,0.4,0"/>
+                            <Label x:Name="lblMessageVision" Grid.Column="4"  Grid.Row="2" />
+                            <Image x:Name="Camara_1_Manual_Image" Grid.Row="3" Grid.ColumnSpan="5" Margin="10,10,10,9.8" Visibility="visible" Source="BW.png"/>
                         </Grid>
                     </TabItem>
                 </TabControl>

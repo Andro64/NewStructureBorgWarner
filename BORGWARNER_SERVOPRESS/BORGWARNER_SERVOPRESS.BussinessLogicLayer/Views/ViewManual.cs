@@ -83,6 +83,19 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.Views
                 }
             }
         }
+        private string _MessageVision;
+        public string MessageVision
+        {
+            get { return _MessageVision; }
+            set
+            {
+                if (_MessageVision != value)
+                {
+                    _MessageVision = value;
+                    OnPropertyChanged(nameof(MessageVision));
+                }
+            }
+        }
 
         private string _scannerSelected;
         public string ScannerSelected

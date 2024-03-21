@@ -1,6 +1,7 @@
 ﻿using BORGWARNER_SERVOPRESS.DataModel;
 using BORGWARNER_SERVOPRESS.DataModel.Views;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using System.Windows;
@@ -26,6 +27,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.Views
         }
         public void ShowMessage()
         {
+            List<BitmapImage> images = new List<BitmapImage>();
             var timer = new DispatcherTimer
             {
                 Interval = TimeSpan.FromSeconds(1)
@@ -54,6 +56,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.Views
                                 if (isFileInUse(sessionApp.ImageOfProcess))
                                 {
                                     _modelViewMain.BitMapImageOfProcess = new ImageProcess().TransformSVGtoPNG(sessionApp.ImageOfProcess);
+                                    images.Add(_modelViewMain.BitMapImageOfProcess);
                                 }
                                 namefileLast = sessionApp.ImageOfProcess;
                             }
@@ -62,12 +65,17 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.Views
                                 if (isFileInUse(sessionApp.ImageOfProcess))
                                 {
                                     _modelViewMain.BitMapImageOfProcess = new BitmapImage(new Uri(sessionApp.ImageOfProcess));
+                                    images.Add(_modelViewMain.BitMapImageOfProcess);
                                 }
                                 namefileLast = sessionApp.ImageOfProcess;
                             }
                         }
                     }
 
+                }
+                if(sessionApp.areImagePASSProcessFinished)
+                {
+                    _modelViewMain.BitMapImageOfProcess = new ImageProcess().CombineImages(images);
                 }
             };
             timer.Start();
