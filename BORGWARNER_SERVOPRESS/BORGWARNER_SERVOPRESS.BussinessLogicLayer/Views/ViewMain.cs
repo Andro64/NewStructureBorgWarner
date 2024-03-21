@@ -51,12 +51,18 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.Views
                         {
                             if (sessionApp.ImageOfProcess.Contains(".svg"))
                             {
-                                _modelViewMain.BitMapImageOfProcess = new ImageProcess().TransformSVGtoPNG(sessionApp.ImageOfProcess);
+                                if (isFileInUse(sessionApp.ImageOfProcess))
+                                {
+                                    _modelViewMain.BitMapImageOfProcess = new ImageProcess().TransformSVGtoPNG(sessionApp.ImageOfProcess);
+                                }
                                 namefileLast = sessionApp.ImageOfProcess;
                             }
                             else
                             {
-                                _modelViewMain.BitMapImageOfProcess = new BitmapImage(new Uri(sessionApp.ImageOfProcess));
+                                if (isFileInUse(sessionApp.ImageOfProcess))
+                                {
+                                    _modelViewMain.BitMapImageOfProcess = new BitmapImage(new Uri(sessionApp.ImageOfProcess));
+                                }
                                 namefileLast = sessionApp.ImageOfProcess;
                             }
                         }
@@ -65,6 +71,21 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.Views
                 }
             };
             timer.Start();
+        }
+        
+        private bool isFileInUse(string  filePath)
+        {
+            try
+            {
+                using (FileStream fs = File.Open(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+                {                    
+                    return false;
+                }
+            }
+            catch (IOException)
+            {                
+                return true;
+            }
         }
         public async Task getStatusScrew(string messageScrew)
         {

@@ -94,7 +94,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
                 try
                 {                    
                     
-                    Debug.WriteLine($"Esperando atornillado.");
+                    //Debug.WriteLine($"Esperando atornillado.");
 //#if DEBUG
 //                    string response = "02310061001 0000    010000020003STLA_AUTO_L1S12          04                         050006001070000080000090100111120002501300031014000280150000241600000170039618000001900000202024-03-19:18:44:02212024-01-13:20:58:28222230000001525";
 //#else
@@ -103,7 +103,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
 
                     if (string.IsNullOrEmpty(response))
                     {
-                        Debug.WriteLine("La respuesta del controlador de tornillo está vacía.");
+                        //Debug.WriteLine("La respuesta del controlador de tornillo está vacía.");
                         continue; // Vuelve al inicio del bucle y solicita la respuesta nuevamente
                     }
 
@@ -308,20 +308,23 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
             }
         }
 
-        public bool FirstTighteningAttempt(Screw screw)
+        public async Task<TighteningProcess> FirstTighteningAttempt(Screw screw, CancellationTokenSource _cancellationTokenSource)
         {
-            //return Screwing(screw);
-            return true;
+            ScrewDriver screwdriver = new ScrewDriver(sessionApp);
+            TighteningProcess  tightening = await tryScrewDriver(screw, _cancellationTokenSource,string.Empty);            
+            return tightening;
         }
-        public bool SecondTighteningAttempt(Screw screw)
+        public async Task<TighteningProcess> SecondTighteningAttempt(Screw screw, CancellationTokenSource _cancellationTokenSource)
         {
-            //return Screwing(screw);
-            return true;
+            ScrewDriver screwdriver = new ScrewDriver(sessionApp);
+            TighteningProcess tightening = await tryScrewDriver(screw, _cancellationTokenSource, string.Empty);
+            return tightening;
         }
-        public bool ThirdTighteningAttempt(Screw screw)
+        public async Task<TighteningProcess> ThirdTighteningAttempt(Screw screw, CancellationTokenSource _cancellationTokenSource)
         {
-            //return Screwing(screw);
-            return true;
+            ScrewDriver screwdriver = new ScrewDriver(sessionApp);
+            TighteningProcess tightening = await tryScrewDriver(screw, _cancellationTokenSource, string.Empty);
+            return tightening;
         }
         public void disconnect()
         {

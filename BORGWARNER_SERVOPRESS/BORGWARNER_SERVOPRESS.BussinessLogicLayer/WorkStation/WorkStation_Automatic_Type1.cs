@@ -19,6 +19,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
         SessionApp sessionApp;
         private CancellationTokenSource _cancellationTokenSource;
         private bool isCancellationRequested = false;
+        TighteningProcess tightening;
 
         public override event EventHandler<TextBoxInfoEventArgs> CreateTextBoxRequested;
         public override event EventHandler RemoveTextBoxRequested;
@@ -205,7 +206,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
                 serial = new Scanner(sessionApp, eTypeConnection.Scan_2).ScanQR("LON");
                 sessionApp.QR.HVDC_BUSBAR = serial.Substring(0, (serial.Length - 1));
                 if (isCancellationRequested) { return; };
-                Thread.Sleep(00);
+                Thread.Sleep(300);
 #if DEBUG
                 if (true)
 #else
@@ -413,7 +414,8 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
                                 if (sessionApp.positionErgoArm.InPositionReadyToProcess)
                                 {
                                     Debug.WriteLine($"{DateTime.Now} - " + "BRAZO ERGONOMICO EN POSICION");
-                                    if (!screwdriver.FirstTighteningAttempt(screw))
+                                    tightening = await screwdriver.FirstTighteningAttempt(screw, _cancellationTokenSource);
+                                    if (tightening == null)
                                     {
                                         screwdriver.Unscrewing(screw);
                                         sensorsIO.Turn_ON_Vacuumm();
@@ -423,7 +425,8 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
 
                                         
                                         await CheckSensorAndWait(() => sensorsIO.WasPressedOpto(), "Fallo primer intento de atornillado  ESPERA ACTIVACION DE OPTO");
-                                        if (!screwdriver.SecondTighteningAttempt(screw))
+                                        tightening = await screwdriver.SecondTighteningAttempt(screw, _cancellationTokenSource);
+                                        if (tightening == null)
                                         {
                                             screwdriver.Unscrewing(screw);
                                             sensorsIO.Turn_ON_Vacuumm();
@@ -433,7 +436,8 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
 
                                         
                                             await CheckSensorAndWait(() => sensorsIO.WasPressedOpto(), "Fallo segundo intento de atornillado  ESPERA ACTIVACION DE OPTO");
-                                            if (screwdriver.ThirdTighteningAttempt(screw))
+                                            tightening = await screwdriver.ThirdTighteningAttempt(screw, _cancellationTokenSource);
+                                            if (tightening == null)
                                             {
                                                 screwdriver.Unscrewing(screw);
                                                 sensorsIO.Turn_ON_Vacuumm();
@@ -450,7 +454,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
                                     }
                                 }
                                 tightenincount++;
-                                RequestCreateTextBox($"{screw.tighteningprocess.Torque} Nw | {screw.tighteningprocess.Angle} °", screw.text_position_X, screw.text_position_Y);
+                                RequestCreateTextBox($"{tightening.Torque} Nw | {tightening.Angle} °", screw.text_position_X, screw.text_position_Y);
                             }//Finaliza el proceso de atornillado
                             ergoArm.endReadPostion();
                             await showMessageAndImage("Por favor, coloque el atornillador en la posición 1.", "HousingWithMask.png");

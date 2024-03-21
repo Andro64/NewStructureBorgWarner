@@ -4,7 +4,7 @@ using System;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
-
+using System.Threading;
 
 namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
 {
@@ -78,6 +78,8 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
             if (scanner.LastErrorInfo.Equals(ErrorCode.None))
             {
                 serial = scanner.ExecCommand(command);
+                
+                Thread.Sleep(500);
 
                 switch (_eTypeConnection)
                 {

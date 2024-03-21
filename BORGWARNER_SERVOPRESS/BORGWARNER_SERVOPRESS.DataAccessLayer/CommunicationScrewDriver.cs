@@ -82,7 +82,7 @@ namespace BORGWARNER_SERVOPRESS.DataAccessLayer
         }
         public async Task<string> ResponseScrewDriverAsync(Socket socket)
         {
-            Debug.WriteLine($"Entre: ResponseScrewDriverAsync ");
+            //Debug.WriteLine($"Entre: ResponseScrewDriverAsync ");
             if (socket.Connected)
             {
                 try
@@ -101,7 +101,7 @@ namespace BORGWARNER_SERVOPRESS.DataAccessLayer
         }
         private Task<int> ReceiveAsync(Socket socket, byte[] buffer)
         {
-            Debug.WriteLine($"Entre: ReceiveAsync ");
+            //Debug.WriteLine($"Entre: ReceiveAsync ");
 
             try
             {
