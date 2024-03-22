@@ -90,48 +90,49 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
         }
 
         /*
-        public override async Task StartProcess()
-        {
-            Debug.WriteLine($"{DateTime.Now} - " + "Path de Imagenes:" + sessionApp.PathOperationalImages);
+         public override async Task StartProcess()
+         {
+             Debug.WriteLine($"{DateTime.Now} - " + "Path de Imagenes:" + sessionApp.PathOperationalImages);
 
-            await Task.Run(() =>
-            {
+             await Task.Run(() =>
+             {
 
-                RequestCreateTextBox($"18.5 Nw | 23 °", 340, -150);
-                RequestCreateTextBox($"18.5 Nw | 23 °", 0, -150);
-                RequestCreateTextBox($"18.5 Nw | 23 °", 305, -70);
-                showMessageAndImage("Inicia Proceso de atornillado", "GNC_HousingWithScanner.png");
-                Thread.Sleep(3000);
-                showMessageAndImage("Esperamos pallet en Pre-Stopper", @"C:\Users\MyUser\Desktop\COGNEX\Cognex_1\Conector2Bad\4203641232680057733.svg",true);
-                Thread.Sleep(3000);
-                showMessageAndImage("Esperamos CLAMP DE PALLET EXTENDIDO", "4203641232680057733.svg");
-                Thread.Sleep(3000);
-                //showMessageAndImage("Esperamos que el OPERADOR COLOCAQUE EL HOUSING", "GNC_Padlock.jpg");
-                //Thread.Sleep(3000);
-                //showMessageAndImage("SCANNER 1 LEE CODIGO SERIAL: ");
-                //Thread.Sleep(3000);
-                //showMessageAndImage("PIDE A OPERADOR COLOCAR ULTRA CAP BOARD PAD Y ACTIVAR OPTO", "GNC_PalletInStation.jpg");
-                //Thread.Sleep(3000);
-                //showMessageAndImage("ESPERA ACTIVACION DE OPTO ", "GNC_ScrewdriverInHome.png");
-                //Thread.Sleep(3000);
-                //showMessageAndImage("Fallo primer intento ESPERA ACTIVACION DE OPTO ", "GNC_SlidePalletOutOfStation.png");
-                //Thread.Sleep(3000);
-                //showMessageAndImage("ESPERA ULTRA CAP BOARD SE COLOQUE EN NIDO ", "GNC_ValidatePalletEnteringStation.jpg");
-                //Thread.Sleep(3000);
-                //showMessageAndImage("PIDE A OPERADOR TOMAR ULTRA CAP BOARD Y COLOCAR EN NIDO ", "GNC_WaitPallet.jpg");
-                //Thread.Sleep(3000);
-                //showMessageAndImage("SCANNER 1 LEE CODIGO SERIAL: ", "KYC_Scanner.jpg");
-                //Thread.Sleep(3000);
-                //showMessageAndImage("Los 3 intentos han fallado. ");
-                //Thread.Sleep(3000);  ///Falta poner que hace en este caso
+                 RequestCreateTextBox($"18.5 Nw | 23 °", 340, -150);
+                 RequestCreateTextBox($"18.5 Nw | 23 °", 0, -150);
+                 RequestCreateTextBox($"18.5 Nw | 23 °", 305, -70);
+                 showMessageAndImage("Inicia Proceso de atornillado", "GNC_HousingWithScanner.png");
+                 Thread.Sleep(3000);
+                 showMessageAndImage("Esperamos pallet en Pre-Stopper", @"C:\Users\MyUser\Desktop\COGNEX\Cognex_1\Conector2Bad\4203641232680057733.svg",true);
+                 Thread.Sleep(3000);
+                 showMessageAndImage("Esperamos CLAMP DE PALLET EXTENDIDO", "4203641232680057733.svg");
+                 Thread.Sleep(3000);
+                 //showMessageAndImage("Esperamos que el OPERADOR COLOCAQUE EL HOUSING", "GNC_Padlock.jpg");
+                 //Thread.Sleep(3000);
+                 //showMessageAndImage("SCANNER 1 LEE CODIGO SERIAL: ");
+                 //Thread.Sleep(3000);
+                 //showMessageAndImage("PIDE A OPERADOR COLOCAR ULTRA CAP BOARD PAD Y ACTIVAR OPTO", "GNC_PalletInStation.jpg");
+                 //Thread.Sleep(3000);
+                 //showMessageAndImage("ESPERA ACTIVACION DE OPTO ", "GNC_ScrewdriverInHome.png");
+                 //Thread.Sleep(3000);
+                 //showMessageAndImage("Fallo primer intento ESPERA ACTIVACION DE OPTO ", "GNC_SlidePalletOutOfStation.png");
+                 //Thread.Sleep(3000);
+                 //showMessageAndImage("ESPERA ULTRA CAP BOARD SE COLOQUE EN NIDO ", "GNC_ValidatePalletEnteringStation.jpg");
+                 //Thread.Sleep(3000);
+                 //showMessageAndImage("PIDE A OPERADOR TOMAR ULTRA CAP BOARD Y COLOCAR EN NIDO ", "GNC_WaitPallet.jpg");
+                 //Thread.Sleep(3000);
+                 //showMessageAndImage("SCANNER 1 LEE CODIGO SERIAL: ", "KYC_Scanner.jpg");
+                 //Thread.Sleep(3000);
+                 //showMessageAndImage("Los 3 intentos han fallado. ");
+                 //Thread.Sleep(3000);  ///Falta poner que hace en este caso
 
-                showMessageAndImage("La informacion correspondiente a los tornillos esta incompleta");
-                Thread.Sleep(3000);
-                showMessageAndImage("Finaliza Proceso de atornillado", "image_not_found.jpg");
-                sessionApp.TaksRunExecuting = false;
-            });
-        }
-      */
+                 showMessageAndImage("La informacion correspondiente a los tornillos esta incompleta");
+                 Thread.Sleep(3000);
+                 showMessageAndImage("Finaliza Proceso de atornillado", "image_not_found.jpg");
+                 sessionApp.TaksRunExecuting = false;
+             });
+         }
+         */
+
 
         public override async Task StartProcess()
         {
@@ -287,6 +288,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
 
                         resultImageVisionSystem = visionSystem.getNameImageResultFromCamera(true);
                         imagesVisionSystem.Add(resultImageVisionSystem);
+                        sessionApp.images.Add(resultImageVisionSystem);
                         visionSystem.Disconnect();
                         await showMessageAndImage("La inspección número 1 ha sido exitosa.", resultImageVisionSystem, true);
                         Thread.Sleep(3000);
@@ -336,6 +338,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
 
                         resultImageVisionSystem = visionSystem.getNameImageResultFromCamera(true);
                         imagesVisionSystem.Add(resultImageVisionSystem);
+                        sessionApp.images.Add(resultImageVisionSystem);
                         visionSystem.Disconnect();
                         await showMessageAndImage("La inspección número 2 ha sido exitosa.", resultImageVisionSystem, true);
                         Thread.Sleep(3000);
@@ -385,11 +388,14 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
 
                         resultImageVisionSystem = visionSystem.getNameImageResultFromCamera(true);
                         imagesVisionSystem.Add(resultImageVisionSystem);
+                        sessionApp.images.Add(resultImageVisionSystem);
                         visionSystem.Disconnect();
                         await showMessageAndImage("La inspección número 3 ha sido exitosa.", resultImageVisionSystem, true);
                         Thread.Sleep(3000);
 
+
                         sessionApp.areImagePASSProcessFinished = true;
+                        await showMessageAndImage("Este es el resultado de la inspeccion.");
                         Thread.Sleep(5000);
                         sessionApp.areImagePASSProcessFinished = false;
 
@@ -433,7 +439,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
                                         await CheckSensorAndWait(() => sensorsIO.ScrewInScrap(), "Esperamos que el operador coloque el tornillo en el scrap");
                                         if (isCancellationRequested) { return; };
 
-                                        
+
                                         await CheckSensorAndWait(() => sensorsIO.WasPressedOpto(), "Fallo primer intento de atornillado  ESPERA ACTIVACION DE OPTO");
                                         tightening = await screwdriver.SecondTighteningAttempt(screw, _cancellationTokenSource);
                                         if (tightening == null)
@@ -444,7 +450,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
                                             await CheckSensorAndWait(() => sensorsIO.ScrewInScrap(), "Esperamos que el operador coloque el tornillo en el scrap");
                                             if (isCancellationRequested) { return; };
 
-                                        
+
                                             await CheckSensorAndWait(() => sensorsIO.WasPressedOpto(), "Fallo segundo intento de atornillado  ESPERA ACTIVACION DE OPTO");
                                             tightening = await screwdriver.ThirdTighteningAttempt(screw, _cancellationTokenSource);
                                             if (tightening == null)
@@ -459,12 +465,12 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
                                                 Debug.WriteLine($"{DateTime.Now} - " + "Los 3 intentos de atornillado han fallado.");
                                                 ergoArm.endReadPostion();
                                                 endOfProcess();
-                                            }                                            
-                                        }                                        
+                                            }
+                                        }
                                     }
                                 }
                                 tightenincount++;
-                                RequestCreateTextBox($"{tightening.Torque} Nw | {tightening.Angle} °", screw.text_position_X, screw.text_position_Y);
+                                RequestCreateTextBox($"{tightening.Torque.Substring(0, 2)}.{tightening.Torque.Substring(2, 2)} Nw | {tightening.Angle.TrimStart('0')} °", screw.text_position_X, screw.text_position_Y);
                             }//Finaliza el proceso de atornillado
                             ergoArm.endReadPostion();
                             await showMessageAndImage("Por favor, coloque el atornillador en la posición 1.", "HousingWithMask.png");
@@ -484,17 +490,28 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
                             if (isCancellationRequested) { return; };
                             sessionApp.QR.TOP_COVER = serial.Substring(0, (serial.Length - 1));
 
-                            if (Validation_by_FIS(serial, "Se envía BREQ a FIS.", eTypeSendToFIS.BREQ))
+#if DEBUG
+                            if (true)
+#else
+                    if (Validation_by_FIS(serial, "Se envía BREQ a FIS.", eTypeSendToFIS.BREQ))
+#endif
+
                             {
                                 await showMessageAndImage("Inspección completada...");
                                 Thread.Sleep(300);
-                                await showMessageAndImage("Por favor, ensamble la cubierta superior y presione el sensor óptico(OPTO).", "ScannerHVDCCover.jpg");
-                                await CheckSensorAndWait(() => sensorsIO.isTriggerScanner(), "Esperando HVDC cover");
+                                await showMessageAndImage("Por favor, ensamble la cubierta superior y presione el sensor óptico(OPTO).", "HousingTopCover.png");
+                                await CheckSensorAndWait(() => sensorsIO.WasPressedOpto(), "Esperando HVDC cover");
                                 if (isCancellationRequested) { return; };
 
                                 await showMessageAndImage("Enviando señal de finalización de tarea.");
                                 Thread.Sleep(300);
-                                if (Validation_by_FIS(serial, "Se envía BCMP a FIS.", eTypeSendToFIS.BCMP))
+
+#if DEBUG
+                                if (true)
+#else
+                    if (Validation_by_FIS(serial, "Se envía BCMP a FIS.", eTypeSendToFIS.BCMP)) 
+#endif
+
                                 {
                                     await showMessageAndImage("Recepción de BACK completada.");
                                     Thread.Sleep(1000);
@@ -555,8 +572,11 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
                 await showMessageAndImage("Error: Fallo la confirmación de FIS");
             }
             endOfProcess();
+            await sensorsIO.SecurePallet(_cancellationTokenSource);
+            StartProcess();
         }
-       
+
+
         /* 
         public override async Task StartProcess()
         {
@@ -573,6 +593,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
 
         public void endOfProcess()
         {
+            sensorsIO.endRead();
             sessionApp.TaksRunExecuting = false;
         }
         public async Task CheckSensorAndWait(Func<bool> sensorCheck, string debugMessage)

@@ -26,8 +26,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.Views
             return _modelViewMain;
         }
         public void ShowMessage()
-        {
-            List<BitmapImage> images = new List<BitmapImage>();
+        {            
             var timer = new DispatcherTimer
             {
                 Interval = TimeSpan.FromSeconds(1)
@@ -53,19 +52,17 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.Views
                         {
                             if (sessionApp.ImageOfProcess.Contains(".svg"))
                             {
-                                if (isFileInUse(sessionApp.ImageOfProcess))
+                                if (!isFileInUse(sessionApp.ImageOfProcess))
                                 {
-                                    _modelViewMain.BitMapImageOfProcess = new ImageProcess().TransformSVGtoPNG(sessionApp.ImageOfProcess);
-                                    images.Add(_modelViewMain.BitMapImageOfProcess);
+                                    _modelViewMain.BitMapImageOfProcess = new ImageProcess().TransformSVGtoPNG(sessionApp.ImageOfProcess);                                    
                                 }
                                 namefileLast = sessionApp.ImageOfProcess;
                             }
                             else
                             {
-                                if (isFileInUse(sessionApp.ImageOfProcess))
+                                if (!isFileInUse(sessionApp.ImageOfProcess))
                                 {
-                                    _modelViewMain.BitMapImageOfProcess = new BitmapImage(new Uri(sessionApp.ImageOfProcess));
-                                    images.Add(_modelViewMain.BitMapImageOfProcess);
+                                    _modelViewMain.BitMapImageOfProcess = new BitmapImage(new Uri(sessionApp.ImageOfProcess));                                    
                                 }
                                 namefileLast = sessionApp.ImageOfProcess;
                             }
@@ -75,7 +72,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.Views
                 }
                 if(sessionApp.areImagePASSProcessFinished)
                 {
-                    _modelViewMain.BitMapImageOfProcess = new ImageProcess().CombineImages(images);
+                    _modelViewMain.BitMapImageOfProcess = new ImageProcess().CombineImages(sessionApp.images);
                 }
             };
             timer.Start();

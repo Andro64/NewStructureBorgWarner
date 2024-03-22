@@ -107,7 +107,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
             {
                 string result = string.Empty;
                 TCPcamara.EnviarComando(commands.command_getvalue_real + (char)13 + (char)10);
-                Thread.Sleep(500);
+                Thread.Sleep(1000);
                 result = TCPcamara.Leer();
                 readingTime = DateTime.Now;
                 return ValidateResponse(result);

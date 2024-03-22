@@ -53,7 +53,14 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
             List<BitmapImage> images = new List<BitmapImage>();
             foreach (string img in PathImages)
             {
-                images.Add(new BitmapImage(new Uri(img)));
+                if (img.Contains(".svg"))
+                {
+                    images.Add(new ImageProcess().TransformSVGtoPNG(img));
+                }
+                else
+                {
+                    images.Add(new BitmapImage(new Uri(img)));
+                }
             }
             return CombineImages(images);
         }
