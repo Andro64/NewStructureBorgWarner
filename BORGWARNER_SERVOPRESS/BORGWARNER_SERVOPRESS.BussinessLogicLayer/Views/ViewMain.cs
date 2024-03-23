@@ -61,16 +61,21 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.Views
                             else
                             {
                                 if (!isFileInUse(sessionApp.ImageOfProcess))
-                                {
-                                    _modelViewMain.BitMapImageOfProcess = new BitmapImage(new Uri(sessionApp.ImageOfProcess));                                    
+                                {                                  
+                                    _modelViewMain.BitMapImageOfProcess = new BitmapImage(new Uri(sessionApp.ImageOfProcess));
                                 }
                                 namefileLast = sessionApp.ImageOfProcess;
                             }
                         }
                     }
-
+                    if(sessionApp.OnlyMessageOfProcess)
+                    {
+                        _modelViewMain.BitMapImageOfProcess = null;
+                    }
                 }
-                if(sessionApp.areImagePASSProcessFinished)
+               
+
+                if (sessionApp.areImagePASSProcessFinished)
                 {
                     _modelViewMain.BitMapImageOfProcess = new ImageProcess().CombineImages(sessionApp.images);
                 }

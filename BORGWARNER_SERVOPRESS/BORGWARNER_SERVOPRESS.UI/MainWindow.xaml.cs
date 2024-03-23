@@ -23,6 +23,7 @@ namespace BORGWARNER_SERVOPRESS.UI
         private ViewMain viewMain;
         List<string> controlNames;        
         private Workstation workstation;
+        private bool isRequestedStopProcess;
 
         //Timer Varibles 
         private System.Timers.Timer timer;
@@ -36,7 +37,7 @@ namespace BORGWARNER_SERVOPRESS.UI
 
             WorkstationFactory.injectionSession(sessionApp);
             workstation = WorkstationFactory.CreateWorkstation();
-            MessageBox.Show("La estacion de trabajo es: " + workstation.Type);            
+            //MessageBox.Show("La estacion de trabajo es: " + workstation.Type);            
             
             InitializeComponent();
             initialize();
@@ -100,7 +101,7 @@ namespace BORGWARNER_SERVOPRESS.UI
                         
             viewMain.ShowData();
             viewMain.ShowMessage();
-            pageManager.IsReadOnlyControls(new List<string> { "from_fis_textblock", "to_fis_textblock", "txtHousing" });//, "txt_HVDC_BUSBAR", "txtHarness", "txtTopCover", "cycletime" });
+            pageManager.IsReadOnlyControls(new List<string> { "from_fis_textblock", "to_fis_textblock", "txtHousing" , "txt_HVDC_BUSBAR", "txtHarness", "txtTopCover", "cycletime" });
         }
 
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
@@ -196,11 +197,23 @@ namespace BORGWARNER_SERVOPRESS.UI
             pageManager.EnableControls(new List<string> { "startCycle_btn", "mn_btn_run", "mn_btn_fis", "mn_btn_history", "mn_btn_modelos_screw", "mn_btn_manual", "mn_btn_positions" });
             pageManager.DisableControls(new List<string> { "stopCycle_btn" });
             pageManager.ChangeBackgroundColor(Brushes.Aqua, new List<string> { "Fis_enabled_display" });
+
+            if (!isRequestedStopProcess)
+            {
+                StartCycle();
+            }
         }
         
         private void StartCycle_btn_Click(object sender, RoutedEventArgs e)
         {
+            StartCycle();
+        }
+
+        private void StartCycle()
+        {
+            isRequestedStopProcess = false;
             pageManager.DisableControls(new List<string> { "startCycle_btn", "mn_btn_run", "mn_btn_fis", "mn_btn_history", "mn_btn_modelos_screw", "mn_btn_manual", "mn_btn_positions" });
+            pageManager.CleanControls(new List<string> { "from_fis_textblock", "to_fis_textblock", "txtHousing", "txt_HVDC_BUSBAR", "txtHarness", "txtTopCover", "cycletime" });
             pageManager.EnableControls(new List<string> { "stopCycle_btn" });
             pageManager.ChangeBackgroundColor(Brushes.Red, new List<string> { "Fis_enabled_display" });
 
@@ -208,22 +221,24 @@ namespace BORGWARNER_SERVOPRESS.UI
             try
             {
                 StartChronometer();
-                workstation.StartProcess();               
-                EneableControlsWhenEndTaskRun();                
+                workstation.StartProcess();
+                EneableControlsWhenEndTaskRun();
+
             }
             catch (Exception ex)
             {
                 MessageBox.Show("Error: " + ex.Message + "\nSource: " + ex.Source + "\nInner: " + ex.InnerException, "Error", System.Windows.MessageBoxButton.OK, MessageBoxImage.Error);
-            }           
+            }
         }
 
         private void StopCycle_btn_Click(object sender, RoutedEventArgs e)
-        {                       
+        {
+            isRequestedStopProcess = true;
             pageManager.ChangeBackgroundColor(Brushes.Aqua, new List<string> { "Fis_enabled_display" });
             workstation.CancelProcess();
             StopChronometer();
         }
-
+        
         private void Screw_Scrap_Click(object sender, RoutedEventArgs e)
         {
             var textBoxesToRemove = contentgrid.Children.OfType<Label>().Skip(1).ToList();

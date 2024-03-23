@@ -103,6 +103,21 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
                 }
             }, cancellationTokenSource.Token);
         }
+        public async Task UnsecurePallet(CancellationTokenSource cancellationTokenSource)
+        {
+            await Task.Run(async () =>
+            {
+                while (!sessionApp.Sensors_M1.Pallet_Stopper)
+                {
+                    sessionApp.Sensors_M2.Cyl_Pres_Stopper = false;
+                    SendDataOutpusM2();
+                }
+                while (sessionApp.Sensors_M1.Pallet_Stopper && sessionApp.Sensors_M1.Main_Pressure)
+                {
+                    Thread.Sleep(50);
+                }
+            }, cancellationTokenSource.Token);
+        }
         public void ExtendedPalletClamp()
         {
             sessionApp.Sensors_M2.PalletFixingRet = false;

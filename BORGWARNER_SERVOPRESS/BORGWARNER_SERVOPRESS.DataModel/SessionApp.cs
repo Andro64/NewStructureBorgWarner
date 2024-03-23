@@ -24,6 +24,7 @@ namespace BORGWARNER_SERVOPRESS.DataModel
         public int ModelScrewSelected { get; set; }
         public PositionErgoArm positionErgoArm { get; set; } = new PositionErgoArm();
         public string MessageOfProcess { get; set; }
+        public bool OnlyMessageOfProcess { get; set; }
         public string ImageOfProcess { get; set; }
         public BitmapImage BitmapImageOfProcess { get; set; }
         public string PathDirectoryResourcesOfThisProyect { get; set; }

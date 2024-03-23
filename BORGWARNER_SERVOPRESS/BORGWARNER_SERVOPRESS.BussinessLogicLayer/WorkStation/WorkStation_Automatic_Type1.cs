@@ -49,7 +49,16 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
             await Task.Run(() =>
             {
                 sessionApp.MessageOfProcess = message;
-                sessionApp.ImageOfProcess = isImageInDiferentPath ? nameimage : sessionApp.PathOperationalImages + nameimage;
+                if (!isImageInDiferentPath && nameimage == "")
+                {
+                    sessionApp.OnlyMessageOfProcess = true;
+                }
+                else
+                {
+                    sessionApp.OnlyMessageOfProcess = false;
+                    sessionApp.ImageOfProcess = isImageInDiferentPath ? nameimage : sessionApp.PathOperationalImages + nameimage;
+                }
+               
                 Debug.WriteLine($"{DateTime.Now} - " + "Msg:" + message + " -  Image show:" + nameimage);
                 Thread.Sleep(3000);
             });
@@ -150,6 +159,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
             sensorsIO.startRead();
             _cancellationTokenSource = new CancellationTokenSource();
             sessionApp.areImagePASSProcessFinished = false;
+           
 
             await showMessageAndImage("A la espera del producto.", "Housing.png");
             await CheckSensorAndWait(() => sensorsIO.PalletInStopper(), "Esperamos pallet en Pre-Stopper");
@@ -421,7 +431,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
                             foreach (var screw in lstScrewsToProcess)
                             {
                                 sensorsIO.DispenseAScrew();
-                                await showMessageAndImage($"Por favor, realice el atornillado número: {tightenincount}");
+                                await showMessageAndImage($"Por favor, realice el atornillado número: {tightenincount}", "HousingWithMask.png");
                                 screw.tighteningprocess = new TighteningProcess();
                                 if (ergoArm.isConected())
                                 {
@@ -571,9 +581,9 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
             {
                 await showMessageAndImage("Error: Fallo la confirmación de FIS");
             }
+            
+            await sensorsIO.UnsecurePallet(_cancellationTokenSource);
             endOfProcess();
-            await sensorsIO.SecurePallet(_cancellationTokenSource);
-            StartProcess();
         }
 
 
@@ -593,8 +603,9 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
 
         public void endOfProcess()
         {
+            sessionApp.TaksRunExecuting = false;            
             sensorsIO.endRead();
-            sessionApp.TaksRunExecuting = false;
+            
         }
         public async Task CheckSensorAndWait(Func<bool> sensorCheck, string debugMessage)
         {
