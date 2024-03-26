@@ -25,7 +25,8 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.Views
 
         public void Execute(object parameter)
         {
-            _execute((T)parameter);
+            //_execute((T)parameter);
+            _execute(parameter != null ? (T)parameter : default(T));
         }
 
         public event EventHandler CanExecuteChanged

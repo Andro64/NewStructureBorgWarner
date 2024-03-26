@@ -159,7 +159,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
                 if (screw.tighteningprocess.status)
                 //if (sessionApp.isScrewingFinished)
                 {
-                    screwdriver.Unscrewing(screw);
+                    screwdriver.Unscrewing(screw, _cancellationTokenSource);
                     return screw.tighteningprocess;
                 }
                 tightenincount++;

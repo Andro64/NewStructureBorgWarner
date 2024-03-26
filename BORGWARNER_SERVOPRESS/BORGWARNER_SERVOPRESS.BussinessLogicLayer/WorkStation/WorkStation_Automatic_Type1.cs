@@ -58,7 +58,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
                     sessionApp.OnlyMessageOfProcess = false;
                     sessionApp.ImageOfProcess = isImageInDiferentPath ? nameimage : sessionApp.PathOperationalImages + nameimage;
                 }
-               
+
                 Debug.WriteLine($"{DateTime.Now} - " + "Msg:" + message + " -  Image show:" + nameimage);
                 Thread.Sleep(3000);
             });
@@ -151,6 +151,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
             ScrewDriver screwdriver;
             List<string> imagesVisionSystem = new List<string>();
             string resultImageVisionSystem;
+            bool isFISEneable = false;
 
             string serial;
             string resultFIS;
@@ -159,7 +160,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
             sensorsIO.startRead();
             _cancellationTokenSource = new CancellationTokenSource();
             sessionApp.areImagePASSProcessFinished = false;
-           
+            isFISEneable = sessionApp.settings.FirstOrDefault(x => x.setting.Contains("EneableFIS")).valueSetting == "1";
 
             await showMessageAndImage("A la espera del producto.", "Housing.png");
             await CheckSensorAndWait(() => sensorsIO.PalletInStopper(), "Esperamos pallet en Pre-Stopper");
@@ -200,13 +201,14 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
                 scanner.ScanQR("LOFF");
                 scanner.DisconnectScanner();
             }
+            scanner.DisconnectScanner();
 
 
-#if DEBUG
-            if (true)
-#else
-            if (Validation_by_FIS(sessionApp.QR.HOUSING, "Se envía BREQ del housing a FIS.", eTypeSendToFIS.BREQ))
-#endif
+            //#if DEBUG
+            //            if (true)
+            //#else
+            if (isFISEneable ? Validation_by_FIS(sessionApp.QR.HOUSING, "Se envía BREQ del housing a FIS.", eTypeSendToFIS.BREQ) : true)
+            //#endif
 
             {
                 await showMessageAndImage("Inspección completada...");
@@ -216,15 +218,17 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
                 if (isCancellationRequested) { return; };
 
                 await showMessageAndImage("Escaneando código QR del HVDC Cover.");
-                serial = new Scanner(sessionApp, eTypeConnection.Scan_2).ScanQR("LON");
+                Scanner scanner2 = new Scanner(sessionApp, eTypeConnection.Scan_2);
+                serial = scanner2.ScanQR("LON");
                 sessionApp.QR.HVDC_BUSBAR = serial.Substring(0, (serial.Length - 1));
+                scanner2.DisconnectScanner();
                 if (isCancellationRequested) { return; };
                 Thread.Sleep(300);
-#if DEBUG
-                if (true)
-#else
-                    if (Validation_by_FIS(sessionApp.QR.HOUSING, "Se envía BREQ a FIS.", eTypeSendToFIS.BREQ))
-#endif
+                //#if DEBUG
+                //                if (true)
+                //#else
+                if (isFISEneable ? Validation_by_FIS(sessionApp.QR.HOUSING, "Se envía BREQ a FIS.", eTypeSendToFIS.BREQ) : true)
+                //#endif
 
                 {
                     await showMessageAndImage("Inspección completada...");
@@ -236,15 +240,17 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
                     if (isCancellationRequested) { return; };
 
                     await showMessageAndImage("Leyendo QR arnés.", "ScannerHarness.jpg");
-                    serial = new Scanner(sessionApp, eTypeConnection.Scan_2).ScanQR("LON");
+                    Scanner scanner3 = new Scanner(sessionApp, eTypeConnection.Scan_2);
+                    serial = scanner3.ScanQR("LON");
                     sessionApp.QR.HARNESS = serial.Substring(0, (serial.Length - 1));
+                    scanner3.DisconnectScanner();
                     if (isCancellationRequested) { return; };
 
-#if DEBUG
-                    if (true)
-#else
-                    if (Validation_by_FIS(sessionApp.QR.HOUSING, "Se envía BREQ árnes a FIS", eTypeSendToFIS.BREQ))
-#endif
+                    //#if DEBUG
+                    //                    if (true)
+                    //#else
+                    if (isFISEneable ? Validation_by_FIS(sessionApp.QR.HOUSING, "Se envía BREQ árnes a FIS", eTypeSendToFIS.BREQ) : true)
+                    //#endif
                     {
                         await showMessageAndImage("Inspección completada...");
                         Thread.Sleep(300);
@@ -443,7 +449,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
                                     tightening = await screwdriver.FirstTighteningAttempt(screw, _cancellationTokenSource);
                                     if (tightening == null)
                                     {
-                                        screwdriver.Unscrewing(screw);
+                                        screwdriver.Unscrewing(screw, _cancellationTokenSource);
                                         sensorsIO.Turn_ON_Vacuumm();
                                         await showMessageAndImage($"El atornillado número : {tightenincount} ha fallado. Por favor, retire el tornillo y colóquelo en desposito de tonrillos desechados.", "Scrap2.jpg");
                                         await CheckSensorAndWait(() => sensorsIO.ScrewInScrap(), "Esperamos que el operador coloque el tornillo en el scrap");
@@ -454,7 +460,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
                                         tightening = await screwdriver.SecondTighteningAttempt(screw, _cancellationTokenSource);
                                         if (tightening == null)
                                         {
-                                            screwdriver.Unscrewing(screw);
+                                            screwdriver.Unscrewing(screw, _cancellationTokenSource);
                                             sensorsIO.Turn_ON_Vacuumm();
                                             await showMessageAndImage($"El atornillado número : {tightenincount} ha fallado. Por favor, retire el tornillo y colóquelo en desposito de tonrillos desechados.", "Scrap2.jpg");
                                             await CheckSensorAndWait(() => sensorsIO.ScrewInScrap(), "Esperamos que el operador coloque el tornillo en el scrap");
@@ -465,7 +471,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
                                             tightening = await screwdriver.ThirdTighteningAttempt(screw, _cancellationTokenSource);
                                             if (tightening == null)
                                             {
-                                                screwdriver.Unscrewing(screw);
+                                                screwdriver.Unscrewing(screw, _cancellationTokenSource);
                                                 sensorsIO.Turn_ON_Vacuumm();
                                                 await showMessageAndImage($"El atornillado número : {tightenincount} ha fallado. Por favor, retire el tornillo y colóquelo en desposito de tonrillos desechados.", "Scrap2.jpg");
                                                 await CheckSensorAndWait(() => sensorsIO.ScrewInScrap(), "Esperamos que el operador coloque el tornillo en el scrap");
@@ -496,15 +502,17 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
                             if (isCancellationRequested) { return; };
 
                             await showMessageAndImage("Escaneando código QR de la cubierta superior.");
-                            serial = new Scanner(sessionApp, eTypeConnection.Scan_2).ScanQR("LON");
+                            Scanner scanner4 = new Scanner(sessionApp, eTypeConnection.Scan_2);
+                            serial = scanner4.ScanQR("LON");
                             if (isCancellationRequested) { return; };
                             sessionApp.QR.TOP_COVER = serial.Substring(0, (serial.Length - 1));
+                            scanner4.DisconnectScanner();
 
-#if DEBUG
-                            if (true)
-#else
-                    if (Validation_by_FIS(serial, "Se envía BREQ a FIS.", eTypeSendToFIS.BREQ))
-#endif
+                            //#if DEBUG
+                            //                            if (true)
+                            //#else
+                            if (isFISEneable ? Validation_by_FIS(serial, "Se envía BREQ a FIS.", eTypeSendToFIS.BREQ) : true)
+                            //#endif
 
                             {
                                 await showMessageAndImage("Inspección completada...");
@@ -516,11 +524,11 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
                                 await showMessageAndImage("Enviando señal de finalización de tarea.");
                                 Thread.Sleep(300);
 
-#if DEBUG
-                                if (true)
-#else
-                    if (Validation_by_FIS(serial, "Se envía BCMP a FIS.", eTypeSendToFIS.BCMP)) 
-#endif
+                                //#if DEBUG
+                                //                                if (true)
+                                //#else
+                                if (isFISEneable ? Validation_by_FIS(serial, "Se envía BCMP a FIS.", eTypeSendToFIS.BCMP) : true)
+                                //#endif
 
                                 {
                                     await showMessageAndImage("Recepción de BACK completada.");
@@ -581,7 +589,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
             {
                 await showMessageAndImage("Error: Fallo la confirmación de FIS");
             }
-            
+
             await sensorsIO.UnsecurePallet(_cancellationTokenSource);
             endOfProcess();
         }
@@ -603,9 +611,13 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
 
         public void endOfProcess()
         {
-            sessionApp.TaksRunExecuting = false;            
+            sessionApp.QR.TOP_COVER = string.Empty;
+            sessionApp.QR.HARNESS = string.Empty;
+            sessionApp.QR.HOUSING = string.Empty;
+            sessionApp.QR.HVDC_BUSBAR = string.Empty;
+            sessionApp.TaksRunExecuting = false;
             sensorsIO.endRead();
-            
+
         }
         public async Task CheckSensorAndWait(Func<bool> sensorCheck, string debugMessage)
         {

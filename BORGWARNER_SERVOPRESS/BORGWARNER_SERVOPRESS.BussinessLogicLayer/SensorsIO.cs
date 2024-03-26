@@ -107,9 +107,9 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
         {
             await Task.Run(async () =>
             {
-                while (!sessionApp.Sensors_M1.Pallet_Stopper)
+                while (sessionApp.Sensors_M1.Pallet_Pre_Stopper)
                 {
-                    sessionApp.Sensors_M2.Cyl_Pres_Stopper = false;
+                    sessionApp.Sensors_M2.Cyl_Pres_Stopper = true;
                     SendDataOutpusM2();
                 }
                 while (sessionApp.Sensors_M1.Pallet_Stopper && sessionApp.Sensors_M1.Main_Pressure)

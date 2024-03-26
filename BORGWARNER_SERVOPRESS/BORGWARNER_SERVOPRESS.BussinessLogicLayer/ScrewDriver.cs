@@ -241,53 +241,61 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
         }
 
 
-        public bool Rescrewing(Screw screw, string programValue = "")
+        public async Task<ScrewingResult> Rescrewing(Screw screw, CancellationTokenSource _cancellationTokenSource)
         {
-            //connect();
-            //if (isScrewDriverConnected())
-            //{
-            //    if (InRange())
-            //    {
-            //        enableScrewdriver();
-            //        if (ScrewingProgram_by_Model(eTypePrograms.rescrewing, programValue) == "0005")
-            //        {
-            //            if (screwingSubscription() == "0005")
-            //            {
-            //                if (ScrewingCompleted(screw))
-            //                {
-            //                    disconnect();
-            //                    return screw.tighteningprocess.status;
-            //                }
-            //            }
-            //        }
-            //    }
-            //}
-            //disconnect();
-            return false;
+            ScrewingResult result;
+            //sessionApp.messageTorque = "...";
+            await Task.Delay(500);
+            connect();
+            if (isScrewDriverConnected())
+            {
+                if (InRange())
+                {
+                    enableScrewdriver();
+                    if (ScrewingProgram_by_Model(eTypePrograms.screwing, sessionApp.programs_ScrewDriver.rescrewing) == "0005")
+                    {
+                        if (screwingSubscription() == "0005")
+                        {
+                            sessionApp.messageTorque = "Por favor proceda a atornillar.";
+                            Debug.WriteLine("Por favor proceda a atornillar.");
+                            result = await ScrewingCompletedAsync(screw, _cancellationTokenSource);
+                            disconnect();
+                            await DeployMessageScrewing(result);
+                            return result;
+                        }
+                    }
+                }
+            }
+            disconnect();
+            return new ScrewingResult();
         }
-        public bool Unscrewing(Screw screw, string programValue = "")
-        {            
-            //connect();
-            //if (isScrewDriverConnected())
-            //{
-            //    if (InRange())
-            //    {
-            //        enableScrewdriver();
-            //        if (ScrewingProgram_by_Model(eTypePrograms.unscrewing, programValue) == "0005")
-            //        {
-            //            if (screwingSubscription() == "0005")
-            //            {
-            //                if (ScrewingCompleted(screw))
-            //                {
-            //                    disconnect();
-            //                    return screw.tighteningprocess.status;
-            //                }
-            //            }
-            //        }
-            //    }
-            //}
-            //disconnect();
-            return false;
+        public async Task<ScrewingResult> Unscrewing(Screw screw, CancellationTokenSource _cancellationTokenSource)
+        {
+            ScrewingResult result;
+            //sessionApp.messageTorque = "...";
+            await Task.Delay(500);
+            connect();
+            if (isScrewDriverConnected())
+            {
+                if (InRange())
+                {
+                    enableScrewdriver();
+                    if (ScrewingProgram_by_Model(eTypePrograms.screwing, sessionApp.programs_ScrewDriver.unscrewing) == "0005")
+                    {
+                        if (screwingSubscription() == "0005")
+                        {
+                            sessionApp.messageTorque = "Por favor proceda a atornillar.";
+                            Debug.WriteLine("Por favor proceda a atornillar.");
+                            result = await ScrewingCompletedAsync(screw, _cancellationTokenSource);
+                            disconnect();
+                            await DeployMessageScrewing(result);
+                            return result;
+                        }
+                    }
+                }
+            }
+            disconnect();
+            return new ScrewingResult();
         }
         public async Task<TighteningProcess> tryScrewDriver(Screw screw, CancellationTokenSource _cancellationTokenSource, string programValue)
         {

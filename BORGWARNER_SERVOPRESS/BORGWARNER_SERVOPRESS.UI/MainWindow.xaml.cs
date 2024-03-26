@@ -200,6 +200,7 @@ namespace BORGWARNER_SERVOPRESS.UI
 
             if (!isRequestedStopProcess)
             {
+                pageManager.CleanControls(new List<string> { "from_fis_textblock", "to_fis_textblock", "txtHousing", "txt_HVDC_BUSBAR", "txtHarness", "txtTopCover", "cycletime" });
                 StartCycle();
             }
         }
