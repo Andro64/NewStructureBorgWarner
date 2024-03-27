@@ -33,7 +33,9 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.Views
             };
             timer.Tick += (sender, args) =>
             {
-                _modelViewMain.Timestamp = DateTime.Now.ToString();                
+                _modelViewMain.Timestamp = DateTime.Now.ToString();
+                _modelViewMain.trigerScan = sessionApp.Sensors_M2.Trigger_Scanner.ToString();
+                _modelViewMain.prestoper = string.Concat("Pre:",sessionApp.Sensors_M1.Pallet_Stopper.ToString(),"  Main:",sessionApp.Sensors_M1.Main_Pressure.ToString()," OkS:", sessionApp.Sensors_M1.SecurityOK.ToString());
                 _modelViewMain.MessageProcess = sessionApp.MessageOfProcess;
                 if (sessionApp.QR != null)
                 {

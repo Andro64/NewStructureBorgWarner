@@ -27,7 +27,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
         public WorkStation_Automatic_Type1(SessionApp _sessionApp)
         {
             sessionApp = _sessionApp;
-            sensorsIO = new SensorsIO(sessionApp);
+            
         }
 
         public override void CancelProcess()
@@ -41,7 +41,38 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
             if (sensorsIO != null)
             {
                 sensorsIO.StopWaiting();
+                sensorsIO.endRead();
             }
+
+            sessionApp.Sensors_M1.Main_Pressure = false;
+            sessionApp.Sensors_M1.OptoBtn = false;
+            sessionApp.Sensors_M1.Pallet_Pre_Stopper = false;
+            sessionApp.Sensors_M1.Pallet_Stopper = false;
+            sessionApp.Sensors_M1.Screw_Present_Oth = false;
+            sessionApp.Sensors_M1.Screw_Level_Oth = false;
+            sessionApp.Sensors_M1.MaskInHolder = false;
+            sessionApp.Sensors_M1.SecurityOK = false;
+            
+            sessionApp.Sensors_M2.Trigger_Scanner = false;
+            sessionApp.Sensors_M2.MaskatHousing = false;
+            sessionApp.Sensors_M2.PA2 = false;
+            sessionApp.Sensors_M2.PA3 = false;
+            sessionApp.Sensors_M2.Cyl_Fixing_Pall_Ext = false;
+            sessionApp.Sensors_M2.Cyl_Fixing_Pall_Ret = false;
+            sessionApp.Sensors_M2.PB2 = false;
+            sessionApp.Sensors_M2.PB3 = false;
+
+            sessionApp.Sensors_M3.PA0 = false;
+            sessionApp.Sensors_M3.PA1 = false;
+            sessionApp.Sensors_M3.PA2 = false;
+            sessionApp.Sensors_M3.ST13Available = false;
+            sessionApp.Sensors_M3.PB0 = false;
+            sessionApp.Sensors_M3.PB1 = false;            
+            sessionApp.Sensors_M3.Scrap_presence = false;
+            sessionApp.Sensors_M3.PB3 = false;
+
+            sessionApp.images = new List<string>();
+           
         }
 
         public async Task showMessageAndImage(string message, string nameimage = "", bool isImageInDiferentPath = false)
@@ -157,6 +188,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
             string resultFIS;
             int quantityScrews;
 
+            sensorsIO = new SensorsIO(sessionApp);
             sensorsIO.startRead();
             _cancellationTokenSource = new CancellationTokenSource();
             sessionApp.areImagePASSProcessFinished = false;
@@ -164,6 +196,25 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
 
             await showMessageAndImage("A la espera del producto.", "Housing.png");
             await CheckSensorAndWait(() => sensorsIO.PalletInStopper(), "Esperamos pallet en Pre-Stopper");
+
+
+
+            ////Quitar este codigo
+
+            //await showMessageAndImage("Por favor, retire el pallet de la estación.");
+            //sensorsIO.StopCylinder();
+            //await CheckSensorAndWait(() => sensorsIO.PalletOutStopper(), "Esperamos la estación 13.");
+            //if (isCancellationRequested) { return; };
+            //await showMessageAndImage("Pallet Retirado.");
+            //Thread.Sleep(1000);
+            //await showMessageAndImage("¡El ciclo ha concluido exitosamente!");
+
+            //await sensorsIO.UnsecurePallet(_cancellationTokenSource);
+            //endOfProcess();
+            //return;
+
+            ////Hasta aqui este codigo
+
 
 
             await sensorsIO.SecurePallet(_cancellationTokenSource);
@@ -449,10 +500,10 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
                                     tightening = await screwdriver.FirstTighteningAttempt(screw, _cancellationTokenSource);
                                     if (tightening == null)
                                     {
-                                        screwdriver.Unscrewing(screw, _cancellationTokenSource);
-                                        sensorsIO.Turn_ON_Vacuumm();
+                                        await screwdriver.Unscrewing(screw, _cancellationTokenSource);                                        
                                         await showMessageAndImage($"El atornillado número : {tightenincount} ha fallado. Por favor, retire el tornillo y colóquelo en desposito de tonrillos desechados.", "Scrap2.jpg");
                                         await CheckSensorAndWait(() => sensorsIO.ScrewInScrap(), "Esperamos que el operador coloque el tornillo en el scrap");
+                                        sensorsIO.Turn_ON_Vacuumm();
                                         if (isCancellationRequested) { return; };
 
 
@@ -460,10 +511,10 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
                                         tightening = await screwdriver.SecondTighteningAttempt(screw, _cancellationTokenSource);
                                         if (tightening == null)
                                         {
-                                            screwdriver.Unscrewing(screw, _cancellationTokenSource);
-                                            sensorsIO.Turn_ON_Vacuumm();
+                                            await screwdriver.Unscrewing(screw, _cancellationTokenSource);                                            
                                             await showMessageAndImage($"El atornillado número : {tightenincount} ha fallado. Por favor, retire el tornillo y colóquelo en desposito de tonrillos desechados.", "Scrap2.jpg");
                                             await CheckSensorAndWait(() => sensorsIO.ScrewInScrap(), "Esperamos que el operador coloque el tornillo en el scrap");
+                                            sensorsIO.Turn_ON_Vacuumm();
                                             if (isCancellationRequested) { return; };
 
 
@@ -471,10 +522,10 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
                                             tightening = await screwdriver.ThirdTighteningAttempt(screw, _cancellationTokenSource);
                                             if (tightening == null)
                                             {
-                                                screwdriver.Unscrewing(screw, _cancellationTokenSource);
-                                                sensorsIO.Turn_ON_Vacuumm();
+                                                await screwdriver.Unscrewing(screw, _cancellationTokenSource);                                                
                                                 await showMessageAndImage($"El atornillado número : {tightenincount} ha fallado. Por favor, retire el tornillo y colóquelo en desposito de tonrillos desechados.", "Scrap2.jpg");
                                                 await CheckSensorAndWait(() => sensorsIO.ScrewInScrap(), "Esperamos que el operador coloque el tornillo en el scrap");
+                                                sensorsIO.Turn_ON_Vacuumm();
                                                 if (isCancellationRequested) { return; };
 
                                                 await showMessageAndImage($"Los 3 intentos de atornillado han fallado.");
@@ -488,6 +539,8 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
                                 tightenincount++;
                                 RequestCreateTextBox($"{tightening.Torque.Substring(0, 2)}.{tightening.Torque.Substring(2, 2)} Nw | {tightening.Angle.TrimStart('0')} °", screw.text_position_X, screw.text_position_Y);
                             }//Finaliza el proceso de atornillado
+
+
                             ergoArm.endReadPostion();
                             await showMessageAndImage("Por favor, coloque el atornillador en la posición 1.", "HousingWithMask.png");
                             Thread.Sleep(3000);

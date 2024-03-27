@@ -81,7 +81,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
         public bool PalletInStopper()
         {
             isWaiting = true;
-            return (sessionApp.Sensors_M1.Pallet_Stopper) && sessionApp.Sensors_M1.SecurityOK && sessionApp.Sensors_M1.Main_Pressure;
+            return sessionApp.Sensors_M1.Pallet_Stopper && sessionApp.Sensors_M1.SecurityOK && sessionApp.Sensors_M1.Main_Pressure;
         }
         public bool PalletOutStopper()
         {
@@ -92,9 +92,10 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
         {
             await Task.Run(async () =>
             {
-                while (sessionApp.Sensors_M1.Pallet_Pre_Stopper)
+                if (sessionApp.Sensors_M1.Pallet_Stopper)
                 {
-                    sessionApp.Sensors_M2.Cyl_Pres_Stopper = true;
+                    sessionApp.Sensors_M2.Cyl_Pres_Stopper = false;
+                    sessionApp.Sensors_M2.Cyl_Stopper = false;
                     SendDataOutpusM2();
                 }
                 while (!sessionApp.Sensors_M1.Pallet_Stopper && sessionApp.Sensors_M1.Main_Pressure)
@@ -107,10 +108,21 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
         {
             await Task.Run(async () =>
             {
-                while (sessionApp.Sensors_M1.Pallet_Pre_Stopper)
+                //while (!sessionApp.Sensors_M1.Pallet_Stopper)
+                //{
+                //    sessionApp.Sensors_M2.Cyl_Pres_Stopper = true;
+                //    sessionApp.Sensors_M2.Cyl_Stopper = true;
+                //    SendDataOutpusM2();
+                //    if(sessionApp.Sensors_M1.Pallet_Pre_Stopper)
+                //    {
+                //        break;
+                //    }
+                //}
+                if (!sessionApp.Sensors_M1.Pallet_Stopper)
                 {
                     sessionApp.Sensors_M2.Cyl_Pres_Stopper = true;
-                    SendDataOutpusM2();
+                    sessionApp.Sensors_M2.Cyl_Stopper = true;
+                    SendDataOutpusM2();                  
                 }
                 while (sessionApp.Sensors_M1.Pallet_Stopper && sessionApp.Sensors_M1.Main_Pressure)
                 {
@@ -118,6 +130,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
                 }
             }, cancellationTokenSource.Token);
         }
+        
         public void ExtendedPalletClamp()
         {
             sessionApp.Sensors_M2.PalletFixingRet = false;
@@ -149,7 +162,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
         }
         public bool isTriggerScanner()
         {
-            isWaiting = true;            
+            //isWaiting = true;            
             return sessionApp.Sensors_M2.Trigger_Scanner;
         }
         public bool isOutPieceHDVC()

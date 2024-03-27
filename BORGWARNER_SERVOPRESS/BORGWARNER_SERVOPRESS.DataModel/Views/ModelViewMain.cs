@@ -139,6 +139,33 @@ namespace BORGWARNER_SERVOPRESS.DataModel.Views
                 }
             }
         }
+
+        private string _prestoper;
+        public string prestoper
+        {
+            get { return _prestoper; }
+            set
+            {
+                if (_prestoper != value)
+                {
+                    _prestoper = value;
+                    OnPropertyChanged(nameof(prestoper));
+                }
+            }
+        }
+        private string _trigerScan;
+        public string trigerScan
+        {
+            get { return _trigerScan; }
+            set
+            {
+                if (_trigerScan != value)
+                {
+                    _trigerScan = value;
+                    OnPropertyChanged(nameof(trigerScan));
+                }
+            }
+        }
         private QRs _QRs_Scanned;
         public QRs QRs_Scanned
         {

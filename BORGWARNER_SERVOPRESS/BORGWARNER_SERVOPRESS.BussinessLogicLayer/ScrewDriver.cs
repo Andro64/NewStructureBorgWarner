@@ -116,8 +116,8 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
                     {
                         screw.tighteningprocess.Torque = response.Substring(142, 4);
                         screw.tighteningprocess.Angle = response.Substring(170, 4);
-                        screw.tighteningprocess.status = response.Substring(107, 1) == "2";
-                        screwingResult.status = true;
+                        screw.tighteningprocess.status = response.Substring(107, 1) == "1" ? true: false ;
+                        screwingResult.status = screw.tighteningprocess.status;
                         timeoutReached = false;
                         break; // Salir del bucle cuando se reciba una respuesta satisfactoria
                     }
@@ -245,6 +245,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
         {
             ScrewingResult result;
             //sessionApp.messageTorque = "...";
+            screw.tighteningprocess.result = false;
             await Task.Delay(500);
             connect();
             if (isScrewDriverConnected())
@@ -252,7 +253,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
                 if (InRange())
                 {
                     enableScrewdriver();
-                    if (ScrewingProgram_by_Model(eTypePrograms.screwing, sessionApp.programs_ScrewDriver.rescrewing) == "0005")
+                    if (ScrewingProgram_by_Model(eTypePrograms.rescrewing,string.Empty) == "0005")
                     {
                         if (screwingSubscription() == "0005")
                         {
@@ -273,6 +274,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
         {
             ScrewingResult result;
             //sessionApp.messageTorque = "...";
+            screw.tighteningprocess.result = false;            
             await Task.Delay(500);
             connect();
             if (isScrewDriverConnected())
@@ -280,7 +282,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
                 if (InRange())
                 {
                     enableScrewdriver();
-                    if (ScrewingProgram_by_Model(eTypePrograms.screwing, sessionApp.programs_ScrewDriver.unscrewing) == "0005")
+                    if (ScrewingProgram_by_Model(eTypePrograms.unscrewing, string.Empty) == "0005")
                     {
                         if (screwingSubscription() == "0005")
                         {
