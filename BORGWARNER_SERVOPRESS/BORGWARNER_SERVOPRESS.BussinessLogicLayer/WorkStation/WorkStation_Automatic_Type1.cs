@@ -194,6 +194,12 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
             sessionApp.areImagePASSProcessFinished = false;
             isFISEneable = sessionApp.settings.FirstOrDefault(x => x.setting.Contains("EneableFIS")).valueSetting == "1";
 
+            if (!sensorsIO.PalletInStopper())
+            {
+                await showMessageAndImage("A la espera del producto en prestoper.", "Housing.png");
+                await sensorsIO.UnsecurePallet(_cancellationTokenSource);
+            }
+
             await showMessageAndImage("A la espera del producto.", "Housing.png");
             await CheckSensorAndWait(() => sensorsIO.PalletInStopper(), "Esperamos pallet en Pre-Stopper");
 
@@ -500,25 +506,60 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
                                     tightening = await screwdriver.FirstTighteningAttempt(screw, _cancellationTokenSource);
                                     if (tightening == null)
                                     {
+                                        RequestRemoveTextBox();
+                                        await showMessageAndImage($"Por favor, realice el desatornillado del tornillo número: {tightenincount}.");
+                                        //if (ergoArm.isConected())
+                                        //{
+                                        //    ergoArm.startReadPositionRespectScrew(screw);
+                                        //}
+                                        //if (sessionApp.positionErgoArm.InPositionReadyToProcess)
+                                        //{
                                         await screwdriver.Unscrewing(screw, _cancellationTokenSource);                                        
-                                        await showMessageAndImage($"El atornillado número : {tightenincount} ha fallado. Por favor, retire el tornillo y colóquelo en desposito de tonrillos desechados.", "Scrap2.jpg");
+                                        await showMessageAndImage($"El atornillado del tornillo número : {tightenincount} ha fallado. Por favor, retire el tornillo y colóquelo en desposito de tonrillos desechados.", "Scrap2.jpg");
                                         await CheckSensorAndWait(() => sensorsIO.ScrewInScrap(), "Esperamos que el operador coloque el tornillo en el scrap");
                                         sensorsIO.Turn_ON_Vacuumm();
+                                        Thread.Sleep(3000);
+                                        sensorsIO.Turn_OFF_Vacuumm();
                                         if (isCancellationRequested) { return; };
 
 
+                                        await showMessageAndImage($"El primer intento de atornillado del tornillo número : {tightenincount} ha fallado.Presione OPTO para continuar", "HousingWithMask.png");
                                         await CheckSensorAndWait(() => sensorsIO.WasPressedOpto(), "Fallo primer intento de atornillado  ESPERA ACTIVACION DE OPTO");
+                                        //if (ergoArm.isConected())
+                                        //{
+                                        //    ergoArm.startReadPositionRespectScrew(screw);
+                                        //}
+                                        //if (sessionApp.positionErgoArm.InPositionReadyToProcess)
+                                        //{ 
+                                        await showMessageAndImage($"Intento 2 - Por favor, realice nuevamente el atornillado del tornillo número: {tightenincount}.", "HousingWithMask.png");
                                         tightening = await screwdriver.SecondTighteningAttempt(screw, _cancellationTokenSource);
                                         if (tightening == null)
                                         {
+                                            await showMessageAndImage($"Por favor, realice el desatornillado del tornillo número: {tightenincount}.");
+                                            //if (ergoArm.isConected())
+                                            //{
+                                            //    ergoArm.startReadPositionRespectScrew(screw);
+                                            //}
+                                            //if (sessionApp.positionErgoArm.InPositionReadyToProcess)
+                                            //{
                                             await screwdriver.Unscrewing(screw, _cancellationTokenSource);                                            
-                                            await showMessageAndImage($"El atornillado número : {tightenincount} ha fallado. Por favor, retire el tornillo y colóquelo en desposito de tonrillos desechados.", "Scrap2.jpg");
+                                            await showMessageAndImage($"El atornillado del tornillo número : {tightenincount} ha fallado. Por favor, retire el tornillo y colóquelo en desposito de tonrillos desechados.", "Scrap2.jpg");
                                             await CheckSensorAndWait(() => sensorsIO.ScrewInScrap(), "Esperamos que el operador coloque el tornillo en el scrap");
                                             sensorsIO.Turn_ON_Vacuumm();
+                                            Thread.Sleep(3000);
+                                            sensorsIO.Turn_OFF_Vacuumm();
                                             if (isCancellationRequested) { return; };
 
-
+                                            
+                                            await showMessageAndImage($"El segundo intento de atornillado del tornillo número : {tightenincount} ha fallado.Presione OPTO para continuar", "HousingWithMask.png");
                                             await CheckSensorAndWait(() => sensorsIO.WasPressedOpto(), "Fallo segundo intento de atornillado  ESPERA ACTIVACION DE OPTO");
+                                            //if (ergoArm.isConected())
+                                            //{
+                                            //    ergoArm.startReadPositionRespectScrew(screw);
+                                            //}
+                                            //if (sessionApp.positionErgoArm.InPositionReadyToProcess)
+                                            //{
+                                            await showMessageAndImage($"Intento 3 - Por favor, realice nuevamente el atornillado del tornillo número: {tightenincount}.", "HousingWithMask.png");
                                             tightening = await screwdriver.ThirdTighteningAttempt(screw, _cancellationTokenSource);
                                             if (tightening == null)
                                             {
@@ -526,6 +567,8 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
                                                 await showMessageAndImage($"El atornillado número : {tightenincount} ha fallado. Por favor, retire el tornillo y colóquelo en desposito de tonrillos desechados.", "Scrap2.jpg");
                                                 await CheckSensorAndWait(() => sensorsIO.ScrewInScrap(), "Esperamos que el operador coloque el tornillo en el scrap");
                                                 sensorsIO.Turn_ON_Vacuumm();
+                                                Thread.Sleep(3000);
+                                                sensorsIO.Turn_OFF_Vacuumm();
                                                 if (isCancellationRequested) { return; };
 
                                                 await showMessageAndImage($"Los 3 intentos de atornillado han fallado.");
@@ -540,8 +583,8 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
                                 RequestCreateTextBox($"{tightening.Torque.Substring(0, 2)}.{tightening.Torque.Substring(2, 2)} Nw | {tightening.Angle.TrimStart('0')} °", screw.text_position_X, screw.text_position_Y);
                             }//Finaliza el proceso de atornillado
 
-
                             ergoArm.endReadPostion();
+                            RewriteResultsOfTightening(lstScrewsToProcess);
                             await showMessageAndImage("Por favor, coloque el atornillador en la posición 1.", "HousingWithMask.png");
                             Thread.Sleep(3000);
                             RequestRemoveTextBox();
@@ -656,7 +699,16 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
             await showMessageAndImage("Por favor, posicione la máscara sobre el housing.", @"D:\Repo3\BORGWARNER_SERVOPRESS\BORGWARNER_SERVOPRESS.UI\Resources\Operational_Images\WSAT1\HousingWithMask.png",true);
         }
         */
-
+        public void RewriteResultsOfTightening(List<Screw> lstScrewsToProcess)
+        {
+            if (lstScrewsToProcess != null)
+            {
+                foreach (var screw in lstScrewsToProcess)
+                {
+                    RequestCreateTextBox($"{screw.tighteningprocess.Torque.Substring(0, 2)}.{screw.tighteningprocess.Torque.Substring(2, 2)} Nw | {screw.tighteningprocess.Angle.TrimStart('0')} °", screw.text_position_X, screw.text_position_Y);
+                }
+            }
+        }
         public void getModelScrew()
         {
             sessionApp.ModelScrewSelected = int.Parse(sessionApp.settings.FirstOrDefault(x => x.setting.Equals("Model_Screw")).valueSetting);

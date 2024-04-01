@@ -245,14 +245,14 @@ namespace BORGWARNER_SERVOPRESS.UI
         {
             sessionApp.Sensors_M2 = new IOCardType_M2();
             //sessionApp.Sensors_M2.CylFixingExt = true;
-            sessionApp.Sensors_M2.Cyl_Fixing_Pall_Ext = true;
+            sessionApp.Sensors_M2.PalletFixingExt = sessionApp.Sensors_M2.Cyl_Fixing_Pall_Ext ? false :  true;
             tryDevices.TrySendDataSensorsM2();
         }
         private void Card2_ouput1_Click(object sender, RoutedEventArgs e)
         {
             sessionApp.Sensors_M2 = new IOCardType_M2();
             //sessionApp.Sensors_M2.CylFixingRet = true;
-            sessionApp.Sensors_M2.Cyl_Fixing_Pall_Ret = true;
+            sessionApp.Sensors_M2.PalletFixingRet = sessionApp.Sensors_M2.Cyl_Fixing_Pall_Ret ? false : true;
             tryDevices.TrySendDataSensorsM2();
         }
         private void Card2_ouput2_Click(object sender, RoutedEventArgs e)
