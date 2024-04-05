@@ -32,13 +32,19 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
                 case 5:
                     return new WorkStation_Manual_Type17C();
                 case 6:
-                    return new WorkStation_Automatic_Type1(sessionApp);
+                    return new WorkStation_Manual_Type1(sessionApp);
                 case 7:
                     return new WorkStation_Automatic_Type2(sessionApp);
                 case 8:
                     return new WorkStation_Automatic_Type3();
                 case 9:
                     return new WorkStation_Automatic_Type4();
+                case 10:
+                    return new WorkStation_Manual_Type1(sessionApp);
+                case 11:
+                    return new WorkStation_Manual_Type1(sessionApp);
+                case 12:
+                    return new WorkStation_Manual_Type12(sessionApp);
                 default:
                     throw new ArgumentException("Tipo de estación de trabajo no válido", nameof(sessionApp.typeWorkstation.id));
             }

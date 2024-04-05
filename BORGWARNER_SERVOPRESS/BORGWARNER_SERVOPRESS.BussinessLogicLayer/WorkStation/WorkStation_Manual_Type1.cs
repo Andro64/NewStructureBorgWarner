@@ -20,14 +20,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
         public override event EventHandler<TextBoxInfoEventArgs> CreateTextBoxRequested;
         public override event EventHandler RemoveTextBoxRequested;
 
-        public override void RequestCreateTextBox(string msg, int PositionX, int PositionY)
-        {
-            OnCreateTextBoxRequested(new TextBoxInfoEventArgs
-            {
-                Text = msg,
-                Position = new System.Windows.Point(PositionX, PositionY)
-            });
-        }
+       
 
         protected virtual void OnCreateTextBoxRequested(TextBoxInfoEventArgs e)
         {
@@ -463,6 +456,10 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
             }//Falta si no PASS 
             sessionApp.TaksRunExecuting = false;
         */}
-        
+
+        public override void RequestCreateTextBox(string msg, int PositionX, int PositionY, bool HasError = false)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

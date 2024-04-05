@@ -102,6 +102,35 @@
         </Setter>
     </Style>
 
+    <Style x:Key="RoundLabelError" TargetType="Label">
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="Background" Value="#98091c47"/>
+        <Setter Property="Padding" Value="5"/>
+        <!-- Reduce el padding para reducir el espacio entre el texto y el borde -->
+        <Setter Property="BorderThickness" Value="1"/>
+        <!-- Reduce el grosor del borde -->
+        <Setter Property="BorderBrush" Value="Red"/>
+        <Setter Property="HorizontalAlignment" Value="Center"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+        <Setter Property="FontSize" Value="12"/>
+        <!-- Establece un tamaño de fuente más pequeño -->
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Label">
+                    <Border Background="{TemplateBinding Background}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                CornerRadius="5">
+                        <!-- Reduce la curvatura de las esquinas -->
+                        <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                              VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                              Margin="{TemplateBinding Padding}"/>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
     <Style x:Key="SelectedButton" TargetType="Button" >
         <Setter Property="TextElement.FontFamily" Value="/resources/fonts/open-sans/#open sans" />
         <Setter Property="Background"  Value="#8f8f14" />

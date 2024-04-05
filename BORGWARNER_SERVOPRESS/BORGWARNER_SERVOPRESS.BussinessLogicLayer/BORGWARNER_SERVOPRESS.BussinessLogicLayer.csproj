@@ -166,7 +166,7 @@
     <Compile Include="VisionSystem.cs" />
     <Compile Include="WorkStation\Workstation.cs" />
     <Compile Include="WorkStation\WorkstationFactory.cs" />
-    <Compile Include="WorkStation\WorkStation_Automatic_Type1.cs" />
+    <Compile Include="WorkStation\WorkStation_Manual_Type12.cs" />
     <Compile Include="WorkStation\WorkStation_Automatic_Type2.cs" />
     <Compile Include="WorkStation\WorkStation_Automatic_Type3.cs" />
     <Compile Include="WorkStation\WorkStation_Automatic_Type4.cs" />

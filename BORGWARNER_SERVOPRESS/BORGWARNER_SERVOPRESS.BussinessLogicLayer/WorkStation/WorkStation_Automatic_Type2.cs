@@ -144,12 +144,13 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
             });
         }
 
-        public override void RequestCreateTextBox(string msg, int PositionX, int PositionY)
+      
+        public override void RequestRemoveTextBox()
         {
             throw new NotImplementedException();
         }
 
-        public override void RequestRemoveTextBox()
+        public override void RequestCreateTextBox(string msg, int PositionX, int PositionY, bool HasError = false)
         {
             throw new NotImplementedException();
         }

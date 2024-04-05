@@ -60,7 +60,7 @@ namespace BORGWARNER_SERVOPRESS.UI
                     Content = e.Text,
                     Width = 100,
                     Height = 30,
-                    Style = (Style)Application.Current.Resources["RoundLabel"]
+                    Style = e.HasError ? (Style)Application.Current.Resources["RoundLabelError"] : (Style)Application.Current.Resources["RoundLabel"]
                     //Style = (Style)Application.Current.Resources["BaseIsFocused"]
 
                 };

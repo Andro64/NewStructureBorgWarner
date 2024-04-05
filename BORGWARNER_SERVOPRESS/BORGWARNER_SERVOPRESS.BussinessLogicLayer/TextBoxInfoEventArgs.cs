@@ -10,5 +10,6 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
     {
         public string Text { get; set; }
         public System.Windows.Point Position { get; set; }
+        public bool HasError { get; set; }
     }
 }

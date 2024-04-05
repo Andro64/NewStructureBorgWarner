@@ -224,6 +224,14 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
         {
             sessionApp.Sensors_M1.Vacuum = false;
             SendDataOutpusM1();
+            
+        }
+        public void ActivateVacumm_by_time(int miliseconds)
+        {
+            Turn_ON_Vacuumm();
+            Thread.Sleep(miliseconds);
+            Turn_OFF_Vacuumm();
+
         }
         public void StopCylinder()
         {

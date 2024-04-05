@@ -81,7 +81,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
             ScrewingResult screwingResult = new ScrewingResult(); 
             
             await Task.Delay(500);
-            Debug.WriteLine("Entre: ScrewingCompletedAsync.");
+            //Debug.WriteLine("Entre: ScrewingCompletedAsync.");
             
             bool timeoutReached = false;
             
@@ -195,6 +195,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
         {
             ScrewingResult result;
             //sessionApp.messageTorque = "...";
+            screw.tighteningprocess.result = false;
             await Task.Delay(500);
             connect();
             if (isScrewDriverConnected())

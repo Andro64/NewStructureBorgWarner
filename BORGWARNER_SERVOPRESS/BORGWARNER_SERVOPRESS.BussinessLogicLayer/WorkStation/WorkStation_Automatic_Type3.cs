@@ -17,8 +17,9 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
         {
             throw new NotImplementedException();
         }
+               
 
-        public override void RequestCreateTextBox(string msg, int PositionX, int PositionY)
+        public override void RequestCreateTextBox(string msg, int PositionX, int PositionY, bool HasError = false)
         {
             throw new NotImplementedException();
         }
