@@ -346,12 +346,14 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
             string filename = string.Empty;
             string file = string.Empty;
             DirectoryInfo dir = new DirectoryInfo(path);
+            Debug.WriteLine($"{DateTime.Now} - " + $"El path es: {path}");
             var files = dir.GetFiles().OrderByDescending(f => f.LastWriteTime).ToList();
 
 
             if (files.Count > 0)
             {
                 filename = files.First().FullName;
+                Debug.WriteLine($"{DateTime.Now} - " + $"El nombre posible del archivo es: {filename}");
                 file = Path.GetFileNameWithoutExtension(filename);
                 int numfiles = files.Count(x => x.Name.Contains(file));
 

@@ -192,6 +192,8 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
             sensorsIO.startRead();
             _cancellationTokenSource = new CancellationTokenSource();
             sessionApp.areImagePASSProcessFinished = false;
+            sessionApp.images = new List<string>();
+
             isFISEneable = sessionApp.settings.FirstOrDefault(x => x.setting.Contains("EneableFIS")).valueSetting == "1";
 
             if (!sensorsIO.PalletInStopper())
