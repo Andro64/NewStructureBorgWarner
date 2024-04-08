@@ -19,12 +19,27 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
 
         CancellationTokenSource cancellationToken_ErgoArm;
         CommunicationErgoArm communicationErgoArm;
+        Home_ErgoArm home_ErgoArm;
 
         public ErgoArm(SessionApp _sessionApp)
         {
             sessionApp = _sessionApp;
             tcpClient = new TcpClient();
             communicationErgoArm = new CommunicationErgoArm(sessionApp);
+            home_ErgoArm = SetPositionHomeErgoArm();
+        }
+        public Home_ErgoArm SetPositionHomeErgoArm()
+        {
+            Home_ErgoArm home_ErgoArm = new Home_ErgoArm() {
+             Encoder1 = double.Parse(sessionApp.settings.FirstOrDefault(x=> x.setting.Equals("ErgoArm_HomeEncoder1")).valueSetting),
+             Encoder2 = double.Parse(sessionApp.settings.FirstOrDefault(x => x.setting.Equals("ErgoArm_HomeEncoder2")).valueSetting),
+             Tolerance = double.Parse(sessionApp.settings.FirstOrDefault(x => x.setting.Equals("ErgoArm_HomeTolerancia")).valueSetting)            
+            };
+            home_ErgoArm.Encoder1_Max = home_ErgoArm.Encoder1 + home_ErgoArm.Tolerance;
+            home_ErgoArm.Encoder1_Min = home_ErgoArm.Encoder1 - home_ErgoArm.Tolerance;
+            home_ErgoArm.Encoder2_Max = home_ErgoArm.Encoder2 + home_ErgoArm.Tolerance;
+            home_ErgoArm.Encoder2_Min = home_ErgoArm.Encoder2 - home_ErgoArm.Tolerance;
+            return home_ErgoArm;
         }
         public void Connect()
         {
@@ -58,7 +73,8 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
         }
         public bool isInHome()
         {
-            if ((sessionApp.positionErgoArm.encoder1 > 105) && (sessionApp.positionErgoArm.encoder1 < 120) && (sessionApp.positionErgoArm.encoder2 > -40) && (sessionApp.positionErgoArm.encoder2 < -30))
+            //if ((sessionApp.positionErgoArm.encoder1 > 105) && (sessionApp.positionErgoArm.encoder1 < 120) && (sessionApp.positionErgoArm.encoder2 > -40) && (sessionApp.positionErgoArm.encoder2 < -30))
+            if ((sessionApp.positionErgoArm.encoder1 > home_ErgoArm.Encoder1_Min) && (sessionApp.positionErgoArm.encoder1 < home_ErgoArm.Encoder1_Max) && (sessionApp.positionErgoArm.encoder2 > home_ErgoArm.Encoder2_Min) && (sessionApp.positionErgoArm.encoder2 < home_ErgoArm.Encoder2_Max))
             {
                 return true;
             }

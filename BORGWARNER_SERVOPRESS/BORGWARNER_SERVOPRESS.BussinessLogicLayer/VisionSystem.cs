@@ -110,6 +110,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
                 Thread.Sleep(1000);
                 result = TCPcamara.Leer();
                 readingTime = DateTime.Now;
+                Debug.WriteLine($"{DateTime.Now} - " + $"El tiempo cuando tome la foto readingTime: {readingTime}");
                 return ValidateResponse(result);
             }
             catch (Exception ex)
@@ -306,7 +307,9 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
 
                 FileInfo fileInfo = new FileInfo(filename);
                 TimeSpan OneMinute = TimeSpan.FromMinutes(1);
-                TimeSpan createdSpamFile = readingTime - fileInfo.CreationTime;
+                TimeSpan createdSpamFile = fileInfo.CreationTime == fileInfo.LastWriteTime ? readingTime - fileInfo.CreationTime : readingTime - fileInfo.LastWriteTime;
+                Debug.WriteLine($"{DateTime.Now} - " + $"El tiempo readingTime: {readingTime}");
+                Debug.WriteLine($"{DateTime.Now} - " + $"El tiempo fileInfo.CreationTime: {fileInfo.CreationTime}");
                 if (createdSpamFile > OneMinute) //Para revisar que el archivo sea el creado por la camara y no un respaldo
                 {
                     bitmapImage.BeginInit();
@@ -359,7 +362,11 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
 
                 FileInfo fileInfo = new FileInfo(filename);
                 TimeSpan OneMinute = TimeSpan.FromMinutes(1);
-                TimeSpan createdSpamFile = readingTime - fileInfo.CreationTime;
+                
+                TimeSpan createdSpamFile = fileInfo.CreationTime == fileInfo.LastWriteTime ? readingTime - fileInfo.CreationTime : readingTime - fileInfo.LastWriteTime;
+                
+                Debug.WriteLine($"{DateTime.Now} - " + $"El tiempo readingTime: {readingTime}");
+                Debug.WriteLine($"{DateTime.Now} - " + $"El tiempo fileInfo.CreationTime: {fileInfo.CreationTime}");
                 if (createdSpamFile > OneMinute) //Para revisar que el archivo sea el creado por la camara y no un respaldo
                 {                    
                     Debug.WriteLine($"{DateTime.Now} - " + $"El tiempo entre la toma de la imagen y la lectura es mayor a un minuto: {createdSpamFile}");
