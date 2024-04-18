@@ -55,13 +55,13 @@ namespace BORGWARNER_SERVOPRESS.UI
             sessionApp.user = new User();
 
             //Inicial la ventana Login
-            //LoginWindow _loginWindow = new LoginWindow(sessionApp);
-            //_loginWindow.Show();
+            LoginWindow _loginWindow = new LoginWindow(sessionApp);
+            _loginWindow.Show();
 
             //Inicial la ventana Main
-            ManualWindow mainWindow = new ManualWindow(sessionApp);
-            mainWindow.Title = "BORGWARNER SERVOPRENSA";
-            mainWindow.Show();
+            //ManualWindow mainWindow = new ManualWindow(sessionApp);
+            //mainWindow.Title = "BORGWARNER SERVOPRENSA";
+            //mainWindow.Show();
 
 
             //FISWindow fisWindow = new FISWindow(sessionApp);

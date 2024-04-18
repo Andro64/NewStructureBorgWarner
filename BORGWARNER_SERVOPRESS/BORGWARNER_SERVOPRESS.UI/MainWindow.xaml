@@ -168,7 +168,7 @@
                                 <ColumnDefinition />
                             </Grid.ColumnDefinitions>
                             <Button  x:Name="startCycle_btn" Click="StartCycle_btn_Click" Style="{StaticResource BaseButton}" Content="Iniciar" Grid.Column="0"/>
-                            <Button x:Name="stopCycle_btn" Click="StopCycle_btn_Click" Style="{StaticResource BaseButton}" Content="Finalizar"  Grid.Column="1" Margin="10.4,0,-9.8,0.4"/>
+                            <Button x:Name="stopCycle_btn" Click="StopCycle_btn_Click" Style="{StaticResource BaseButton}" Content="Finalizar"  Grid.Column="1" Margin="10.4,0,-9.8,0.4" RenderTransformOrigin="0.502,0.5"/>
                         </Grid>
 
 
@@ -178,10 +178,10 @@
                                  Text="{Binding Seconds, StringFormat=N2}"                                 
                                  VerticalAlignment="Top" Grid.Column="4" Margin="97,16,0,0" Width="102" HorizontalAlignment="Left" Grid.Row="0"/>
                         
-                        <Label Content="trigger Scan2" Visibility="Hidden"  Grid.Row="0" Grid.Column="6"/>
-                        <TextBox  Text="{Binding trigerScan}" Visibility="Hidden" Grid.Row="0" Grid.Column="6" Margin="105,0,0,0" />
-                        <Label Content="Prestoper"  Grid.Row="0" Visibility="Hidden" Grid.Column="8"/>
-                        <TextBox Text="{Binding prestoper}" Grid.Row="0" Visibility="Hidden" Grid.Column="8" Margin="10,0,0,0"/>
+                        <Label Content="trigger Scan2" Visibility="Visible"  Grid.Row="0" Grid.Column="6"/>
+                        <TextBox  Text="{Binding trigerScan}" Visibility="Visible" Grid.Row="0" Grid.Column="6" Margin="105,0,0,0" />
+                        <Label Content="Prestoper"  Grid.Row="0" Visibility="Visible" Grid.Column="8"/>
+                        <TextBox Text="{Binding prestoper}" Grid.Row="0" Visibility="Visible" Grid.Column="8" Margin="10,0,0,0"/>
                         
                         <Button x:Name="Screw_Scrap" Click="Screw_Scrap_Click" Visibility="Hidden" Style="{StaticResource BaseButton}" Content="Tornillo descartado" VerticalAlignment="Top" Grid.Column="5" Grid.ColumnSpan="3" Margin="19.6,39,19.6,0" Grid.RowSpan="2"/>
 

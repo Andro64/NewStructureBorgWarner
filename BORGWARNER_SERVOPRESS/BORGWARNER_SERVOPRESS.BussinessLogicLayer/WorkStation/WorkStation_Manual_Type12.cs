@@ -188,6 +188,13 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
             string resultFIS;
             int quantityScrews;
 
+            isCancellationRequested = false;
+            if (sensorsIO != null)
+            {
+                sensorsIO.StopWaiting();
+                sensorsIO.endRead();
+            }
+
             sensorsIO = new SensorsIO(sessionApp);
             sensorsIO.startRead();
             _cancellationTokenSource = new CancellationTokenSource();
@@ -196,11 +203,11 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
 
             isFISEneable = sessionApp.settings.FirstOrDefault(x => x.setting.Contains("EneableFIS")).valueSetting == "1";
 
-            if (!sensorsIO.PalletInStopper())
-            {
-                await showMessageAndImage("A la espera del producto en prestoper.", "Housing.png");
-                await sensorsIO.UnsecurePallet(_cancellationTokenSource);
-            }
+            //if (!sensorsIO.PalletInStopper())
+            //{
+            //    await showMessageAndImage("A la espera del producto en prestoper.", "Housing.png");
+            //    await sensorsIO.UnsecurePallet(_cancellationTokenSource);
+            //}
 
             await showMessageAndImage("A la espera del producto.", "Housing.png");
             await CheckSensorAndWait(() => sensorsIO.PalletInStopper(), "Esperamos pallet en Pre-Stopper");
@@ -274,6 +281,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
                     await showMessageAndImage("Inspección completada...");
                     Thread.Sleep(300);
 
+                    await showMessageAndImage("Por favor,remueva el HVDC COVER.", "ScannerHVDCCover.jpg");
                     await CheckSensorAndWait(() => sensorsIO.isOutPieceHDVC(), "Esperando que quiten la pieza HVDC cover.");
                     await showMessageAndImage("Por favor, tome cable arnés y colóquelo frente al escaner.", "ScannerHarness.jpg");
                     await CheckSensorAndWait(() => sensorsIO.isTriggerScanner(), "Esperamos que el operador coloque el arnés en el scaner.");
@@ -334,7 +342,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
                                             await showMessageAndImage("Los 3 intentos han fallado.", resultImageVisionSystem, true);
                                             Thread.Sleep(3000);
                                             Debug.WriteLine($"{DateTime.Now} - " + "Los 3 intentos han fallado.");
-                                            endOfProcess();
+                                            FinshProcessByErrors();
                                             return;
                                         }
                                     }
@@ -384,7 +392,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
                                             await showMessageAndImage("Los 3 intentos han fallado.", resultImageVisionSystem, true);
                                             Thread.Sleep(3000);
                                             Debug.WriteLine($"{DateTime.Now} - " + "Los 3 intentos han fallado.");
-                                            endOfProcess();
+                                            FinshProcessByErrors();
                                             return;
                                         }
                                     }
@@ -434,7 +442,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
                                             await showMessageAndImage("Los 3 intentos han fallado.", resultImageVisionSystem, true);
                                             Thread.Sleep(3000);
                                             Debug.WriteLine($"{DateTime.Now} - " + "Los 3 intentos han fallado.");
-                                            endOfProcess();
+                                            FinshProcessByErrors();
                                             return;
                                         }
                                     }
@@ -569,7 +577,35 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
                                                                     await showMessageAndImage($"Los 3 intentos de atornillado han fallado.");
                                                                     Debug.WriteLine($"{DateTime.Now} - " + "Los 3 intentos de atornillado han fallado.");
                                                                     ergoArm.endReadPostion();
-                                                                    endOfProcess();
+
+                                                                    //RequestRemoveTextBox();
+                                                                    //await showMessageAndImage("Retrayendo el candado.", "MGPM25-10Z.png");
+                                                                    //sensorsIO.RetractPalletClamp();
+                                                                    //await CheckSensorAndWaitByTime(() => sensorsIO.isRetractedClamp(), "Esperamos CLAMP DE PALLET Retraido por 5 segundos.", 5000);
+                                                                    //if (!sessionApp.TaksRunExecuting)
+                                                                    //{
+                                                                    //    isCancellationRequested = true;
+                                                                    //    await showMessageAndImage("El candado no se replegó correctamente. Por favor, reinicie y verifique.");
+                                                                    //}
+                                                                    //else
+                                                                    //{
+                                                                    //    await showMessageAndImage("El candado se replegó correctamente.", "MGPM25-10Z.png");
+                                                                    //    Thread.Sleep(1000);
+                                                                    //    await showMessageAndImage("Esperando la estación 13.");
+                                                                    //    await CheckSensorAndWait(() => sensorsIO.ST13Available(), "Esperamos la estación 13.");
+                                                                    //    if (isCancellationRequested) { return; };
+
+                                                                    //    await showMessageAndImage("Por favor, retire el pallet de la estación.");
+                                                                    //    sensorsIO.StopCylinder();
+                                                                    //    await CheckSensorAndWait(() => sensorsIO.PalletOutStopper(), "Esperamos la estación 13.");
+                                                                    //    if (isCancellationRequested) { return; };
+                                                                    //    await showMessageAndImage("Pallet Retirado.");
+                                                                    //    Thread.Sleep(1000);
+                                                                    //    await showMessageAndImage("¡El ciclo ha concluido exitosamente!");
+                                                                    //}
+                                                                    //endOfProcess();
+                                                                    FinshProcessByErrors();
+                                                                    break;
                                                                 }
                                                             }
                                                         }
@@ -706,6 +742,36 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
             await showMessageAndImage("Por favor, posicione la máscara sobre el housing.", @"D:\Repo3\BORGWARNER_SERVOPRESS\BORGWARNER_SERVOPRESS.UI\Resources\Operational_Images\WSAT1\HousingWithMask.png",true);
         }
         */
+        public async void FinshProcessByErrors()
+        {
+            RequestRemoveTextBox();
+            await showMessageAndImage("Retrayendo el candado.", "MGPM25-10Z.png");
+            sensorsIO.RetractPalletClamp();
+            await CheckSensorAndWaitByTime(() => sensorsIO.isRetractedClamp(), "Esperamos CLAMP DE PALLET Retraido por 5 segundos.", 5000);
+            if (!sessionApp.TaksRunExecuting)
+            {
+                isCancellationRequested = true;
+                await showMessageAndImage("El candado no se replegó correctamente. Por favor, reinicie y verifique.");
+            }
+            else
+            {
+                await showMessageAndImage("El candado se replegó correctamente.", "MGPM25-10Z.png");
+                Thread.Sleep(1000);
+                await showMessageAndImage("Esperando la estación 13.");
+                await CheckSensorAndWait(() => sensorsIO.ST13Available(), "Esperamos la estación 13.");
+                if (isCancellationRequested) { return; };
+
+                await showMessageAndImage("Por favor, retire el pallet de la estación.");
+                sensorsIO.StopCylinder();
+                await CheckSensorAndWait(() => sensorsIO.PalletOutStopper(), "Esperamos la estación 13.");
+                if (isCancellationRequested) { return; };
+                await showMessageAndImage("Pallet Retirado.");
+                Thread.Sleep(1000);
+                await showMessageAndImage("¡El ciclo ha concluido exitosamente!");
+            }
+            endOfProcess();
+        }
+
         public void RewriteResultsOfTightening(List<Screw> lstScrewsToProcess)
         {
             RequestRemoveTextBox();

@@ -50,8 +50,8 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.Views
                 {
                     if (File.Exists(sessionApp.ImageOfProcess))
                     {
-                        if (namefileLast != sessionApp.ImageOfProcess)
-                        {
+                        //if (namefileLast != sessionApp.ImageOfProcess)
+                        //{
                             if (sessionApp.ImageOfProcess.Contains(".svg"))
                             {
                                 if (!isFileInUse(sessionApp.ImageOfProcess))
@@ -68,7 +68,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.Views
                                 }
                                 namefileLast = sessionApp.ImageOfProcess;
                             }
-                        }
+                        //}
                     }
                     if(sessionApp.OnlyMessageOfProcess)
                     {
