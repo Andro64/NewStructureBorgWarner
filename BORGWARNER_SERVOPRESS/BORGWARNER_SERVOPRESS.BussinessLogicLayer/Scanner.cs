@@ -110,6 +110,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
             {
                 while (serial == string.Empty)
                 {
+                    _cancellationTokenSource.Token.ThrowIfCancellationRequested();
                     await Task.Delay(1000);
                     serial = scanner.ExecCommand(command);
                 }

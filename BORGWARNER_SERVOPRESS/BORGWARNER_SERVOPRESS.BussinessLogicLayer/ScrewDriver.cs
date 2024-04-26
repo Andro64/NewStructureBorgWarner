@@ -92,12 +92,13 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
             while (!screw.tighteningprocess.result && !timeoutReached)
             {
                 try
-                {                    
-                    
+                {
+
                     //Debug.WriteLine($"Esperando atornillado.");
-//#if DEBUG
-//                    string response = "02310061001 0000    010000020003STLA_AUTO_L1S12          04                         050006001070000080000090100111120002501300031014000280150000241600000170039618000001900000202024-03-19:18:44:02212024-01-13:20:58:28222230000001525";
-//#else
+                    //#if DEBUG
+                    //                    string response = "02310061001 0000    010000020003STLA_AUTO_L1S12          04                         050006001070000080000090100111120002501300031014000280150000241600000170039618000001900000202024-03-19:18:44:02212024-01-13:20:58:28222230000001525";
+                    //#else
+                    _cancellationTokenSource.Token.ThrowIfCancellationRequested();
                     string response = await communicationScrewDriver.ResponseScrewDriverAsync(connection);
 //#endif
 

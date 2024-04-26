@@ -267,7 +267,8 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
 
                 await showMessageAndImage("Escaneando código QR del HVDC Cover.");
                 Scanner scanner2 = new Scanner(sessionApp, eTypeConnection.Scan_2);
-                serial = scanner2.ScanQR("LON");
+                //serial = scanner2.ScanQR("LON");
+                serial = await scanner2.ScanningTrigger(_cancellationTokenSource, "LON");
                 sessionApp.QR.HVDC_BUSBAR = serial.Substring(0, (serial.Length - 1));
                 scanner2.DisconnectScanner();
                 if (isCancellationRequested) { return; };
@@ -290,7 +291,8 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
 
                     await showMessageAndImage("Leyendo QR arnés.", "ScannerHarness.jpg");
                     Scanner scanner3 = new Scanner(sessionApp, eTypeConnection.Scan_2);
-                    serial = scanner3.ScanQR("LON");
+                    //serial = scanner3.ScanQR("LON");
+                    serial = await scanner3.ScanningTrigger(_cancellationTokenSource, "LON");
                     sessionApp.QR.HARNESS = serial.Substring(0, (serial.Length - 1));
                     scanner3.DisconnectScanner();
                     if (isCancellationRequested) { return; };
@@ -643,7 +645,8 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
 
                             await showMessageAndImage("Escaneando código QR de la cubierta superior.");
                             Scanner scanner4 = new Scanner(sessionApp, eTypeConnection.Scan_2);
-                            serial = scanner4.ScanQR("LON");
+                            //serial = scanner4.ScanQR("LON");
+                            serial = await scanner4.ScanningTrigger(_cancellationTokenSource, "LON");
                             if (isCancellationRequested) { return; };
                             sessionApp.QR.TOP_COVER = serial.Substring(0, (serial.Length - 1));
                             scanner4.DisconnectScanner();
