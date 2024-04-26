@@ -240,7 +240,8 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
 
             await showMessageAndImage("Escaneando código QR del Housing.");
             Scanner scanner = new Scanner(sessionApp, eTypeConnection.Scan_1);
-            serial = scanner.ScanQR("LON");
+            //serial = scanner.ScanQR("LON");
+            serial = await scanner.ScanningTrigger(_cancellationTokenSource, "LON");
             sessionApp.QR.HOUSING = serial.Substring(0, (serial.Length - 1));
             if (isCancellationRequested) { return; };
             if (serial == "ERROR" || serial == string.Empty)

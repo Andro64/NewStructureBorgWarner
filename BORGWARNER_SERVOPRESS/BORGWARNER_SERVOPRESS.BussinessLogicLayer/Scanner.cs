@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
 {
@@ -100,6 +101,26 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
             DisconnectScanner();
             return serial;
             
+        }
+        public async Task<string> ScanningTrigger(CancellationTokenSource _cancellationTokenSource, string command)
+        {
+            string serial = string.Empty;
+            Connect();
+            if (scanner.LastErrorInfo.Equals(ErrorCode.None))
+            {
+                while (serial == string.Empty)
+                {
+                    await Task.Delay(1000);
+                    serial = scanner.ExecCommand(command);
+                }
+            }
+            else
+            {
+                Debug.WriteLine("Error: " + scanner.LastErrorInfo);
+            }
+            DisconnectScanner();
+            return serial;
+
         }
 
     }
