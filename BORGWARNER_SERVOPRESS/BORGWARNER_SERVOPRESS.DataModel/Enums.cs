@@ -6,6 +6,13 @@ using System.Threading.Tasks;
 
 namespace BORGWARNER_SERVOPRESS.DataModel
 {
+    public enum eTypePrograms
+    {
+        screwing,
+        rescrewing,
+        unscrewing,
+        simulated
+    }
     public enum eTypeConnection
     {
         Main = 1,
@@ -14,8 +21,9 @@ namespace BORGWARNER_SERVOPRESS.DataModel
         Emergency = 4,
         Scan_1 = 5,
         Scan_2 = 6,
-        CognexD900 = 7,
-        CognexD2800 = 8
+        Camara_1 = 7,
+        Camara_2 = 8,
+        Camara_3 = 9
 
     }
     public enum eTypeDevices
@@ -31,5 +39,25 @@ namespace BORGWARNER_SERVOPRESS.DataModel
     {
         public eTypeConnection e_TypeConnection { get; set; }
         public eTypeDevices e_TypeDevices { get; set; }        
+    }
+
+    public enum eMessageBoxResult
+    {
+        OK,
+        Cancel
+    }
+
+    public enum eMessageBoxIcon
+    {
+        None,
+        Information,
+        Question,
+        Warning,
+        Error
+    }
+    public enum eTypeSendToFIS
+    {
+        BREQ,
+        BCMP
     }
 }

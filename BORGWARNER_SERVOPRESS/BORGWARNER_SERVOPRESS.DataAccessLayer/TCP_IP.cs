@@ -57,14 +57,14 @@ namespace BORGWARNER_SERVOPRESS.DataAccessLayer
                     }
                     catch (SocketException ex)
                     {
-                        Debug.WriteLine("Error en TCP_IP function Conectar: " + ex.Message, "Error TCP_IP");
+                        Debug.WriteLine($"{DateTime.Now} - "  + "Error en TCP_IP function Conectar: " + ex.Message, "Error TCP_IP");
                         conectado = false;
                         throw;
                     }
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine("Error en TCP_IP function Conectar: " + ex.Message, "Error TCP_IP");
+                    Debug.WriteLine($"{DateTime.Now} - "  + "Error en TCP_IP function Conectar: " + ex.Message, "Error TCP_IP");
                     conectado = false;
                     throw;
                 }
@@ -102,7 +102,7 @@ namespace BORGWARNER_SERVOPRESS.DataAccessLayer
                             }
                             catch (Exception exc)
                             {
-                                Debug.WriteLine("Error en TCP_IP function EnviarComando: " + exc.Message, "Error TCP_IP");
+                                Debug.WriteLine($"{DateTime.Now} - "  + "Error en TCP_IP function EnviarComando: " + exc.Message, "Error TCP_IP");
                                 throw;
                             }
 
@@ -187,7 +187,7 @@ namespace BORGWARNER_SERVOPRESS.DataAccessLayer
                             }
                             catch (Exception exc)
                             {
-                               Debug.WriteLine("Error en TCP_IP function EnviarComandoSinRespuesta: " + exc.Message, "Error TCP_IP");
+                               Debug.WriteLine($"{DateTime.Now} - "  + "Error en TCP_IP function EnviarComandoSinRespuesta: " + exc.Message, "Error TCP_IP");
                                throw;
                             }
                         }
@@ -304,13 +304,13 @@ namespace BORGWARNER_SERVOPRESS.DataAccessLayer
             {
                 try
                 {
-                    clientSocketInstance.commandSocket.Close();
                     clientSocketInstance.commandSocket.Disconnect(true);
+                    clientSocketInstance.commandSocket.Close();                    
                     clientSocketInstance.commandSocket = null;
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine("Error en TCP_IP function Desconectar: " + ex.Message, "Error TCP_IP");
+                    Debug.WriteLine($"{DateTime.Now} - "  + "Error en TCP_IP function Desconectar: " + ex.Message, "Error TCP_IP");
                     throw;
                 }
 

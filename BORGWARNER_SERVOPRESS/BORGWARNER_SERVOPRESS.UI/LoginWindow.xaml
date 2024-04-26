@@ -53,9 +53,9 @@
             <Image HorizontalAlignment="Left" VerticalAlignment="Bottom" Width="375" Source="/Resources/Images/BorgWarner Dark.png" Grid.Row="0" Grid.ColumnSpan="3" Margin="59,0,0,0" Grid.RowSpan="2"/>
             <Label Style="{StaticResource Font_Regular}" Foreground="#FF0E8086" Content="Inicia sesión con tu cuenta para continuar..." HorizontalContentAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Bottom" Grid.Row="2" Width="294" Grid.Column="1" />
             <Label Style="{StaticResource Font_Bold}" Content="Usuario" HorizontalAlignment="Left" VerticalAlignment="Bottom" Grid.Column="1" Grid.Row="3" />
-            <TextBox x:Name="username_field" Style="{StaticResource BaseTextBox}" VerticalContentAlignment="Center" Height="25" Grid.Column="1" Grid.Row="4" Margin="0,12" />
+            <TextBox Text="Reader" x:Name="username_field" Style="{StaticResource BaseTextBox}" VerticalContentAlignment="Center" Height="25" Grid.Column="1" Grid.Row="4" Margin="0,12" />
             <Label Style="{StaticResource Font_Bold}" Content="Contraseña" HorizontalAlignment="Left" VerticalAlignment="Bottom" Grid.Column="1" Grid.Row="5" />
-            <PasswordBox x:Name="password_field" Style="{StaticResource PasswordBoxStyle}" VerticalContentAlignment="Center" Height="25" Grid.Column="1" Grid.Row="6" Margin="0,11" />
+            <PasswordBox Password="56789"  x:Name="password_field" Style="{StaticResource PasswordBoxStyle}" VerticalContentAlignment="Center" Height="25" Grid.Column="1" Grid.Row="6" Margin="0,11" />
             <Button x:Name="login_btn" Style="{StaticResource MainButton}" Content="Iniciar sesión" VerticalAlignment="Top" Grid.Column="1" Grid.Row="8" Height="30" Click="btnLogin_Click"/>
         </Grid>
     </Grid>

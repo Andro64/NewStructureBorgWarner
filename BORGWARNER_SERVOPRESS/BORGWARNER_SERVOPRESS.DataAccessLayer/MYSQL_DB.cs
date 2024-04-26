@@ -34,7 +34,7 @@ namespace BORGWARNER_SERVOPRESS.DataAccessLayer
                     }
                     catch (Exception ex)
                     {
-                        Debug.WriteLine(ex.Message);
+                        Debug.WriteLine($"{DateTime.Now} - "  + ex.Message);
                         throw;
                     }
                     finally
@@ -46,7 +46,7 @@ namespace BORGWARNER_SERVOPRESS.DataAccessLayer
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex.Message);
+                Debug.WriteLine($"{DateTime.Now} - "  + ex.Message);
                 throw;
             }
         }
@@ -69,7 +69,7 @@ namespace BORGWARNER_SERVOPRESS.DataAccessLayer
                     }
                     catch (Exception ex)
                     {
-                        Debug.WriteLine(ex.Message);
+                        Debug.WriteLine($"{DateTime.Now} - "  + ex.Message);
                         throw;
                     }
                     finally
@@ -81,7 +81,7 @@ namespace BORGWARNER_SERVOPRESS.DataAccessLayer
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex.Message);
+                Debug.WriteLine($"{DateTime.Now} - "  + ex.Message);
                 throw;
             }
 
@@ -110,7 +110,7 @@ namespace BORGWARNER_SERVOPRESS.DataAccessLayer
                     }
                     catch(MySqlException ex)
                     {
-                        Debug.WriteLine(ex.Message);
+                        Debug.WriteLine($"{DateTime.Now} - "  + ex.Message);
                         throw;
                     }
                     finally
@@ -121,10 +121,46 @@ namespace BORGWARNER_SERVOPRESS.DataAccessLayer
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex.Message);
+                Debug.WriteLine($"{DateTime.Now} - "  + ex.Message);
                 throw;
             }           
             return returnv;
+        }
+
+        public void ExecuteNonQuerySP(string procedimiento, params MySqlParameter[] datos)
+        {            
+            try
+            {
+                using (MySqlConnection conn = new MySqlConnection(connStr))
+                {
+                    try
+                    {
+                        using (MySqlCommand cmd = new MySqlCommand(procedimiento, conn))
+                        {
+                            cmd.CommandType = CommandType.StoredProcedure;
+                            cmd.Parameters.AddRange(datos);                                                        
+                            conn.Open();
+                            cmd.ExecuteNonQuery();
+                            
+                        }
+                    }
+                    catch (MySqlException ex)
+                    {
+                        Debug.WriteLine($"{DateTime.Now} - "  + ex.Message);
+                        throw;
+                    }
+                    finally
+                    {
+                        conn.Close();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"{DateTime.Now} - "  + ex.Message);
+                throw;
+            }
+            
         }
         public DataTable ExecuteSP(string procedimiento, params MySqlParameter[] datos)
         {
@@ -145,7 +181,7 @@ namespace BORGWARNER_SERVOPRESS.DataAccessLayer
                     }
                     catch (MySqlException ex)
                     {
-                        Debug.WriteLine(ex.Message);
+                        Debug.WriteLine($"{DateTime.Now} - "  + ex.Message);
                         throw;
                     }
                     finally
@@ -156,7 +192,7 @@ namespace BORGWARNER_SERVOPRESS.DataAccessLayer
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex.Message);
+                Debug.WriteLine($"{DateTime.Now} - "  + ex.Message);
                 throw;
             }
             return dt;

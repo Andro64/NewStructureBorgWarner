@@ -62,9 +62,9 @@
 
             <Button x:Name="Filter_btn" Style="{StaticResource BaseButton}" Content="Filtrar" Click="Filter_btn_Click" Grid.Column="2" Grid.Row="1"/>
             <Button x:Name="Filter_reset_btn" Style="{StaticResource BaseButton}" Content="Limpiar" Click="Filter_reset_btn_Click" Grid.Column="6" Grid.Row="1"/>
-            <Button x:Name="view_run_btn" Style="{StaticResource BaseButton}" Content="Ver" Click="view_run_btn_Click" Grid.Column="4" Grid.Row="1"/>
-            <Button x:Name="delete_run_btn" Style="{StaticResource BaseButton}" Content="Eliminar" Click="delete_run_btn_Click" Grid.Column="5" Grid.Row="1"/>
-            <Button x:Name="close_run_btn" Style="{StaticResource BaseButton}" Visibility="Hidden" Content="Close" Click="close_run_btn_Click"/>
+            <Button x:Name="view_mn_btn_run" Style="{StaticResource BaseButton}" Content="Ver" Click="view_mn_btn_run_Click" Grid.Column="4" Grid.Row="1"/>
+            <Button x:Name="delete_mn_btn_run" Style="{StaticResource BaseButton}" Content="Eliminar" Click="delete_mn_btn_run_Click" Grid.Column="5" Grid.Row="1"/>
+            <Button x:Name="close_mn_btn_run" Style="{StaticResource BaseButton}" Visibility="Hidden" Content="Close" Click="close_mn_btn_run_Click"/>
         </Grid>
     </Grid>
 </Page>
