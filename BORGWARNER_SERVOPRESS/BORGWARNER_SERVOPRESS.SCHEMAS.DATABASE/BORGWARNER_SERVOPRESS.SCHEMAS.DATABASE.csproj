@@ -53,6 +53,7 @@
     <Content Include="models_screw\models_screw.sql" />
     <Content Include="runs\runs.sql" />
     <Content Include="screws\screws.sql" />
+    <Content Include="ScriptsDataBase\Dump_bwdatabase_ST12_20240430.sql" />
     <Content Include="settings\settings.sql" />
     <Content Include="type_connection\type_connection.sql" />
     <Content Include="type_device\type_device.sql" />
