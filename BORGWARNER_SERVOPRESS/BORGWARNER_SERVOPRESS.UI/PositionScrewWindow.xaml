@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:BORGWARNER_SERVOPRESS.UI"
         xmlns:localPages="clr-namespace:BORGWARNER_SERVOPRESS.UI.Pages"
         mc:Ignorable="d"
-        Title="PositionScrewWindow" WindowStartupLocation="Manual" WindowState="Maximized" WindowStyle="None" Height="720" Width="1280" Icon="Resources/Images/BW.png" Loaded="Window_Loaded">
+        Title="PositionScrewWindow" WindowStartupLocation="Manual" WindowState="Maximized" WindowStyle="None" Height="720" Width="1280" Icon="Resources/Images/BW.png" Loaded="Window_Loaded" Closing="Window_Closing">
     <Window.Background>
         <ImageBrush ImageSource="/Resources/Images/technologies-new.jpg" Stretch="UniformToFill" />
     </Window.Background>
@@ -152,12 +152,14 @@
                          HorizontalAlignment="Left" Height="23" Margin="908,146,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="176"/>
                 <Label x:Name="lblEncoder" Content="Codificador 1:" HorizontalAlignment="Left" Margin="780,183,0,0" VerticalAlignment="Top"/>
                 <TextBox x:Name="txtEncoder1" 
+                         IsReadOnly="True"
                          PreviewTextInput="TextBox_PreviewTextInput"
                          Text="{Binding RegisterSelected.encoder1, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged,  StringFormat={}{0:0.000000}}"                          
                          Style="{StaticResource BaseTextBox}" 
                          HorizontalAlignment="Left" Height="23" Margin="908,183,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="176"/>
                 <Label x:Name="lblEncoder2" Content="Codificador 2:" HorizontalAlignment="Left" Margin="780,221,0,0" VerticalAlignment="Top"/>
                 <TextBox x:Name="txtEncoder2" 
+                         IsReadOnly="True"
                          PreviewTextInput="TextBox_PreviewTextInput"
                          Text="{Binding RegisterSelected.encoder2, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged , StringFormat={}{0:0.000000}}" 
                          Style="{StaticResource BaseTextBox}" 
@@ -168,18 +170,30 @@
                          Text="{Binding RegisterSelected.tolerance, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
                          Style="{StaticResource BaseTextBox}" 
                          HorizontalAlignment="Left" Height="23" Margin="908,259,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="176"/>
-                <Label x:Name="lblModelScrew" Content="Modelo de tornillo:" HorizontalAlignment="Left" Margin="780,299,0,0" VerticalAlignment="Top"/>
+                <Label x:Name="lblTextPositionX" Content="Posición Text X:" HorizontalAlignment="Left" Margin="780,294,0,0" VerticalAlignment="Top"/>
+                <TextBox x:Name="txtTextPositionX" 
+                         PreviewTextInput="TextBox_PreviewTextInput"
+                         Text="{Binding RegisterSelected.text_position_X, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                         Style="{StaticResource BaseTextBox}" 
+                         HorizontalAlignment="Left" Height="23" Margin="908,293,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="176"/>
+                <Label x:Name="lblTextPositionY" Content="Posición Text Y:" HorizontalAlignment="Left" Margin="780,332,0,0" VerticalAlignment="Top"/>
+                <TextBox x:Name="txtTextPositionY" 
+                         PreviewTextInput="TextBox_PreviewTextInput"
+                         Text="{Binding RegisterSelected.text_position_Y, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                         Style="{StaticResource BaseTextBox}" 
+                         HorizontalAlignment="Left" Height="23" Margin="908,331,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="176"/>
+                <Label x:Name="lblModelScrew" Content="Modelo de tornillo:" HorizontalAlignment="Left" Margin="780,371,0,0" VerticalAlignment="Top"/>
                 <!--<TextBox x:Name="txtModelScrew" 
                          Text="{Binding RegisterSelected.quantity_screws, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
                          Style="{StaticResource BaseTextBox}" 
                          HorizontalAlignment="Left" Height="23" Margin="908,377,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="176"/>-->
                 <Button x:Name="btnToSave" 
                         Command="{Binding SaveCommand}" Content="Guardar cambios" 
-                        Style="{StaticResource BaseButton}" HorizontalAlignment="Left" Height="31" Margin="780,340,0,0" VerticalAlignment="Top" Width="304"/>
+                        Style="{StaticResource BaseButton}" HorizontalAlignment="Left" Height="31" Margin="780,412,0,0" VerticalAlignment="Top" Width="304" Grid.RowSpan="2"/>
                 <Button x:Name="btnToCancel" 
                         Command="{Binding CreateCommand}" Content="Cancelar" 
                         Style="{StaticResource BaseButton}" 
-                        HorizontalAlignment="Left" Height="31" Margin="780,385,0,0" VerticalAlignment="Top" Width="304" Click="btnToCancel_Click"/>
+                        HorizontalAlignment="Left" Height="31" Margin="780,23,0,0" VerticalAlignment="Top" Width="304" Click="btnToCancel_Click" Grid.Row="1"/>
                 <Label Content="Registra una nueva posición del tornillo" HorizontalAlignment="Left" Margin="780,60,0,0" VerticalAlignment="Top" FontSize="18"/>
                 <Button x:Name="btnToClean" 
                         Command="{Binding CreateCommand}" Content="Limpiar"  
@@ -208,7 +222,7 @@
                           SelectedValue="{Binding RegisterSelected.id_model_screw}"
                           SelectedItem="{Binding ModelScrewSelected}"                           
                           Style="{StaticResource BaseComboBox}" 
-                          HorizontalAlignment="Left" Margin="908,299,0,0" VerticalAlignment="Top" Width="176"  Height="23"/>
+                          HorizontalAlignment="Left" Margin="908,371,0,0" VerticalAlignment="Top" Width="176"  Height="23"/>
 
             </Grid>
         </Grid>

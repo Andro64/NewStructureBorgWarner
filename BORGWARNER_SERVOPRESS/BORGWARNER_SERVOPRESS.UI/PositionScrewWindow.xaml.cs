@@ -167,5 +167,10 @@ namespace BORGWARNER_SERVOPRESS.UI
 
             isPressed_ErgoArm = !isPressed_ErgoArm; // Invierte el estado del botón
         }
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            tryDevices.FinishTestErgoArm();
+        }
     }
 }

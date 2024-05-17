@@ -78,9 +78,13 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
         {
             ioCard_Type_M3.sendDataOutput();
         }
+        public bool PalletInPreStopper()
+        {
+            return sessionApp.Sensors_M1.Pallet_Pre_Stopper;
+        }
         public bool PalletInStopper()
         {
-            isWaiting = true;
+            //await Sequence_Stoper_PrestoperAsync(cancellationTokenSource);
             return sessionApp.Sensors_M1.Pallet_Stopper && sessionApp.Sensors_M1.SecurityOK && sessionApp.Sensors_M1.Main_Pressure;
         }
         public bool PalletOutStopper()
@@ -88,21 +92,107 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
             isWaiting = true;
             return (!sessionApp.Sensors_M1.Pallet_Stopper) && sessionApp.Sensors_M1.SecurityOK && sessionApp.Sensors_M1.Main_Pressure;
         }
+        public async Task Sequence_Stoper_PrestoperAsync(CancellationTokenSource cancellationTokenSource, bool isProcessFinished)
+        {
+            #region Escenario 1
+            if (!sessionApp.Sensors_M1.Pallet_Pre_Stopper && !sessionApp.Sensors_M1.Pallet_Stopper)
+            {
+                
+                await SecurePallet_PreStopper_By_Time(cancellationTokenSource, 500);                
+                await SecurePallet_Stopper_By_Time(cancellationTokenSource, 500);
+            }
+            if (sessionApp.Sensors_M1.Pallet_Pre_Stopper && !sessionApp.Sensors_M1.Pallet_Stopper)
+            {                
+                await UnSecurePallet_PreStopper_By_Time(cancellationTokenSource, 500);
+            }
+            if (!sessionApp.Sensors_M1.Pallet_Pre_Stopper && sessionApp.Sensors_M1.Pallet_Stopper)
+            {                
+                await SecurePallet_PreStopper_By_Time(cancellationTokenSource, 500);
+            }
+            if (sessionApp.Sensors_M1.Pallet_Pre_Stopper && sessionApp.Sensors_M1.Pallet_Stopper)
+            {                
+                await SecurePallet_PreStopper_By_Time(cancellationTokenSource, 500);                
+                await SecurePallet_Stopper_By_Time(cancellationTokenSource, 500);
+            }
+            if (isProcessFinished)
+            {                
+                await SecurePallet_PreStopper_By_Time(cancellationTokenSource, 500);                
+                await UnSecurePallet_Stopper_By_Time(cancellationTokenSource, 500);                
+                Thread.Sleep(5000);
+                await SecurePallet_Stopper_By_Time(cancellationTokenSource, 500);
+            }
+            #endregion
+        }
+        public async Task SecurePallet_PreStopper_By_Time(CancellationTokenSource cancellationTokenSource, int milliseconds)
+        {
+            sessionApp.Sensors_M2.Cyl_Pres_Stopper = false;
+            SendDataOutpusM2();
+
+            var timer = new System.Timers.Timer(milliseconds);
+            timer.Elapsed += (sender, e) =>
+            {
+                timer.Stop();
+            };
+            timer.AutoReset = false;
+            timer.Start();
+        }
+        public async Task SecurePallet_Stopper_By_Time(CancellationTokenSource cancellationTokenSource, int milliseconds)
+        {
+            sessionApp.Sensors_M2.Cyl_Stopper = false;
+            SendDataOutpusM2();
+
+            var timer = new System.Timers.Timer(milliseconds);
+            timer.Elapsed += (sender, e) =>
+            {
+                timer.Stop();
+            };
+            timer.AutoReset = false;
+            timer.Start();
+        }
+        public async Task UnSecurePallet_PreStopper_By_Time(CancellationTokenSource cancellationTokenSource, int milliseconds)
+        {
+            sessionApp.Sensors_M2.Cyl_Pres_Stopper = true;
+            SendDataOutpusM2();
+
+            var timer = new System.Timers.Timer(milliseconds);
+            timer.Elapsed += (sender, e) =>
+            {
+                timer.Stop();
+            };
+            timer.AutoReset = false;
+            timer.Start();
+        }
+        public async Task UnSecurePallet_Stopper_By_Time(CancellationTokenSource cancellationTokenSource, int milliseconds)
+        {
+            sessionApp.Sensors_M2.Cyl_Stopper = true;
+            SendDataOutpusM2();
+
+            var timer = new System.Timers.Timer(milliseconds);
+            timer.Elapsed += (sender, e) =>
+            {
+                timer.Stop();
+            };
+            timer.AutoReset = false;
+            timer.Start();
+        }
         public async Task SecurePallet(CancellationTokenSource cancellationTokenSource)
         {
-            await Task.Run(async () =>
+            if (cancellationTokenSource != null)
             {
-                if (sessionApp.Sensors_M1.Pallet_Stopper)
+                await Task.Run(async () =>
                 {
-                    sessionApp.Sensors_M2.Cyl_Pres_Stopper = false;
-                    sessionApp.Sensors_M2.Cyl_Stopper = false;
-                    SendDataOutpusM2();
-                }
-                while (!sessionApp.Sensors_M1.Pallet_Stopper && sessionApp.Sensors_M1.Main_Pressure)
-                {
-                    Thread.Sleep(50);
-                }
-            }, cancellationTokenSource.Token);
+                    if (sessionApp.Sensors_M1.Pallet_Stopper)
+                    {
+                        sessionApp.Sensors_M2.Cyl_Pres_Stopper = false;
+                        sessionApp.Sensors_M2.Cyl_Stopper = false;
+                        SendDataOutpusM2();
+                    }
+                    while (!sessionApp.Sensors_M1.Pallet_Stopper && sessionApp.Sensors_M1.Main_Pressure)
+                    {
+                        Thread.Sleep(50);
+                    }
+                }, cancellationTokenSource.Token);
+            }
         }
         public async Task UnsecurePallet(CancellationTokenSource cancellationTokenSource)
         {

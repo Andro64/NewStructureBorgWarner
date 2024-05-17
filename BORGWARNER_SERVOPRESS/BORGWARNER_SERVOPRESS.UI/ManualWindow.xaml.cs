@@ -546,5 +546,10 @@ namespace BORGWARNER_SERVOPRESS.UI
                 Debug.WriteLine($"{DateTime.Now} - Error" + ex.Message);
             }
         }
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            tryDevices.TryEndSensor();
+        }
     }
 }

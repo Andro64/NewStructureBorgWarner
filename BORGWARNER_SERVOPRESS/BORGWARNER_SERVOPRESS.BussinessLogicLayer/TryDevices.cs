@@ -100,7 +100,10 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
         }
         public void FinishTestErgoArm()
         {
-            ergoArm.endReadPostion();
+            if (ergoArm != null)
+            {
+                ergoArm.endReadPostion();
+            }
         }
 
         public VisionResult TryVisionSystem(eTypeConnection typeCamera, string serial)

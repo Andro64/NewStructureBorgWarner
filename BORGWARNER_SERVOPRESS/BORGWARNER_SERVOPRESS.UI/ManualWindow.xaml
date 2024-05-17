@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:BORGWARNER_SERVOPRESS.UI"
         xmlns:localPages="clr-namespace:BORGWARNER_SERVOPRESS.UI.Pages"
         mc:Ignorable="d"
-        Title="ManualWindow" WindowStartupLocation="Manual" WindowState="Maximized" WindowStyle="None" Height="720" Width="1280" Icon="Resources/Images/BW.png" Loaded="Window_Loaded">
+        Title="ManualWindow" WindowStartupLocation="Manual" WindowState="Maximized" WindowStyle="None" Height="720" Width="1280" Icon="Resources/Images/BW.png" Loaded="Window_Loaded" Closing="Window_Closing">
     <Window.Background>
         <ImageBrush ImageSource="/Resources/Images/technologies-new.jpg" Stretch="UniformToFill" />
     </Window.Background>

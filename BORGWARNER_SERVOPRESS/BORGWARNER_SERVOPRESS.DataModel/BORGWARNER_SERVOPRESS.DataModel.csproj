@@ -53,7 +53,7 @@
     <Compile Include="EpsonRobot.cs" />
     <Compile Include="ErgoArm.cs" />
     <Compile Include="FIS.cs" />
-    <Compile Include="Home_ErgoArm.cs" />
+    <Compile Include="DataPosition_ErgoArm.cs" />
     <Compile Include="IOCardType_A1.cs" />
     <Compile Include="IOCardType_M1.cs" />
     <Compile Include="IOCardType_M2.cs" />

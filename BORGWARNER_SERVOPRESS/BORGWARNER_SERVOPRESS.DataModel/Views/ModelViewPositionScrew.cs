@@ -15,6 +15,8 @@ namespace BORGWARNER_SERVOPRESS.DataModel.Views
         private double _encoder2;
         private double _tolerance;
         private int _id_model_screw;
+        private int _text_position_X;
+        private int _text_position_Y;
 
         public int id
         {
@@ -37,6 +39,18 @@ namespace BORGWARNER_SERVOPRESS.DataModel.Views
                 {
                     _id_screw = value;
                     OnPropertyChanged(nameof(id_screw));
+                }
+            }
+        }
+        public double encoder1
+        {
+            get { return _encoder1; }
+            set
+            {
+                if (_encoder1 != value)
+                {
+                    _encoder1 = value;
+                    OnPropertyChanged(nameof(encoder1));
                 }
             }
         }
@@ -76,18 +90,31 @@ namespace BORGWARNER_SERVOPRESS.DataModel.Views
                 }
             }
         }
-        public double encoder1
+        public int text_position_X
         {
-            get { return _encoder1; }
+            get { return _text_position_X; }
             set
             {
-                if (_encoder1 != value)
+                if (_text_position_X != value)
                 {
-                    _encoder1 = value;
-                    OnPropertyChanged(nameof(encoder1));
+                    _text_position_X = value;
+                    OnPropertyChanged(nameof(text_position_X));
                 }
             }
         }
+        public int text_position_Y
+        {
+            get { return _text_position_Y; }
+            set
+            {
+                if (_text_position_Y != value)
+                {
+                    _text_position_Y = value;
+                    OnPropertyChanged(nameof(text_position_Y));
+                }
+            }
+        }
+
 
 
         public bool IsValid()

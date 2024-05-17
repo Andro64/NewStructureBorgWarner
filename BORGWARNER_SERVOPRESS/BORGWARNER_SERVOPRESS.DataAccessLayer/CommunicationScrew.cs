@@ -187,7 +187,9 @@ namespace BORGWARNER_SERVOPRESS.DataAccessLayer
                     encoder1 = row.Field<double>("encoder1"),
                     encoder2 = row.Field<double>("encoder2"),
                     tolerance = row.Field<double>("tolerance"),
-                    id_model_screw = row.Field<int>("id_model_screw")
+                    id_model_screw = row.Field<int>("id_model_screw"),
+                    text_position_X = row.Field<int>("text_position_X"),
+                    text_position_Y = row.Field<int>("text_position_Y"),
                 }).ToList();
 
             }
@@ -211,7 +213,9 @@ namespace BORGWARNER_SERVOPRESS.DataAccessLayer
                     new MySqlParameter("p_encoder1", MySqlDbType.Double) { Value = ModelViewPositionScrew.encoder1 },
                     new MySqlParameter("p_encoder2", MySqlDbType.Double) { Value = ModelViewPositionScrew.encoder2 },
                     new MySqlParameter("p_tolerance", MySqlDbType.Double) { Value = ModelViewPositionScrew.tolerance },
-                    new MySqlParameter("p_id_model_screw", MySqlDbType.Int32) { Value = ModelViewPositionScrew.id_model_screw }
+                    new MySqlParameter("p_id_model_screw", MySqlDbType.Int32) { Value = ModelViewPositionScrew.id_model_screw },
+                    new MySqlParameter("p_text_position_X", MySqlDbType.Int32) { Value = ModelViewPositionScrew.text_position_X },
+                    new MySqlParameter("p_text_position_Y", MySqlDbType.Int32) { Value = ModelViewPositionScrew.text_position_Y }
                 });
             }
             catch (Exception ex)

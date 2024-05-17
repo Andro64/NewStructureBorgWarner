@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BORGWARNER_SERVOPRESS.DataModel
 {
-    public class Home_ErgoArm
+    public class DataPosition_ErgoArm
     {
         public double Encoder1 { get; set; }
         public double Encoder2 { get; set; }

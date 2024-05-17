@@ -177,12 +177,14 @@
                                  Style="{StaticResource BaseTextBox}" 
                                  Text="{Binding Seconds, StringFormat=N2}"                                 
                                  VerticalAlignment="Top" Grid.Column="4" Margin="97,16,0,0" Width="102" HorizontalAlignment="Left" Grid.Row="0"/>
-                        
+
                         <Label Content="trigger Scan2" Visibility="Visible"  Grid.Row="0" Grid.Column="6"/>
-                        <TextBox  Text="{Binding trigerScan}" Visibility="Visible" Grid.Row="0" Grid.Column="6" Margin="105,0,0,0" />
+                        <TextBox  Text="{Binding trigerScan}" Visibility="Visible" Grid.Row="0" Grid.Column="6" Margin="105,0,80,0" />
                         <Label Content="Prestoper"  Grid.Row="0" Visibility="Visible" Grid.Column="8"/>
-                        <TextBox Text="{Binding prestoper}" Grid.Row="0" Visibility="Visible" Grid.Column="8" Margin="10,0,0,0"/>
-                        
+                        <TextBox Text="{Binding prestoper}" Grid.Row="0" Visibility="Visible" Grid.Column="6" Grid.ColumnSpan="3" Margin="185,0,0,0"/>
+
+
+
                         <Button x:Name="Screw_Scrap" Click="Screw_Scrap_Click" Visibility="Hidden" Style="{StaticResource BaseButton}" Content="Tornillo descartado" VerticalAlignment="Top" Grid.Column="5" Grid.ColumnSpan="3" Margin="19.6,39,19.6,0" Grid.RowSpan="2"/>
 
                         <Label Content="FIS:" HorizontalAlignment="Left" VerticalAlignment="Bottom" Grid.Column="1" Grid.Row="2" Grid.ColumnSpan="2" Margin="0,0,0,38.2" Grid.RowSpan="2"/>

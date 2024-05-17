@@ -105,7 +105,9 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
         public async Task<string> ScanningTrigger(CancellationTokenSource _cancellationTokenSource, string command)
         {
             string serial = string.Empty;
+            if (_cancellationTokenSource == null) { return ""; }
             Connect();
+
             if (scanner.LastErrorInfo.Equals(ErrorCode.None))
             {
                 while (serial == string.Empty)

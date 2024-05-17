@@ -183,6 +183,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
             List<string> imagesVisionSystem = new List<string>();
             string resultImageVisionSystem;
             bool isFISEneable = false;
+            bool isVisionEneable = false;
 
             string serial;
             string resultFIS;
@@ -202,12 +203,17 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
             sessionApp.images = new List<string>();
 
             isFISEneable = sessionApp.settings.FirstOrDefault(x => x.setting.Contains("EneableFIS")).valueSetting == "1";
+            isVisionEneable = sessionApp.settings.FirstOrDefault(x => x.setting.Contains("EneableVision")).valueSetting == "1";
+
 
             //if (!sensorsIO.PalletInStopper())
             //{
             //    await showMessageAndImage("A la espera del producto en prestoper.", "Housing.png");
             //    await sensorsIO.UnsecurePallet(_cancellationTokenSource);
             //}
+
+            await sensorsIO.Sequence_Stoper_PrestoperAsync(_cancellationTokenSource, false);
+            if (isCancellationRequested) { return; };
 
             await showMessageAndImage("A la espera del producto.", "Housing.png");
             await CheckSensorAndWait(() => sensorsIO.PalletInStopper(), "Esperamos pallet en Pre-Stopper");
@@ -285,6 +291,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
 
                     await showMessageAndImage("Por favor,remueva el HVDC COVER.", "ScannerHVDCCover.jpg");
                     await CheckSensorAndWait(() => sensorsIO.isOutPieceHDVC(), "Esperando que quiten la pieza HVDC cover.");
+                    if (isCancellationRequested) { return; };
                     await showMessageAndImage("Por favor, tome cable arnés y colóquelo frente al escaner.", "ScannerHarness.jpg");
                     await CheckSensorAndWait(() => sensorsIO.isTriggerScanner(), "Esperamos que el operador coloque el arnés en el scaner.");
                     if (isCancellationRequested) { return; };
@@ -314,7 +321,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
                         Thread.Sleep(300);
 
                         visionSystem = new VisionSystem(sessionApp, eTypeConnection.Camara_1);
-                        if (!visionSystem.FirstInspectionAttempt(serial))
+                        if (isVisionEneable ? !visionSystem.FirstInspectionAttempt(serial) : false)
                         {
                             resultImageVisionSystem = visionSystem.getNameImageResultFromCamera(false);
                             visionSystem.Disconnect();
@@ -353,11 +360,20 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
                             }
                         }
 
-                        resultImageVisionSystem = visionSystem.getNameImageResultFromCamera(true);
+                        if (isVisionEneable)
+                        {
+                            resultImageVisionSystem = visionSystem.getNameImageResultFromCamera(true);
                         imagesVisionSystem.Add(resultImageVisionSystem);
                         sessionApp.images.Add(resultImageVisionSystem);
                         visionSystem.Disconnect();
                         await showMessageAndImage("La inspección número 1 ha sido exitosa.", resultImageVisionSystem, true);
+                        }
+                        else
+                        {
+                            visionSystem.Disconnect();
+                            await showMessageAndImage("La inspección número 1 ha sido exitosa.");
+                        }
+
                         Thread.Sleep(3000);
                         Debug.WriteLine($"{DateTime.Now} - " + "INSPECCION 1 DE VISION OK.");
                         if (isCancellationRequested) { return; };
@@ -366,7 +382,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
                         Thread.Sleep(300);
 
                         visionSystem = new VisionSystem(sessionApp, eTypeConnection.Camara_2);
-                        if (!visionSystem.FirstInspectionAttempt(serial))
+                        if (isVisionEneable ? !visionSystem.FirstInspectionAttempt(serial) : false)
                         {
                             resultImageVisionSystem = visionSystem.getNameImageResultFromCamera(false);
                             visionSystem.Disconnect();
@@ -402,12 +418,20 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
                                 }
                             }
                         }
-
-                        resultImageVisionSystem = visionSystem.getNameImageResultFromCamera(true);
+                        if (isVisionEneable)
+                        {
+                            resultImageVisionSystem = visionSystem.getNameImageResultFromCamera(true);
                         imagesVisionSystem.Add(resultImageVisionSystem);
                         sessionApp.images.Add(resultImageVisionSystem);
                         visionSystem.Disconnect();
                         await showMessageAndImage("La inspección número 2 ha sido exitosa.", resultImageVisionSystem, true);
+                        }
+                        else
+                        {
+                            visionSystem.Disconnect();
+                            await showMessageAndImage("La inspección número 2 ha sido exitosa.");
+                        }
+
                         Thread.Sleep(3000);
                         Debug.WriteLine($"{DateTime.Now} - " + "INSPECCION 2 DE VISION OK.");
                         if (isCancellationRequested) { return; };
@@ -416,7 +440,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
                         Thread.Sleep(300);
 
                         visionSystem = new VisionSystem(sessionApp, eTypeConnection.Camara_3);
-                        if (!visionSystem.FirstInspectionAttempt(serial))
+                        if (isVisionEneable ? !visionSystem.FirstInspectionAttempt(serial) : false)
                         {
                             resultImageVisionSystem = visionSystem.getNameImageResultFromCamera(false);
                             visionSystem.Disconnect();
@@ -453,7 +477,9 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
                             }
                         }
 
-                        resultImageVisionSystem = visionSystem.getNameImageResultFromCamera(true);
+                        if (isVisionEneable)
+                        {
+                            resultImageVisionSystem = visionSystem.getNameImageResultFromCamera(true);
                         imagesVisionSystem.Add(resultImageVisionSystem);
                         sessionApp.images.Add(resultImageVisionSystem);
                         visionSystem.Disconnect();
@@ -468,6 +494,12 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
 
                         Debug.WriteLine($"{DateTime.Now} - " + "INSPECCION 3 DE VISION OK ");
                         if (isCancellationRequested) { return; };
+                        }
+                        else
+                        {
+                            visionSystem.Disconnect();
+                            await showMessageAndImage("La inspección número 3 ha sido exitosa.");
+                        }
 
                         await showMessageAndImage("Por favor, posicione la máscara sobre el housing.", "HousingWithMask.png");
                         await CheckSensorAndWait(() => sensorsIO.MaskOnHousing(), "Esperamos maskhousing");
@@ -514,7 +546,14 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
                                             RequestRemoveTextBox();
                                             await showMessageAndImage($"El atornillado del tornillo número : {tightenincount} ha fallado. Por favor, retire el tornillo y colóquelo en desposito de tonrillos desechados.", "Scrap2.jpg");
                                             await CheckSensorAndWait(() => sensorsIO.ScrewInScrap(), "Esperamos que el operador coloque el tornillo en el scrap");
-                                            sensorsIO.ActivateVacumm_by_time(3000);
+                                            
+                                            await CheckSensorAndWait(() => ergoArm.isInVacuumNozzle(), "Esperamos ErgoArm en punta de la aspiradora");
+                                            await showMessageAndImage($"Posiciona la punta del atornillador de la aspiradora en el lugar donde ocurrió el fallo en el atornillado.", "HousingWithMask.png");
+                                            if (sessionApp.positionErgoArm.InPositionReadyToProcess)
+                                            {
+                                                sensorsIO.ActivateVacumm_by_time(3000);
+                                            }
+
                                             if (isCancellationRequested) { return; };
 
                                             RewriteResultsOfTightening(lstScrewsToProcess);
@@ -544,7 +583,12 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
                                                         RequestRemoveTextBox();
                                                         await showMessageAndImage($"El atornillado del tornillo número : {tightenincount} ha fallado. Por favor, retire el tornillo y colóquelo en desposito de tonrillos desechados.", "Scrap2.jpg");
                                                         await CheckSensorAndWait(() => sensorsIO.ScrewInScrap(), "Esperamos que el operador coloque el tornillo en el scrap");
-                                                        sensorsIO.ActivateVacumm_by_time(3000);
+                                                        await CheckSensorAndWait(() => ergoArm.isInVacuumNozzle(), "Esperamos ErgoArm en punta de la aspiradora");
+                                                        await showMessageAndImage($"Posiciona la punta del atornillador de la aspiradora en el lugar donde ocurrió el fallo en el atornillado.", "HousingWithMask.png");
+                                                        if (sessionApp.positionErgoArm.InPositionReadyToProcess)
+                                                        {
+                                                            sensorsIO.ActivateVacumm_by_time(3000);
+                                                        }
                                                         if (isCancellationRequested) { return; };
 
                                                         RewriteResultsOfTightening(lstScrewsToProcess);
@@ -574,7 +618,12 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
                                                                     await screwdriver.Unscrewing(screw, _cancellationTokenSource);
                                                                     await showMessageAndImage($"El atornillado número : {tightenincount} ha fallado. Por favor, retire el tornillo y colóquelo en desposito de tonrillos desechados.", "Scrap2.jpg");
                                                                     await CheckSensorAndWait(() => sensorsIO.ScrewInScrap(), "Esperamos que el operador coloque el tornillo en el scrap");
-                                                                    sensorsIO.ActivateVacumm_by_time(3000);                                                                    
+                                                                    await CheckSensorAndWait(() => ergoArm.isInVacuumNozzle(), "Esperamos ErgoArm en punta de la aspiradora");
+                                                                    await showMessageAndImage($"Posiciona la punta del atornillador de la aspiradora en el lugar donde ocurrió el fallo en el atornillado.", "HousingWithMask.png");
+                                                                    if (sessionApp.positionErgoArm.InPositionReadyToProcess)
+                                                                    {
+                                                                        sensorsIO.ActivateVacumm_by_time(3000);
+                                                                    }
                                                                     if (isCancellationRequested) { return; };
 
                                                                     await showMessageAndImage($"Los 3 intentos de atornillado han fallado.");
