@@ -544,11 +544,12 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
                                         {
                                             await screwdriver.Unscrewing(screw, _cancellationTokenSource);
                                             RequestRemoveTextBox();
-                                            await showMessageAndImage($"El atornillado del tornillo número : {tightenincount} ha fallado. Por favor, retire el tornillo y colóquelo en desposito de tonrillos desechados.", "Scrap2.jpg");
+                                            await showMessageAndImage($"El atornillado del tornillo número : {tightenincount} ha fallado. Por favor, retire el tornillo y colóquelo en desposito de tornillos desechados.", "Scrap2.jpg");
                                             await CheckSensorAndWait(() => sensorsIO.ScrewInScrap(), "Esperamos que el operador coloque el tornillo en el scrap");
-                                            
+
+                                            await showMessageAndImage($"Coloque la punta del atornillador en la punta de la aspiradora.", "Vacuum.png");
                                             await CheckSensorAndWait(() => ergoArm.isInVacuumNozzle(), "Esperamos ErgoArm en punta de la aspiradora");
-                                            await showMessageAndImage($"Posiciona la punta del atornillador de la aspiradora en el lugar donde ocurrió el fallo en el atornillado.", "HousingWithMask.png");
+                                            
                                             if (sessionApp.positionErgoArm.InPositionReadyToProcess)
                                             {
                                                 sensorsIO.ActivateVacumm_by_time(3000);
@@ -557,13 +558,15 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
                                             if (isCancellationRequested) { return; };
 
                                             RewriteResultsOfTightening(lstScrewsToProcess);
-                                            await showMessageAndImage($"El primer intento de atornillado del tornillo número : {tightenincount} ha fallado.Presione OPTO para continuar", "HousingWithMask.png");
-                                            await CheckSensorAndWait(() => sensorsIO.WasPressedOpto(), "Fallo primer intento de atornillado  ESPERA ACTIVACION DE OPTO");
+                                            //await showMessageAndImage($"El primer intento de atornillado del tornillo número : {tightenincount} ha fallado.Presione OPTO para continuar", "HousingWithMask.png");
+                                            //await CheckSensorAndWait(() => sensorsIO.WasPressedOpto(), "Fallo primer intento de atornillado  ESPERA ACTIVACION DE OPTO");
                                             if (ergoArm.isConected())
                                             {
                                                 await showMessageAndImage($"Por favor, posiciones el brazo ergonomico del tornillo número: {tightenincount}.", "HousingWithMask.png");
                                                 ergoArm.startReadPositionRespectScrew(screw);
                                             }
+
+                                            sensorsIO.ResetScrap();
                                             sensorsIO.DispenseAScrew();
                                             if (sessionApp.positionErgoArm.InPositionReadyToProcess)
                                             {
@@ -583,8 +586,11 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
                                                         RequestRemoveTextBox();
                                                         await showMessageAndImage($"El atornillado del tornillo número : {tightenincount} ha fallado. Por favor, retire el tornillo y colóquelo en desposito de tonrillos desechados.", "Scrap2.jpg");
                                                         await CheckSensorAndWait(() => sensorsIO.ScrewInScrap(), "Esperamos que el operador coloque el tornillo en el scrap");
+
+                                                        
+                                                        await showMessageAndImage($"Coloque la punta del atornillador en la punta de la aspiradora.", "Vacuum.png");
                                                         await CheckSensorAndWait(() => ergoArm.isInVacuumNozzle(), "Esperamos ErgoArm en punta de la aspiradora");
-                                                        await showMessageAndImage($"Posiciona la punta del atornillador de la aspiradora en el lugar donde ocurrió el fallo en el atornillado.", "HousingWithMask.png");
+
                                                         if (sessionApp.positionErgoArm.InPositionReadyToProcess)
                                                         {
                                                             sensorsIO.ActivateVacumm_by_time(3000);
@@ -592,14 +598,16 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
                                                         if (isCancellationRequested) { return; };
 
                                                         RewriteResultsOfTightening(lstScrewsToProcess);
-                                                        await showMessageAndImage($"El segundo intento de atornillado del tornillo número : {tightenincount} ha fallado.Presione OPTO para continuar", "HousingWithMask.png");
-                                                        RewriteResultsOfTightening(lstScrewsToProcess);
-                                                        await CheckSensorAndWait(() => sensorsIO.WasPressedOpto(), "Fallo segundo intento de atornillado  ESPERA ACTIVACION DE OPTO");
+                                                        //await showMessageAndImage($"El segundo intento de atornillado del tornillo número : {tightenincount} ha fallado.Presione OPTO para continuar", "HousingWithMask.png");
+                                                        //RewriteResultsOfTightening(lstScrewsToProcess);
+                                                        //await CheckSensorAndWait(() => sensorsIO.WasPressedOpto(), "Fallo segundo intento de atornillado  ESPERA ACTIVACION DE OPTO");
                                                         if (ergoArm.isConected())
                                                         {
                                                             await showMessageAndImage($"Por favor, posiciones el brazo ergonomico del tornillo número: {tightenincount}.", "HousingWithMask.png");
                                                             ergoArm.startReadPositionRespectScrew(screw);
                                                         }
+
+                                                        sensorsIO.ResetScrap();
                                                         sensorsIO.DispenseAScrew();
                                                         if (sessionApp.positionErgoArm.InPositionReadyToProcess)
                                                         {
@@ -618,8 +626,10 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
                                                                     await screwdriver.Unscrewing(screw, _cancellationTokenSource);
                                                                     await showMessageAndImage($"El atornillado número : {tightenincount} ha fallado. Por favor, retire el tornillo y colóquelo en desposito de tonrillos desechados.", "Scrap2.jpg");
                                                                     await CheckSensorAndWait(() => sensorsIO.ScrewInScrap(), "Esperamos que el operador coloque el tornillo en el scrap");
+                                                                    
+                                                                    await showMessageAndImage($"Coloque la punta del atornillador en la punta de la aspiradora.", "Vacuum.png");
                                                                     await CheckSensorAndWait(() => ergoArm.isInVacuumNozzle(), "Esperamos ErgoArm en punta de la aspiradora");
-                                                                    await showMessageAndImage($"Posiciona la punta del atornillador de la aspiradora en el lugar donde ocurrió el fallo en el atornillado.", "HousingWithMask.png");
+                                                                    
                                                                     if (sessionApp.positionErgoArm.InPositionReadyToProcess)
                                                                     {
                                                                         sensorsIO.ActivateVacumm_by_time(3000);
@@ -630,32 +640,6 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
                                                                     Debug.WriteLine($"{DateTime.Now} - " + "Los 3 intentos de atornillado han fallado.");
                                                                     ergoArm.endReadPostion();
 
-                                                                    //RequestRemoveTextBox();
-                                                                    //await showMessageAndImage("Retrayendo el candado.", "MGPM25-10Z.png");
-                                                                    //sensorsIO.RetractPalletClamp();
-                                                                    //await CheckSensorAndWaitByTime(() => sensorsIO.isRetractedClamp(), "Esperamos CLAMP DE PALLET Retraido por 5 segundos.", 5000);
-                                                                    //if (!sessionApp.TaksRunExecuting)
-                                                                    //{
-                                                                    //    isCancellationRequested = true;
-                                                                    //    await showMessageAndImage("El candado no se replegó correctamente. Por favor, reinicie y verifique.");
-                                                                    //}
-                                                                    //else
-                                                                    //{
-                                                                    //    await showMessageAndImage("El candado se replegó correctamente.", "MGPM25-10Z.png");
-                                                                    //    Thread.Sleep(1000);
-                                                                    //    await showMessageAndImage("Esperando la estación 13.");
-                                                                    //    await CheckSensorAndWait(() => sensorsIO.ST13Available(), "Esperamos la estación 13.");
-                                                                    //    if (isCancellationRequested) { return; };
-
-                                                                    //    await showMessageAndImage("Por favor, retire el pallet de la estación.");
-                                                                    //    sensorsIO.StopCylinder();
-                                                                    //    await CheckSensorAndWait(() => sensorsIO.PalletOutStopper(), "Esperamos la estación 13.");
-                                                                    //    if (isCancellationRequested) { return; };
-                                                                    //    await showMessageAndImage("Pallet Retirado.");
-                                                                    //    Thread.Sleep(1000);
-                                                                    //    await showMessageAndImage("¡El ciclo ha concluido exitosamente!");
-                                                                    //}
-                                                                    //endOfProcess();
                                                                     FinshProcessByErrors();
                                                                     break;
                                                                 }

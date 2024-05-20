@@ -550,6 +550,7 @@ namespace BORGWARNER_SERVOPRESS.UI
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             tryDevices.TryEndSensor();
+            tryDevices.FinishTestErgoArm();
         }
     }
 }

@@ -336,6 +336,14 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
             sessionApp.Sensors_M1.ScrewDispenser = false;
             SendDataOutpusM1();
         }
+        public void ResetScrap()
+        {
+            sessionApp.Sensors_M3.K6 = true;
+            SendDataOutpusM3();
+            Thread.Sleep(1000);
+            sessionApp.Sensors_M3.K6 = false;
+            SendDataOutpusM3();
+        }
         private bool isWaiting = true;
         public async Task WaitingResponse(CancellationTokenSource cancellationTokenSource, Func<bool> sensorToCheck)
         {
