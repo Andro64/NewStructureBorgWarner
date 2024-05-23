@@ -38,9 +38,10 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
         {
             try
             {
-                scanner = new Scanner(sessionApp, typeScanner);
-                serial = scanner.ScanQR("LON");
+                scanner = new Scanner(sessionApp, typeScanner);                
+                serial = scanner.ScanQR("LON");                
                 Debug.WriteLine($"{DateTime.Now} - " + $"Prueba {typeScanner} LEE CODIGO SERIAL: {serial}");
+                
             }
             catch (Exception ex)
             {
@@ -95,7 +96,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
 
             if (ergoArm.isConected())
             {
-                ergoArm.startReadPositionRespectScrew();
+                ergoArm.startReadPosition();
             }
         }
         public void FinishTestErgoArm()

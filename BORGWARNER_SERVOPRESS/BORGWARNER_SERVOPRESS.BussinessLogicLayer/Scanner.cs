@@ -65,12 +65,16 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
         }
 
         public void DisconnectScanner()
-        {
+        {            
             scanner.Disconnect();            
         }
         public bool isScannCompleted(ScannerDataProcessedEventArgs e)
         {
             return !e.Result.Equals(String.Empty);
+        }
+        public string ScannerOFF()
+        {
+            return scanner.ExecCommand("LOFF");
         }
         public string ScanQR(string command)
         {
@@ -79,20 +83,12 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
             if (scanner.LastErrorInfo.Equals(ErrorCode.None))
             {
                 serial = scanner.ExecCommand(command);
-                
-                Thread.Sleep(500);
 
-                switch (_eTypeConnection)
+                if (scanner.LastErrorInfo.Equals(ErrorCode.Timeout))
                 {
-                    case eTypeConnection.Scan_1:
-                        sessionApp.QR.scan1 = serial;
-                        break;
-                    case eTypeConnection.Scan_2:
-                        sessionApp.QR.scan2 = serial;
-                        break;
-                    default:
-                        break;
+                    serial = ScannerOFF();
                 }
+                Thread.Sleep(500);
             }
             else
             {

@@ -57,10 +57,10 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
             cancellationToken_ErgoArm = new CancellationTokenSource();
             Task.Run(async () =>
             {
-                communicationErgoArm.getDataPosition(cancellationToken_ErgoArm.Token, screw);
+                communicationErgoArm.getDataPositionScrew(cancellationToken_ErgoArm.Token, screw);
             }).Wait();
         }
-        public void startReadPositionRespectScrew()
+        public void startReadPosition()
         {
             cancellationToken_ErgoArm = new CancellationTokenSource();
             Task.Run(async () =>
@@ -76,20 +76,56 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
         }
         public bool isInHome()
         {
-            //if ((sessionApp.positionErgoArm.encoder1 > 105) && (sessionApp.positionErgoArm.encoder1 < 120) && (sessionApp.positionErgoArm.encoder2 > -40) && (sessionApp.positionErgoArm.encoder2 < -30))
+            startReadPosition();
             if ((sessionApp.positionErgoArm.encoder1 > home_ErgoArm.Encoder1_Min) && (sessionApp.positionErgoArm.encoder1 < home_ErgoArm.Encoder1_Max) && (sessionApp.positionErgoArm.encoder2 > home_ErgoArm.Encoder2_Min) && (sessionApp.positionErgoArm.encoder2 < home_ErgoArm.Encoder2_Max))
             {
                 return true;
             }
             return false;
         }
+        public async Task<bool> isInHomeAsync()
+        {
+            // Simula una espera asíncrona para emular el comportamiento de verificar las condiciones.
+            await Task.Delay(5);
+
+            // Verifica las condiciones después de la espera.
+            while(!((sessionApp.positionErgoArm.encoder1 > home_ErgoArm.Encoder1_Min) &&
+                (sessionApp.positionErgoArm.encoder1 < home_ErgoArm.Encoder1_Max) &&
+                (sessionApp.positionErgoArm.encoder2 > home_ErgoArm.Encoder2_Min) &&
+                (sessionApp.positionErgoArm.encoder2 < home_ErgoArm.Encoder2_Max)))
+            {
+                //Task.Run(async () =>
+                //{
+                    await Task.Delay(5);
+                //}).Wait();
+            }
+
+            return true; // Alguna de las condiciones no se cumple.
+        }
         public bool isInVacuumNozzle()
         {
+            startReadPosition();
             if ((sessionApp.positionErgoArm.encoder1 > nozzle_ErgoArm.Encoder1_Min) && (sessionApp.positionErgoArm.encoder1 < nozzle_ErgoArm.Encoder1_Max) && (sessionApp.positionErgoArm.encoder2 > nozzle_ErgoArm.Encoder2_Min) && (sessionApp.positionErgoArm.encoder2 < nozzle_ErgoArm.Encoder2_Max))
             {
                 return true;
             }
             return false;
+        }
+        public async Task<bool> isInVacuumNozzleAsync()
+        {
+            // Verifica las condiciones después de la espera.
+            while (!((sessionApp.positionErgoArm.encoder1 > nozzle_ErgoArm.Encoder1_Min) &&
+                (sessionApp.positionErgoArm.encoder1 < nozzle_ErgoArm.Encoder1_Max) &&
+                (sessionApp.positionErgoArm.encoder2 > nozzle_ErgoArm.Encoder2_Min) &&
+                (sessionApp.positionErgoArm.encoder2 < nozzle_ErgoArm.Encoder2_Max)))
+            {
+                //Task.Run(async () =>
+                //{
+                    await Task.Delay(5);
+                //}).Wait();
+            }
+
+            return true; 
         }
         public void WaitingResponse(bool sensorToCheck)
         {

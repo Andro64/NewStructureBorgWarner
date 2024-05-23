@@ -5,6 +5,7 @@ using BORGWARNER_SERVOPRESS.DataModel;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
@@ -42,6 +43,7 @@ namespace BORGWARNER_SERVOPRESS.UI
             InitializeComponent();
             initialize();
             InitializeTimer();
+            
 
             workstation.CreateTextBoxRequested += BusinessLayer_CreateTextBoxRequested;
             workstation.RemoveTextBoxRequested += TextBoxRemoveContentGrid;
@@ -217,6 +219,11 @@ namespace BORGWARNER_SERVOPRESS.UI
             pageManager.CleanControls(new List<string> { "from_fis_textblock", "to_fis_textblock", "txtHousing", "txt_HVDC_BUSBAR", "txtHarness", "txtTopCover", "cycletime" });
             pageManager.EnableControls(new List<string> { "stopCycle_btn" });
             pageManager.ChangeBackgroundColor(Brushes.Red, new List<string> { "Fis_enabled_display" });
+            sessionApp.QR.HARNESS = "";
+            sessionApp.QR.HOUSING = "";
+            sessionApp.QR.HVDC_BUSBAR = "";
+            sessionApp.QR.TOP_COVER = "";
+
 
             sessionApp.TaksRunExecuting = true;
             try
@@ -299,6 +306,8 @@ namespace BORGWARNER_SERVOPRESS.UI
             UpdateTimeLabel();
         }
         #endregion
+
+       
 
     }
 }

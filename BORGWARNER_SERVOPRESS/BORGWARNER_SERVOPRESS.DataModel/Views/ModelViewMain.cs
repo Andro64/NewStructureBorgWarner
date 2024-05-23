@@ -153,6 +153,19 @@ namespace BORGWARNER_SERVOPRESS.DataModel.Views
                 }
             }
         }
+        private string _model_screw;
+        public string model_screw
+        {
+            get { return _model_screw; }
+            set
+            {
+                if (_model_screw != value)
+                {
+                    _model_screw = value;
+                    OnPropertyChanged(nameof(model_screw));
+                }
+            }
+        }
         private string _trigerScan;
         public string trigerScan
         {

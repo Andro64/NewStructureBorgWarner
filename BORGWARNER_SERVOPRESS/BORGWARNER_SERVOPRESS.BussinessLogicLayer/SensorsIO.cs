@@ -92,6 +92,11 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
             isWaiting = true;
             return (!sessionApp.Sensors_M1.Pallet_Stopper) && sessionApp.Sensors_M1.SecurityOK && sessionApp.Sensors_M1.Main_Pressure;
         }
+        public bool WaitingForProduct(CancellationTokenSource cancellationTokenSource, bool isProcessFinished)
+        {
+            Sequence_Stoper_PrestoperAsync(cancellationTokenSource, isProcessFinished);
+            return sessionApp.Sensors_M1.Pallet_Stopper && sessionApp.Sensors_M1.SecurityOK && sessionApp.Sensors_M1.Main_Pressure;
+        }
         public async Task Sequence_Stoper_PrestoperAsync(CancellationTokenSource cancellationTokenSource, bool isProcessFinished)
         {
             #region Escenario 1
@@ -380,7 +385,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
                 while (!sensorToCheck() && isWaiting)
                 {
                     cancellationTokenSource.Token.ThrowIfCancellationRequested();
-                    Debug.WriteLine("Esperando......");
+                    //Debug.WriteLine("Esperando......");
                     if (stopwatch.ElapsedMilliseconds >= time) // 1000 milisegundos = 1 segundos
                     {
                         cancellationTokenSource.Cancel(); // Cancela la tarea

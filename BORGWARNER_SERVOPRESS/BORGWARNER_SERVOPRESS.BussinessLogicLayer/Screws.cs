@@ -4,8 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
 {
@@ -27,6 +25,13 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
         public List<ModelScrew> getModelScrews()
         {   
             return communicationScrew.getModelsScrew();
+        }
+        public string getNameModelScrewSelected()
+        {
+            int idModelScrew =  int.Parse(sessionApp.settings.FirstOrDefault(x => x.setting.Equals("Model_Screw")).valueSetting);
+            List<Screw> lstmodelScrew = getScrews();
+            string model = lstmodelScrew.FirstOrDefault().desc_model;
+            return model;
         }
         public List<Screw> retriveScrewsToProcess(int ModelScrewSelected)
         {

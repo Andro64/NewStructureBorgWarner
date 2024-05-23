@@ -15,11 +15,13 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.Views
         private ModelViewMain _modelViewMain;
         SessionApp sessionApp;
         string namefileLast;
+        string nameModelScrew;
        
         public ViewMain(SessionApp _sessionApp)
         {
             sessionApp = _sessionApp;
             _modelViewMain = new ModelViewMain();
+            nameModelScrew = new Screws(sessionApp).getNameModelScrewSelected();
         }
         public ModelViewMain GetModel()
         {
@@ -37,6 +39,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.Views
                 _modelViewMain.trigerScan = sessionApp.Sensors_M2.Trigger_Scanner.ToString();
                 _modelViewMain.prestoper = string.Concat("Pre:", sessionApp.Sensors_M1.Pallet_Pre_Stopper.ToString()," Stop:",sessionApp.Sensors_M1.Pallet_Stopper.ToString(),"  Main:",sessionApp.Sensors_M1.Main_Pressure.ToString()," OkS:", sessionApp.Sensors_M1.SecurityOK.ToString());
                 _modelViewMain.MessageProcess = sessionApp.MessageOfProcess;
+                _modelViewMain.model_screw = nameModelScrew;
                 if (sessionApp.QR != null)
                 {
                     _modelViewMain.QRs_Scanned = sessionApp.QR;
