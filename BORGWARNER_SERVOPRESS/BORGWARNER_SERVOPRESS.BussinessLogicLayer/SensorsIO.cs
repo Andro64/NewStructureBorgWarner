@@ -16,6 +16,8 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
         CancellationTokenSource cancellationToken_ioCard1;
         CancellationTokenSource cancellationToken_ioCard2;
         CancellationTokenSource cancellationToken_ioCard3;
+        public  ManualResetEvent continueScrewFunction = new ManualResetEvent(true);
+        CancellationTokenSource cancellationToken_ScrewFunction;
         public SensorsIO(SessionApp _sessionApp)
         {
             sessionApp = _sessionApp;
@@ -32,7 +34,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
             ioCard_Type_M3 = new IOCards(sessionApp, new IOCardType_M3());
             cancellationToken_ioCard3 = new CancellationTokenSource();
 
-
+            cancellationToken_ScrewFunction = new CancellationTokenSource();
         }
         public void startRead()
         {
@@ -56,6 +58,19 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
                 ioCard_Type_M3.getDataInput(cancellationToken_ioCard3.Token);
             }).Wait();
             Debug.WriteLine($"{DateTime.Now} - " + "Inicia lectura de los sensores ioCard3");
+
+            //Thread monitorThread_Mask = new Thread(() => WaitingMonitorMaskOnHousing());
+            //monitorThread_Mask.Start();
+           //Thread monitorThread_MaskInHousing = new Thread(() => MonitorMaskOnHousing());
+           //monitorThread_MaskInHousing.Start();
+
+
+            //Thread monitorThread_Position = new Thread(() => MonitorPosition());
+            //monitorThread_Position.Start();
+
+            //_ = MonitorMaskOnHousing();
+            //_ = MonitorPosition();
+
         }
         public void endRead()
         {
@@ -65,6 +80,8 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
             Debug.WriteLine($"{DateTime.Now} - " + "Termine de leer los sensores ioCard2");
             cancellationToken_ioCard3.Cancel();
             Debug.WriteLine($"{DateTime.Now} - " + "Termine de leer los sensores ioCard3");
+
+            cancellationToken_ScrewFunction.Cancel();
         }
         public void SendDataOutpusM1()
         {
@@ -276,6 +293,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
             isWaiting = true;
             return sessionApp.Sensors_M1.OptoBtn;
         }
+
         public bool UCBdConnected_RoutingHarness_PlaceInHousing()
         {
             return sessionApp.Sensors_M1.OptoBtn;
@@ -291,8 +309,89 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
         }
         public bool MaskOnHousing()
         {
-            return sessionApp.Sensors_M2.MaskatHousing;
+           bool value = false;           
+            value = sessionApp.Sensors_M2.MaskatHousing;            
+            return value;
+
         }
+        public async Task  MonitorMaskOnHousing()
+        {
+            while(!cancellationToken_ScrewFunction.IsCancellationRequested)
+            {
+                if(sessionApp.Sensors_M2.MaskatHousing)
+                {
+                    sessionApp.MessageOfProcess = $"Por favor, realice el atornillado ";
+                    continueScrewFunction.Set();
+                    Debug.WriteLine("La función principal se ha reanudado por que tiene la mascara");                                    
+                }
+                else
+                {
+                    sessionApp.MessageOfProcess = "Por favor, vuelva a colocar la máscara sobre el housing.";
+
+                    await Task.Run(() =>
+                    {
+                        // Simula trabajo realizando una pausa
+                        Thread.Sleep(100);
+                    });
+                    continueScrewFunction.Reset();
+                    Debug.WriteLine("La función principal se ha detenido por que no tiene la mascara");
+                }
+
+            }
+        }
+
+        public async Task WaitingMonitorMaskOnHousing()
+        {
+            while (!cancellationToken_ScrewFunction.IsCancellationRequested)
+            {
+                if (sessionApp.Sensors_M2.MaskatHousing)
+                {                    
+                    sessionApp.MessageOfProcess = $"Por favor, realice el atornillado ";                    
+                    Debug.WriteLine("La función principal se ha reanudado por que tiene la mascara");
+                }
+                else
+                {
+                    sessionApp.MessageOfProcess = "Por favor, vuelva a colocar la máscara sobre el housing.";
+                    await Task.Delay(500);                    
+                    Debug.WriteLine("La función principal se ha detenido por que no tiene la mascara");
+                    while (!sessionApp.Sensors_M2.MaskatHousing)
+                    {
+                        Task.Run(async () =>
+                        {
+                            await Task.Delay(500);
+                        }).Wait();
+                    }
+                }
+
+            }
+        }
+
+        //public async Task MonitorPosition()
+        //{
+        //    while (!cancellationToken_ScrewFunction.IsCancellationRequested)
+        //    {
+        //        if (sessionApp.positionErgoArm.InPositionReadyToProcess)
+        //        {
+        //            sessionApp.MessageOfProcess = "Por favor, continue con el proceso.";
+        //            continueScrewFunction.Set();
+        //            Debug.WriteLine("La función principal se ha reanudado por que esta en posicion");
+        //        }
+        //        else
+        //        {
+        //            sessionApp.MessageOfProcess = $"Por favor, posiciones el brazo ergonomico del tornillo.";
+
+        //            await Task.Run(() =>
+        //            {
+        //                // Simula trabajo realizando una pausa
+        //                Thread.Sleep(100);
+        //            });
+        //            continueScrewFunction.Reset();
+        //            Debug.WriteLine("La función principal se ha detenido por no estar en posicion");
+        //        }
+
+        //    }
+        //}
+
         public bool ScrewInScrap()
         {
             return sessionApp.Sensors_M3.Scrap_presence;

@@ -39,5 +39,6 @@ namespace BORGWARNER_SERVOPRESS.DataModel
         public bool isScrewingFinished { get; set; }
         public bool areImagePASSProcessFinished { get; set; }
         public List<string> images { get; set; } = new List<string>();
+        public string MessageOfProcessDebug { get; set; }
     }
 }

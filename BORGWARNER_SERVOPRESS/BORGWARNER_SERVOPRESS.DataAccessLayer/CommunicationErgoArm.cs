@@ -47,8 +47,9 @@ namespace BORGWARNER_SERVOPRESS.DataAccessLayer
             const ushort startingAddressOfInputRegisters = 0;
             const ushort numberRegisterToRead = 2;
             sessionApp.positionErgoArm = new PositionErgoArm();
-            while (!sessionApp.positionErgoArm.InPositionReadyToProcess && !cancellationToken.IsCancellationRequested)
-            {
+            //while (!sessionApp.positionErgoArm.InPositionReadyToProcess && !cancellationToken.IsCancellationRequested)
+            while (!cancellationToken.IsCancellationRequested)
+                {
                 ushort[] dataErgoArm = modbusIPMaster.ReadInputRegisters(startingAddressOfInputRegisters, numberRegisterToRead);
                 sessionApp.positionErgoArm.encoder1 = -(Convert.ToDouble(dataErgoArm[0]) * 0.0036) + 110.94;
                 sessionApp.positionErgoArm.encoder2 = (Convert.ToDouble(dataErgoArm[1]) * 0.0132) - 106.57;
@@ -57,6 +58,10 @@ namespace BORGWARNER_SERVOPRESS.DataAccessLayer
                 //Debug.WriteLine($"{DateTime.Now} - encoder1: " + sessionApp.positionErgoArm.encoder1 + " encoder2: " + sessionApp.positionErgoArm.encoder2 + " Validando la posicion del ErgoArm");
                 //Debug.WriteLine($"{DateTime.Now} - "  + "Validando la posicion del ErgoArm");
                 Thread.Sleep(50);
+                if(sessionApp.positionErgoArm.InPositionReadyToProcess || !sessionApp.positionErgoArm.InPositionReadyToProcess)
+                {
+                    break;
+                }
             }
             
         }

@@ -60,6 +60,55 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
                 communicationErgoArm.getDataPositionScrew(cancellationToken_ErgoArm.Token, screw);
             }).Wait();
         }
+        public async Task WaitiningMonitorPositionScrew_and_Mask(Screw screw)
+        {
+            cancellationToken_ErgoArm = new CancellationTokenSource();
+
+            while (!cancellationToken_ErgoArm.IsCancellationRequested)
+            {
+                startReadPositionRespectScrew(screw);
+                if (sessionApp.positionErgoArm.InPositionReadyToProcess)
+                {
+                    sessionApp.MessageOfProcess = $"Por favor, realice el atornillado número: {screw.id_screw}";
+                    Debug.WriteLine("La función principal se ha reanudado por que esta en posicion del tornillo");
+                }
+                else
+                {
+                    sessionApp.MessageOfProcess = "Por favor, posicione el brazo ergonomico en el tornillo.";
+                    //await Task.Delay(500);
+                    Debug.WriteLine("Por favor, posiciones el brazo ergonomico del tornillo.");
+                    while (!sessionApp.positionErgoArm.InPositionReadyToProcess)
+                    {
+                        Task.Run(async () =>
+                        {
+                            await Task.Delay(500);
+                        }).Wait();
+                        startReadPositionRespectScrew(screw);
+                    }
+                    
+
+                }
+                if (sessionApp.Sensors_M2.MaskatHousing)
+                {
+                    sessionApp.MessageOfProcess = $"Por favor, realice el atornillado ";
+                    Debug.WriteLine("La función principal se ha reanudado por que tiene la mascara");
+                }
+                else
+                {
+                    sessionApp.MessageOfProcess = "Por favor, vuelva a colocar la máscara sobre el housing.";
+                    //await Task.Delay(500);
+                    Debug.WriteLine("La función principal se ha detenido por que no tiene la mascara");
+                    while (!sessionApp.Sensors_M2.MaskatHousing)
+                    {
+                        Task.Run(async () =>
+                        {
+                            await Task.Delay(500);
+                        }).Wait();
+                    }
+                }
+
+            }
+        }
         public void startReadPosition()
         {
             cancellationToken_ErgoArm = new CancellationTokenSource();

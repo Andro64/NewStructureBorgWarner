@@ -58,6 +58,20 @@ namespace BORGWARNER_SERVOPRESS.DataModel.Views
                 }
             }
         }
+        private string _messageProcessDebug;
+        public string MessageProcessDebug
+        {
+            get { return _messageProcessDebug; }
+            set
+            {
+                if (_messageProcessDebug != value)
+                {
+                    _messageProcessDebug = value;
+                    OnPropertyChanged(nameof(MessageProcessDebug));
+                }
+            }
+        }
+        
         private string _imageProcess;
         public string ImageOfProcess
         {
