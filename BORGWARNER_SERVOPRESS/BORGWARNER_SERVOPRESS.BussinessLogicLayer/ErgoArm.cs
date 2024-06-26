@@ -60,6 +60,14 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
                 communicationErgoArm.getDataPositionScrew(cancellationToken_ErgoArm.Token, screw);
             }).Wait();
         }
+        public void startReadPosition(Screw screw)
+        {
+            cancellationToken_ErgoArm = new CancellationTokenSource();
+            Task.Run(async () =>
+            {
+                communicationErgoArm.getPositionErgoArm(cancellationToken_ErgoArm.Token, screw);
+            }).Wait();
+        }
         public async Task WaitiningMonitorPositionScrew_and_Mask(Screw screw)
         {
             cancellationToken_ErgoArm = new CancellationTokenSource();

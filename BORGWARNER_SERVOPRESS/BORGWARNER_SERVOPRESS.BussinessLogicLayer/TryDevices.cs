@@ -154,7 +154,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
             {
                 Debug.WriteLine($"************* Tornillo numero {tightenincount}**************");
                 sessionApp.messageTorque = $"Tornillo numero: {tightenincount}";
-                tightening = await screwdriver.tryScrewDriver(screw, _cancellationTokenSource, programValue);
+                tightening = await screwdriver.tryScrewDriver(ergoArm,screw, _cancellationTokenSource, programValue);
                 
                 if (screw.tighteningprocess == null)
                 {
@@ -163,7 +163,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
                 if (screw.tighteningprocess.status)
                 //if (sessionApp.isScrewingFinished)
                 {
-                    screwdriver.Unscrewing(screw, _cancellationTokenSource);
+                    screwdriver.Unscrewing(ergoArm,screw, _cancellationTokenSource);
                     return screw.tighteningprocess;
                 }
                 tightenincount++;

@@ -12,5 +12,6 @@ namespace BORGWARNER_SERVOPRESS.DataModel
         public double encoder2 { get; set; } = 0;
         public bool InHome { get; set; }
         public bool InPositionReadyToProcess { get; set; }
+        public bool endRead { get; set; }
     }
 }
