@@ -78,16 +78,31 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
         //    return false;
         //}
 
-        public async Task stopScrewDriverByOutPositionErgoArm(ErgoArm ergoArm, Screw screw,CancellationToken cancellationToken)
+        public async Task stopScrewDriverByOutPositionErgoArm(ErgoArm ergoArm, Screw screw, CancellationToken cancellationToken)
         {
+            bool isdisable = false;
             while (!cancellationToken.IsCancellationRequested)
             {
-                ergoArm.startReadPosition(screw);
+                ergoArm.startReadPositionRespectScrewGetOut(screw);
                 if (!sessionApp.positionErgoArm.InPositionReadyToProcess || !sessionApp.Sensors_M2.MaskatHousing)
                 {
-                    await Disable();
+                    if (!isdisable)
+                    {
+                        await Disable();
+                        isdisable = true;
+                        //Thread.Sleep(500);                        
+                    }                    
                 }
-                Thread.Sleep(500);
+                else
+                {
+                    if (isdisable)
+                    {
+                        await Eneable();                        
+                        isdisable = false;
+                        //Thread.Sleep(500);
+                    }
+                }
+
                 if (sessionApp.positionErgoArm.endRead)
                 {
                     break;
@@ -95,11 +110,10 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
             }
         }
 
-        public async Task<ScrewingResult> ScrewingCompletedAsync(ErgoArm ergoArm,Screw screw, CancellationTokenSource _cancellationTokenSource)
+        public async Task<ScrewingResult> ScrewingCompletedAsync(ErgoArm ergoArm, Screw screw, CancellationTokenSource _cancellationTokenSource)
         {
             ScrewingResult screwingResult = new ScrewingResult();
-
-            stopScrewDriverByOutPositionErgoArm(ergoArm, screw, _cancellationTokenSource.Token);
+          
 
             await Task.Delay(500);
             //Debug.WriteLine("Entre: ScrewingCompletedAsync.");
@@ -114,7 +128,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
             {
                 try
                 {
-                   
+
                     //Debug.WriteLine($"Esperando atornillado.");
                     //#if DEBUG
                     //                    string response = "02310061001 0000    010000020003STLA_AUTO_L1S12          04                         050006001070000080000090100111120002501300031014000280150000241600000170039618000001900000202024-03-19:18:44:02212024-01-13:20:58:28222230000001525";
@@ -123,20 +137,22 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
                     string response = await communicationScrewDriver.ResponseScrewDriverAsync(connection);
                     //#endif
 
+                    screw.tighteningprocess.resultResponse = string.IsNullOrEmpty(response) ? string.Empty : response.Substring(4, 4);
 
-                    if (string.IsNullOrEmpty(response))
+                    if (string.IsNullOrEmpty(response) || screw.tighteningprocess.resultResponse == "0005")
                     {
                         //Debug.WriteLine("La respuesta del controlador de tornillo está vacía.");
                         continue; // Vuelve al inicio del bucle y solicita la respuesta nuevamente
                     }
 
-                    screw.tighteningprocess.resultResponse = response.Substring(4, 4);
+
                     screw.tighteningprocess.result = screw.tighteningprocess.resultResponse == "0061";
-                    screw.tighteningprocess.id = response.Substring(221, 10);
 
                     Debug.WriteLine($"{DateTime.Now} - " + response);
                     if (screw.tighteningprocess.result)
                     {
+                        sessionApp.positionErgoArm.endRead = true;
+                        screw.tighteningprocess.id = response.Substring(221, 10);
                         screw.tighteningprocess.Torque = response.Substring(142, 4);
                         screw.tighteningprocess.Angle = response.Substring(170, 4);
                         screw.tighteningprocess.status = response.Substring(107, 1) == "1" ? true : false;
@@ -263,7 +279,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
                 }
             }
         }
-        public async Task<ScrewingResult> Screwing(ErgoArm ergoArm,Screw screw, CancellationTokenSource _cancellationTokenSource, string programValue = "")
+        public async Task<ScrewingResult> Screwing(ErgoArm ergoArm, Screw screw, CancellationTokenSource _cancellationTokenSource, string programValue = "")
         {
             ScrewingResult result;
             //sessionApp.messageTorque = "...";
@@ -274,14 +290,19 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
             {
                 if (isStartScredriver())
                 {
-                    Eneable();
+                    await Eneable();
                     if (Program_by_Model(eTypePrograms.screwing, programValue) == "0005")
                     {
                         if (await Subscription() == "0005")
                         {
+                            Task.Run(async () =>
+                            {
+                                stopScrewDriverByOutPositionErgoArm(ergoArm, screw, _cancellationTokenSource.Token);
+                            });
+
                             sessionApp.messageTorque = "Por favor proceda a atornillar.";
                             Debug.WriteLine("Por favor proceda a atornillar.");
-                            result = await ScrewingCompletedAsync(ergoArm ,screw, _cancellationTokenSource);
+                            result = await ScrewingCompletedAsync(ergoArm, screw, _cancellationTokenSource);
                             disconnect();
                             await DeployMessageScrewing(result);
                             return result;
@@ -314,7 +335,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
         }
 
 
-        public async Task<ScrewingResult> Rescrewing(ErgoArm ergoArm,Screw screw, CancellationTokenSource _cancellationTokenSource)
+        public async Task<ScrewingResult> Rescrewing(ErgoArm ergoArm, Screw screw, CancellationTokenSource _cancellationTokenSource)
         {
             ScrewingResult result;
             //sessionApp.messageTorque = "...";
@@ -332,7 +353,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
                         {
                             sessionApp.messageTorque = "Por favor proceda a atornillar.";
                             Debug.WriteLine("Por favor proceda a atornillar.");
-                            result = await ScrewingCompletedAsync(ergoArm,screw, _cancellationTokenSource);
+                            result = await ScrewingCompletedAsync(ergoArm, screw, _cancellationTokenSource);
                             disconnect();
                             await DeployMessageScrewing(result);
                             return result;
@@ -343,7 +364,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
             disconnect();
             return new ScrewingResult();
         }
-        public async Task<ScrewingResult> Unscrewing(ErgoArm ergoArm,Screw screw, CancellationTokenSource _cancellationTokenSource)
+        public async Task<ScrewingResult> Unscrewing(ErgoArm ergoArm, Screw screw, CancellationTokenSource _cancellationTokenSource)
         {
             ScrewingResult result;
             sensorsIO = new SensorsIO(sessionApp);
@@ -372,7 +393,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
                         {
                             sessionApp.messageTorque = "Por favor proceda a atornillar.";
                             Debug.WriteLine("Por favor proceda a atornillar.");
-                            result = await ScrewingCompletedAsync(ergoArm,screw, _cancellationTokenSource);
+                            result = await ScrewingCompletedAsync(ergoArm, screw, _cancellationTokenSource);
                             disconnect();
                             await DeployMessageScrewing(result);
                             return result;
@@ -383,7 +404,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
             disconnect();
             return new ScrewingResult();
         }
-        public async Task<TighteningProcess> tryScrewDriver(ErgoArm ergoArm,Screw screw, CancellationTokenSource _cancellationTokenSource, string programValue)
+        public async Task<TighteningProcess> tryScrewDriver(ErgoArm ergoArm, Screw screw, CancellationTokenSource _cancellationTokenSource, string programValue)
         {
             sensorsIO = new SensorsIO(sessionApp);
             _cancellationTokenSource = new CancellationTokenSource();
@@ -397,7 +418,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
 
                 sessionApp.MessageOfProcessDebug = $"Salimos de la validacion de la mascara o el sensor de la mascara es: { sensorsIO.MaskOnHousing() } ";
                 Debug.WriteLine($"{DateTime.Now} - " + $"Salimos de la validacion de la mascara o el sensor de la mascara es: { sensorsIO.MaskOnHousing() } ");
-                ScrewingResult result = await Screwing(ergoArm,screw, _cancellationTokenSource, programValue);
+                ScrewingResult result = await Screwing(ergoArm, screw, _cancellationTokenSource, programValue);
                 if (result.status && !result.timeout && !result.canceled_by_user)
                     return screw.tighteningprocess;
                 else
@@ -411,22 +432,22 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
             }
         }
 
-        public async Task<TighteningProcess> FirstTighteningAttempt(ErgoArm ergoArm,Screw screw, CancellationTokenSource _cancellationTokenSource)
+        public async Task<TighteningProcess> FirstTighteningAttempt(ErgoArm ergoArm, Screw screw, CancellationTokenSource _cancellationTokenSource)
         {
             ScrewDriver screwdriver = new ScrewDriver(sessionApp);
-            TighteningProcess tightening = await tryScrewDriver( ergoArm,screw, _cancellationTokenSource, string.Empty);
+            TighteningProcess tightening = await tryScrewDriver(ergoArm, screw, _cancellationTokenSource, string.Empty);
             return tightening;
         }
-        public async Task<TighteningProcess> SecondTighteningAttempt(ErgoArm ergoArm,Screw screw, CancellationTokenSource _cancellationTokenSource)
+        public async Task<TighteningProcess> SecondTighteningAttempt(ErgoArm ergoArm, Screw screw, CancellationTokenSource _cancellationTokenSource)
         {
             ScrewDriver screwdriver = new ScrewDriver(sessionApp);
-            TighteningProcess tightening = await tryScrewDriver(ergoArm,screw, _cancellationTokenSource, string.Empty);
+            TighteningProcess tightening = await tryScrewDriver(ergoArm, screw, _cancellationTokenSource, string.Empty);
             return tightening;
         }
-        public async Task<TighteningProcess> ThirdTighteningAttempt(ErgoArm ergoArm,Screw screw, CancellationTokenSource _cancellationTokenSource)
+        public async Task<TighteningProcess> ThirdTighteningAttempt(ErgoArm ergoArm, Screw screw, CancellationTokenSource _cancellationTokenSource)
         {
             ScrewDriver screwdriver = new ScrewDriver(sessionApp);
-            TighteningProcess tightening = await tryScrewDriver(ergoArm,screw, _cancellationTokenSource, string.Empty);
+            TighteningProcess tightening = await tryScrewDriver(ergoArm, screw, _cancellationTokenSource, string.Empty);
             return tightening;
         }
         public void disconnect()
@@ -490,11 +511,22 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
         /// <returns MID="0005">OK</returns>
         public async Task<string> Eneable()
         {
-            sessionApp.MessageOfProcessDebug = $"Habilitamos el atornillador - Sesor:{sessionApp.Sensors_M2.MaskatHousing}";
-            communicationScrewDriver.sendCodesScrewDriver(connection, "00200043000000000000\0");
-            string response = communicationScrewDriver.responseScrewDriver(connection, 4, 4);
-            Debug.WriteLine($"{DateTime.Now} - " + response);
-            return response;
+            if (connection == null || !isConnected())
+            {
+                connect();
+            }
+            if (connection != null)
+            {
+                if (connection.Connected)
+                {
+                    sessionApp.MessageOfProcessDebug = $"Habilitamos el atornillador - Sesor:{sessionApp.Sensors_M2.MaskatHousing}";
+                    communicationScrewDriver.sendCodesScrewDriver(connection, "00200043000000000000\0");
+                    //string response = communicationScrewDriver.responseScrewDriver(connection, 4, 4);
+                    //Debug.WriteLine($"{DateTime.Now} - " + response);
+                    return string.Empty;
+                }
+            }
+            return string.Empty;
         }
 
         /// <summary>
@@ -504,15 +536,19 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
         /// <returns MID="0005">OK</returns>
         public async Task<string> Disable()
         {
+            if(connection == null || !isConnected() )
+            {
+                connect();
+            }
             if (connection != null)
             {
                 if (connection.Connected)
                 {
                     sessionApp.MessageOfProcessDebug = $"Habilitamos el atornillador - Sesor:{sessionApp.Sensors_M2.MaskatHousing}";
                     communicationScrewDriver.sendCodesScrewDriver(connection, "00200042000000000000\0");
-                    string response = communicationScrewDriver.responseScrewDriver(connection, 4, 4);
-                    Debug.WriteLine($"{DateTime.Now} - " + response);
-                    return response;
+                    //string response = communicationScrewDriver.responseScrewDriver(connection, 4, 4);
+                    //Debug.WriteLine($"{DateTime.Now} - " + response);
+                    return string.Empty;
                 }
             }
             return string.Empty;
