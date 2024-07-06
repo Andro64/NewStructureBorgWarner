@@ -88,6 +88,10 @@ namespace BORGWARNER_SERVOPRESS.DataAccessLayer
                 try
                 {
                     byte[] responseFromScrewDriver = new byte[1025];
+                    if (!socket.Connected)
+                    {
+                        await EnsureConnectedAsync(socket, new IPEndPoint(IPAddress.Parse("192.168.1.41"), 4545));
+                    }
                     int bytesRead = await ReceiveAsync(socket, responseFromScrewDriver);
                     return Encoding.ASCII.GetString(responseFromScrewDriver, 0, bytesRead);
                 }
@@ -99,16 +103,45 @@ namespace BORGWARNER_SERVOPRESS.DataAccessLayer
             }
             return string.Empty;
         }
-        private Task<int> ReceiveAsync(Socket socket, byte[] buffer)
+        private static async Task EnsureConnectedAsync(Socket socket, IPEndPoint endpoint)
+        {
+            if (!socket.Connected)
+            {
+                try
+                {
+                    await socket.ConnectAsync(endpoint);
+                }
+                catch (SocketException ex)
+                {
+                    Debug.WriteLine($"SocketException during connect: {ex.Message}");
+                    // Handle reconnection logic, e.g., retry after a delay
+                    throw;
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"Exception during connect: {ex.Message}");
+                    // Handle reconnection logic
+                    throw;
+                }
+            }
+        }
+        private async Task<int> ReceiveAsync(Socket socket, byte[] buffer)
         {
             //Debug.WriteLine($"Entre: ReceiveAsync ");
 
             try
             {
-                return Task<int>.Factory.FromAsync(
-                    (callback, state) => socket.BeginReceive(buffer, 0, buffer.Length, SocketFlags.None, callback, state),
-                    socket.EndReceive,
-                    null);
+                if (!socket.Connected)
+                {
+                    socket.Connect(new IPEndPoint(IPAddress.Parse("192.168.1.41"), 4545));
+                }
+                 
+                return await socket.ReceiveAsync(new ArraySegment<byte>(buffer), SocketFlags.None);
+
+                //return Task<int>.Factory.FromAsync(
+                //    (callback, state) => socket.BeginReceive(buffer, 0, buffer.Length, SocketFlags.None, callback, state),
+                //    socket.EndReceive,
+                //    null);
             }
             catch (Exception ex)
             {

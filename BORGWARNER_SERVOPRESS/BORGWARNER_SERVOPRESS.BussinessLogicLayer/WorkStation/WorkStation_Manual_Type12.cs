@@ -533,60 +533,21 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
                                     ergoArm.startReadPositionRespectScrew(screw);
                                 }
                                 if (sessionApp.positionErgoArm.InPositionReadyToProcess)
-                                {
-                                    Debug.WriteLine($"{DateTime.Now} - " + "BRAZO ERGONOMICO EN POSICION");
-                                    Debug.WriteLine($"{DateTime.Now} - " + $"Ejecuta primer intento el sensor de la mascara es: { sensorsIO.MaskOnHousing() } ");
-                                    sessionApp.MessageOfProcessDebug = "BRAZO ERGONOMICO EN POSICION";
-                                    Thread.Sleep(1000);
-                                    sessionApp.MessageOfProcessDebug = $"Ejecuta primer intento el sensor de la mascara es: { sensorsIO.MaskOnHousing() } ";
-
-                                    //if (!sensorsIO.MaskOnHousing())
-                                    //{
-                                    //    await showMessageAndImage("Por favor, vuelva a colocar la máscara sobre el housing.", "HousingWithMask.png");
-                                    //    await CheckSensorAndWait(() => sensorsIO.MaskOnHousing(), "Esperamos maskhousing");
-                                    //    sessionApp.MessageOfProcessDebug = "Esperamos maskhousing";
-                                    //}
-                                    //await Task.Run(() =>sensorsIO.continueScrewFunction.WaitOne());
-
-                                    //await Task.Run(() => sensorsIO.WaitingMonitorMaskOnHousing());
-                                    //Task.Run(() => screwdriver.FactoryScrewing(ergoArm,screw));
+                                {                                   
 
                                     await showMessageAndImage($"Por favor, realice el atornillado número: {tightenincount}", "HousingWithMask.png");
                                     Debug.WriteLine($"-------Primer intento atronillado");
-                                    sessionApp.MessageOfProcessDebug = "-------Primer intento atronillado";
+                                    //sessionApp.MessageOfProcessDebug = "-------Primer intento atronillado";
                                     tightening = await screwdriver.FirstTighteningAttempt(ergoArm,screw, _cancellationTokenSource);
 
                                     if (tightening == null)
-                                    {
-                                        Debug.WriteLine($"{DateTime.Now} - " + $"Fallo el primer intento el sensor de la mascara es: { sensorsIO.MaskOnHousing() } ");
-                                        sessionApp.MessageOfProcessDebug = $"Fallo el primer intento el sensor de la mascara es: { sensorsIO.MaskOnHousing() } ";
-                                        //if (!sensorsIO.MaskOnHousing())
-                                        //{
-                                        //    await showMessageAndImage("Por favor, vuelva a colocar la máscara sobre el housing.", "HousingWithMask.png");
-                                        //    await CheckSensorAndWait(() => sensorsIO.MaskOnHousing(), "Esperamos maskhousing");                                            
-                                        //}
-                                        //await Task.Run(() =>sensorsIO.continueScrewFunction.WaitOne());
-                                        await Task.Run(() => sensorsIO.WaitingMonitorMaskOnHousing());
+                                    {                                           
                                         RewriteResultsOfTightening(lstScrewsToProcess);
                                         await showMessageAndImage($"Por favor, realice el desatornillado del tornillo número: {tightenincount}.", "HousingWithMask.png");
 
                                         ergoArm.startReadPositionRespectScrew(screw);
                                         if (sessionApp.positionErgoArm.InPositionReadyToProcess)
                                         {
-                                            sessionApp.MessageOfProcessDebug = $"Ejecuta primer intento el brazo esta en posicion el sensor de la mascara es: { sensorsIO.MaskOnHousing() } ";
-                                            Debug.WriteLine($"{DateTime.Now} - " + $"Ejecuta primer intento el brazo esta en posicion el sensor de la mascara es: { sensorsIO.MaskOnHousing() } ");
-                                            //if (!sensorsIO.MaskOnHousing())
-                                            //{
-                                            //    await showMessageAndImage("Por favor, vuelva a colocar la máscara sobre el housing.", "HousingWithMask.png");
-                                            //    await CheckSensorAndWait(() => sensorsIO.MaskOnHousing(), "Esperamos maskhousing");                                                
-                                            //}
-                                            //await Task.Run(() =>sensorsIO.continueScrewFunction.WaitOne());
-                                            await Task.Run(() => sensorsIO.WaitingMonitorMaskOnHousing());
-                                            Debug.WriteLine($"{DateTime.Now} - " + $"Vamos a desatornillar el sensor de la mascara es: { sensorsIO.MaskOnHousing() } ");
-                                            Debug.WriteLine($"-------desatornillado");
-                                            sessionApp.MessageOfProcessDebug = $"Vamos a desatornillar el sensor de la mascara es: { sensorsIO.MaskOnHousing() } ";
-                                            sessionApp.MessageOfProcessDebug = $"-------desatornillado";
-
                                             await screwdriver.Unscrewing(ergoArm, screw, _cancellationTokenSource);
                                             RequestRemoveTextBox();
 
@@ -620,54 +581,18 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
                                             ergoArm.startReadPositionRespectScrew(screw);
                                             if (sessionApp.positionErgoArm.InPositionReadyToProcess)
                                             {
-                                                Debug.WriteLine($"{DateTime.Now} - " + $"Ejecuta segundo intento intento el sensor de la mascara es: { sensorsIO.MaskOnHousing() } ");
-                                                sessionApp.MessageOfProcessDebug = $"Ejecuta segundo intento intento el sensor de la mascara es: { sensorsIO.MaskOnHousing() } ";
-                                                //if (!sensorsIO.MaskOnHousing())
-                                                //{
-                                                //    await showMessageAndImage("Por favor, vuelva a colocar la máscara sobre el housing.", "HousingWithMask.png");
-                                                //    await CheckSensorAndWait(() => sensorsIO.MaskOnHousing(), "Esperamos maskhousing");
-                                                //}
-                                                //await Task.Run(() =>sensorsIO.continueScrewFunction.WaitOne());
-                                                await Task.Run(() => sensorsIO.WaitingMonitorMaskOnHousing());
-                                                await showMessageAndImage($"Intento 2 - Por favor, realice nuevamente el atornillado del tornillo número: {tightenincount}.", "HousingWithMask.png");
-                                                Debug.WriteLine($"-------Segundo intento atronillado");
-                                                sessionApp.MessageOfProcessDebug = $"-------Segundo intento atronillado";
-
                                                 tightening = await screwdriver.SecondTighteningAttempt(ergoArm, screw, _cancellationTokenSource);
                                                 if (tightening == null)
-                                                {
-                                                    Debug.WriteLine($"{DateTime.Now} - " + $"Fallo segundo intento el sensor de la mascara es: { sensorsIO.MaskOnHousing() } ");
-                                                    sessionApp.MessageOfProcessDebug = $"Fallo segundo intento el sensor de la mascara es: { sensorsIO.MaskOnHousing() } ";
-                                                    //if (!sensorsIO.MaskOnHousing())
-                                                    //{
-                                                    //    await showMessageAndImage("Por favor, vuelva a colocar la máscara sobre el housing.", "HousingWithMask.png");
-                                                    //    await CheckSensorAndWait(() => sensorsIO.MaskOnHousing(), "Esperamos maskhousing");
-                                                    //}
-                                                    //await Task.Run(() =>sensorsIO.continueScrewFunction.WaitOne());
-                                                    await Task.Run(() => sensorsIO.WaitingMonitorMaskOnHousing());
+                                                {   
                                                     RewriteResultsOfTightening(lstScrewsToProcess);
                                                     //await showMessageAndImage($"Por favor, realice el desatornillado del tornillo número: {tightenincount}.", "HousingWithMask.png");
 
                                                     ergoArm.startReadPositionRespectScrew(screw);
                                                     if (sessionApp.positionErgoArm.InPositionReadyToProcess)
                                                     {
-                                                        Debug.WriteLine($"{DateTime.Now} - " + $"Estamos en posicion del brazo segundo intento el sensor de la mascara es: { sensorsIO.MaskOnHousing() } ");
-                                                        sessionApp.MessageOfProcessDebug = $"Estamos en posicion del brazo segundo intento el sensor de la mascara es: { sensorsIO.MaskOnHousing() } ";
-                                                        //if (!sensorsIO.MaskOnHousing())
-                                                        //{
-                                                        //    await showMessageAndImage("Por favor, vuelva a colocar la máscara sobre el housing.", "HousingWithMask.png");
-                                                        //    await CheckSensorAndWait(() => sensorsIO.MaskOnHousing(), "Esperamos maskhousing");
-                                                        //}
-                                                        //await Task.Run(() =>sensorsIO.continueScrewFunction.WaitOne());
-                                                        await Task.Run(() => sensorsIO.WaitingMonitorMaskOnHousing());
-                                                        await showMessageAndImage($"Por favor, realice el desatornillado del tornillo número: {tightenincount}.", "HousingWithMask.png");
-                                                        Debug.WriteLine($"{DateTime.Now} - " + $"Comenzamos desatornillado del segundo intento el sensor de la mascara es: { sensorsIO.MaskOnHousing() } ");
-                                                        Debug.WriteLine($"-------desatornillado");
-                                                        sessionApp.MessageOfProcessDebug = $"Comenzamos desatornillado del segundo intento el sensor de la mascara es: { sensorsIO.MaskOnHousing() } ";
-                                                        sessionApp.MessageOfProcessDebug = $"-------desatornillado";
+                                                       
+                                                        await showMessageAndImage($"Por favor, realice el desatornillado del tornillo número: {tightenincount}.", "HousingWithMask.png");                                                       
                                                         await screwdriver.Unscrewing(ergoArm, screw, _cancellationTokenSource);
-                                                        Debug.WriteLine($"{DateTime.Now} - " + $"Terminamos desatornillado segundo intento el sensor de la mascara es: { sensorsIO.MaskOnHousing() } ");
-                                                        sessionApp.MessageOfProcessDebug = $"Terminamos desatornillado segundo intento el sensor de la mascara es: { sensorsIO.MaskOnHousing() } ";
                                                         RequestRemoveTextBox();
                                                         await showMessageAndImage($"El atornillado del tornillo número : {tightenincount} ha fallado. Por favor, retire el tornillo y colóquelo en desposito de tornillos desechados.", "Scrap2.jpg");
                                                         await CheckSensorAndWait(() => sensorsIO.ScrewInScrap(), "Esperamos que el operador coloque el tornillo en el scrap");
@@ -698,31 +623,15 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
                                                         if (sessionApp.positionErgoArm.InPositionReadyToProcess)
                                                         {
                                                             RewriteResultsOfTightening(lstScrewsToProcess);
-                                                            //if (!sensorsIO.MaskOnHousing())
-                                                            //{
-                                                            //    await showMessageAndImage("Por favor, vuelva a colocar la máscara sobre el housing.", "HousingWithMask.png");
-                                                            //    await CheckSensorAndWait(() => sensorsIO.MaskOnHousing(), "Esperamos maskhousing");
-                                                            //}
-                                                            //await Task.Run(() =>sensorsIO.continueScrewFunction.WaitOne());
-                                                            await Task.Run(() => sensorsIO.WaitingMonitorMaskOnHousing());
+                                                            
                                                             await showMessageAndImage($"Intento 3 - Por favor, realice nuevamente el atornillado del tornillo número: {tightenincount}.", "HousingWithMask.png");
-                                                            Debug.WriteLine($"------Tercer intento atronillado");
-                                                            sessionApp.MessageOfProcessDebug = $"------Tercer intento atronillado";
                                                             tightening = await screwdriver.ThirdTighteningAttempt(ergoArm, screw, _cancellationTokenSource);
                                                             if (tightening == null)
                                                             {
                                                                 ergoArm.startReadPositionRespectScrew(screw);
                                                                 if (sessionApp.positionErgoArm.InPositionReadyToProcess)
                                                                 {
-                                                                    //if (!sensorsIO.MaskOnHousing())
-                                                                    //{
-                                                                    //    await showMessageAndImage("Por favor, vuelva a colocar la máscara sobre el housing.", "HousingWithMask.png");
-                                                                    //    await CheckSensorAndWait(() => sensorsIO.MaskOnHousing(), "Esperamos maskhousing");
-                                                                    //}
-                                                                    //await Task.Run(() =>sensorsIO.continueScrewFunction.WaitOne());
-                                                                    await Task.Run(() => sensorsIO.WaitingMonitorMaskOnHousing());
-                                                                    Debug.WriteLine($"-------desatornillado");
-                                                                    sessionApp.MessageOfProcessDebug = $"-------desatornillado";
+                                                                    await showMessageAndImage($"Por favor, realice el desatornillado del tornillo número: {tightenincount}.", "HousingWithMask.png");
                                                                     await screwdriver.Unscrewing(ergoArm, screw, _cancellationTokenSource);
                                                                     RequestRemoveTextBox();
 
