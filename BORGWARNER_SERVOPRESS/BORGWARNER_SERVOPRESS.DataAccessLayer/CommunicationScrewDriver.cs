@@ -15,7 +15,8 @@ namespace BORGWARNER_SERVOPRESS.DataAccessLayer
 {
     public class CommunicationScrewDriver
     {
-        SessionApp sessionApp;        
+        SessionApp sessionApp;
+        ConnectionWorkStation connectionScrewDriver;
         public CommunicationScrewDriver(SessionApp _sessionApp)
         {
             sessionApp = _sessionApp;            
@@ -25,7 +26,7 @@ namespace BORGWARNER_SERVOPRESS.DataAccessLayer
         {
             try
             {
-                ConnectionWorkStation connectionScrewDriver = connnectionSelected(ScrewDriverSelected, connectionSelected);
+                connectionScrewDriver = connnectionSelected(ScrewDriverSelected, connectionSelected);
                 Socket socket = new Socket(IPAddress.Parse(connectionScrewDriver.IP).AddressFamily, SocketType.Stream, ProtocolType.Tcp);
                 IPEndPoint iPEndPoint = new IPEndPoint(IPAddress.Parse(connectionScrewDriver.IP), connectionScrewDriver.Port);
                 socket.Connect(iPEndPoint);
@@ -90,7 +91,7 @@ namespace BORGWARNER_SERVOPRESS.DataAccessLayer
                     byte[] responseFromScrewDriver = new byte[1025];
                     if (!socket.Connected)
                     {
-                        await EnsureConnectedAsync(socket, new IPEndPoint(IPAddress.Parse("192.168.1.41"), 4545));
+                        await EnsureConnectedAsync(socket, new IPEndPoint(IPAddress.Parse(connectionScrewDriver.IP), connectionScrewDriver.Port));
                     }
                     int bytesRead = await ReceiveAsync(socket, responseFromScrewDriver);
                     return Encoding.ASCII.GetString(responseFromScrewDriver, 0, bytesRead);
@@ -133,7 +134,7 @@ namespace BORGWARNER_SERVOPRESS.DataAccessLayer
             {
                 if (!socket.Connected)
                 {
-                    socket.Connect(new IPEndPoint(IPAddress.Parse("192.168.1.41"), 4545));
+                    socket.Connect(new IPEndPoint(IPAddress.Parse(connectionScrewDriver.IP), connectionScrewDriver.Port));
                 }
                  
                 return await socket.ReceiveAsync(new ArraySegment<byte>(buffer), SocketFlags.None);
