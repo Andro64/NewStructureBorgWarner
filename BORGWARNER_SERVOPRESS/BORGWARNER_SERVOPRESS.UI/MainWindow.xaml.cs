@@ -38,7 +38,7 @@ namespace BORGWARNER_SERVOPRESS.UI
 
             WorkstationFactory.injectionSession(sessionApp);
             workstation = WorkstationFactory.CreateWorkstation();
-            //MessageBox.Show("La estacion de trabajo es: " + workstation.Type);            
+            MessageBox.Show("La estacion de trabajo es: " + workstation.Type);            
             
             InitializeComponent();
             initialize();

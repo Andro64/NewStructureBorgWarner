@@ -13,7 +13,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
 {
     class WorkStation_Manual_Type12 : Workstation
     {
-        public override string Type => " ╭∩╮( •̀_•́ )╭∩╮ \n WS Automatica Tipo 1";
+        public override string Type => " ╭∩╮( •̀_•́ )╭∩╮ \n WS Automatica Tipo 12";
 
         SensorsIO sensorsIO;
         SessionApp sessionApp;
@@ -128,51 +128,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
             }
             return isPASS_From_FIS;
         }
-
-        /*
-         public override async Task StartProcess()
-         {
-             Debug.WriteLine($"{DateTime.Now} - " + "Path de Imagenes:" + sessionApp.PathOperationalImages);
-
-             await Task.Run(() =>
-             {
-
-                 RequestCreateTextBox($"18.5 Nw | 23 °", 340, -150);
-                 RequestCreateTextBox($"18.5 Nw | 23 °", 0, -150);
-                 RequestCreateTextBox($"18.5 Nw | 23 °", 305, -70);
-                 showMessageAndImage("Inicia Proceso de atornillado", "GNC_HousingWithScanner.png");
-                 Thread.Sleep(3000);
-                 showMessageAndImage("Esperamos pallet en Pre-Stopper", @"C:\Users\MyUser\Desktop\COGNEX\Cognex_1\Conector2Bad\4203641232680057733.svg",true);
-                 Thread.Sleep(3000);
-                 showMessageAndImage("Esperamos CLAMP DE PALLET EXTENDIDO", "4203641232680057733.svg");
-                 Thread.Sleep(3000);
-                 //showMessageAndImage("Esperamos que el OPERADOR COLOCAQUE EL HOUSING", "GNC_Padlock.jpg");
-                 //Thread.Sleep(3000);
-                 //showMessageAndImage("SCANNER 1 LEE CODIGO SERIAL: ");
-                 //Thread.Sleep(3000);
-                 //showMessageAndImage("PIDE A OPERADOR COLOCAR ULTRA CAP BOARD PAD Y ACTIVAR OPTO", "GNC_PalletInStation.jpg");
-                 //Thread.Sleep(3000);
-                 //showMessageAndImage("ESPERA ACTIVACION DE OPTO ", "GNC_ScrewdriverInHome.png");
-                 //Thread.Sleep(3000);
-                 //showMessageAndImage("Fallo primer intento ESPERA ACTIVACION DE OPTO ", "GNC_SlidePalletOutOfStation.png");
-                 //Thread.Sleep(3000);
-                 //showMessageAndImage("ESPERA ULTRA CAP BOARD SE COLOQUE EN NIDO ", "GNC_ValidatePalletEnteringStation.jpg");
-                 //Thread.Sleep(3000);
-                 //showMessageAndImage("PIDE A OPERADOR TOMAR ULTRA CAP BOARD Y COLOCAR EN NIDO ", "GNC_WaitPallet.jpg");
-                 //Thread.Sleep(3000);
-                 //showMessageAndImage("SCANNER 1 LEE CODIGO SERIAL: ", "KYC_Scanner.jpg");
-                 //Thread.Sleep(3000);
-                 //showMessageAndImage("Los 3 intentos han fallado. ");
-                 //Thread.Sleep(3000);  ///Falta poner que hace en este caso
-
-                 showMessageAndImage("La informacion correspondiente a los tornillos esta incompleta");
-                 Thread.Sleep(3000);
-                 showMessageAndImage("Finaliza Proceso de atornillado", "image_not_found.jpg");
-                 sessionApp.TaksRunExecuting = false;
-             });
-         }
-         */
-
+               
 
         public override async Task StartProcess()
         {
@@ -206,23 +162,9 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
             isVisionEneable = sessionApp.settings.FirstOrDefault(x => x.setting.Contains("EneableVision")).valueSetting == "1";
 
             sessionApp.MessageOfProcessDebug = "Inicializando sistema";
-
-            //await showMessageAndImage("A la espera del producto.", "Housing.png");
-            //await CheckSensorAndWait(() => sensorsIO.WaitingForProduct(_cancellationTokenSource, false), "Esperamos pallet en Pre-Stopper");
-            //await CheckSensorAndWait(() => sensorsIO.PalletInStopper(), "Esperamos pallet en Pre-Stopper");
-
-
-            //if (!sensorsIO.PalletInStopper())
-            //{
-            //    await showMessageAndImage("A la espera del producto en prestoper.", "Housing.png");
-            //    await sensorsIO.UnsecurePallet(_cancellationTokenSource);
-            //}
-
+            
             await sensorsIO.Sequence_Stoper_PrestoperAsync(_cancellationTokenSource, false);
             if (isCancellationRequested) { return; };
-
-
-
 
             await sensorsIO.SecurePallet(_cancellationTokenSource);
             if (isCancellationRequested) { return; };
@@ -501,16 +443,10 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
                             visionSystem.Disconnect();
                             await showMessageAndImage("La inspección número 3 ha sido exitosa.");
                         }
-
-          
-           
                      
-
                         await showMessageAndImage("Por favor, posicione la máscara sobre el housing.", "HousingWithMask.png");
                         await CheckSensorAndWait(() => sensorsIO.MaskOnHousing(), "Esperamos maskhousing");
                         if (isCancellationRequested) { return; };
-
-
 
                         screws = new Screws(sessionApp);
                         getModelScrew();
@@ -613,10 +549,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
                                                         if (isCancellationRequested) { return; };
 
                                                         RewriteResultsOfTightening(lstScrewsToProcess);
-                                                        //await showMessageAndImage($"El segundo intento de atornillado del tornillo número : {tightenincount} ha fallado.Presione OPTO para continuar", "HousingWithMask.png");
-                                                        //RewriteResultsOfTightening(lstScrewsToProcess);
-                                                        //await CheckSensorAndWait(() => sensorsIO.WasPressedOpto(), "Fallo segundo intento de atornillado  ESPERA ACTIVACION DE OPTO");
-
+                                                      
                                                         sensorsIO.ResetScrap();
                                                         sensorsIO.DispenseAScrew();
 
@@ -786,15 +719,6 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
             endOfProcess();
         }
 
-
-        /* 
-        public override async Task StartProcess()
-        {
-            RequestCreateTextBox($"T1: 260 Nw | 50 °", 450, 25);
-            RequestCreateTextBox($"T2: 460 Nw | 10 °",120, -55);
-            await showMessageAndImage("Por favor, posicione la máscara sobre el housing.", @"D:\Repo3\BORGWARNER_SERVOPRESS\BORGWARNER_SERVOPRESS.UI\Resources\Operational_Images\WSAT1\HousingWithMask.png",true);
-        }
-        */
         public async void FinshProcessByErrors()
         {
             try

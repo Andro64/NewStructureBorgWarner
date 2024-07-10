@@ -193,36 +193,16 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
                     {
                         await restoreConectionWithScrewdriverAsync(programValue, eTypePrograms.unscrewing);
                     }
-
-                    //Debug.WriteLine($"Esperando atornillado.");
-                    //#if DEBUG
-                    //                    string response = "02310061001 0000    010000020003STLA_AUTO_L1S12          04                         050006001070000080000090100111120002501300031014000280150000241600000170039618000001900000202024-03-19:18:44:02212024-01-13:20:58:28222230000001525";
-                    //#else
+                                        
                     _cancellationTokenSource.Token.ThrowIfCancellationRequested();
                     string response = await communicationScrewDriver.ResponseScrewDriverAsync(connection);
-                    //#endif
-
+                    
                     screw.tighteningprocess.resultResponse = string.IsNullOrEmpty(response) ? string.Empty : response.Substring(4, 4);
-
-                    //if (string.IsNullOrEmpty(response) || screw.tighteningprocess.resultResponse == "0005" || screw.tighteningprocess.resultResponse == "0061")
-                    //{
-                    //    //Debug.WriteLine("La respuesta del controlador de tornillo está vacía.");
-                    //    continue; // Vuelve al inicio del bucle y solicita la respuesta nuevamente
-                    //}
-
-                    //screw.tighteningprocess.result = screw.tighteningprocess.resultResponse == "0061";
-
-                    Debug.WriteLine($"{DateTime.Now} - Response unscrewing: " + response);
-                    //if (screw.tighteningprocess.result && sensorsIO.ScrewInScrap())
+                                       
                     if (sessionApp.Sensors_M3.Scrap_presence)
                     {
                         screw.tighteningprocess.result = true;
-                        sessionApp.positionErgoArm.endRead = true;
-                        //screw.tighteningprocess.id = response.Substring(221, 10);
-                        //screw.tighteningprocess.Torque = response.Substring(142, 4);
-                        //screw.tighteningprocess.Angle = response.Substring(170, 4);
-                        //screw.tighteningprocess.status = response.Substring(107, 1) == "1" ? true : false;
-                        //screwingResult.status = screw.tighteningprocess.status;
+                        sessionApp.positionErgoArm.endRead = true;                    
                         screwingResult.status = true;
                         timeoutReached = false;
                         break; // Salir del bucle cuando se reciba una respuesta satisfactoria

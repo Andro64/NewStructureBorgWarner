@@ -40,7 +40,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
                 case 9:
                     return new WorkStation_Automatic_Type4();
                 case 10:
-                    return new WorkStation_Manual_Type1(sessionApp);
+                    return new WorkStation_Automatic_Type5(sessionApp);
                 case 11:
                     return new WorkStation_Manual_Type1(sessionApp);
                 case 12:
