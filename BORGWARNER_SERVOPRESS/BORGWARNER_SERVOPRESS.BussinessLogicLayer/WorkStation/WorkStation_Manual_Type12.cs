@@ -548,6 +548,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
                                         ergoArm.startReadPositionRespectScrew(screw);
                                         if (sessionApp.positionErgoArm.InPositionReadyToProcess)
                                         {
+                                            sensorsIO.ResetScrap();
                                             await screwdriver.Unscrewing(ergoArm, screw, _cancellationTokenSource);
                                             RequestRemoveTextBox();
 
@@ -590,7 +591,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
                                                     ergoArm.startReadPositionRespectScrew(screw);
                                                     if (sessionApp.positionErgoArm.InPositionReadyToProcess)
                                                     {
-                                                       
+                                                        sensorsIO.ResetScrap();
                                                         await showMessageAndImage($"Por favor, realice el desatornillado del tornillo número: {tightenincount}.", "HousingWithMask.png");                                                       
                                                         await screwdriver.Unscrewing(ergoArm, screw, _cancellationTokenSource);
                                                         RequestRemoveTextBox();
@@ -631,6 +632,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
                                                                 ergoArm.startReadPositionRespectScrew(screw);
                                                                 if (sessionApp.positionErgoArm.InPositionReadyToProcess)
                                                                 {
+                                                                    sensorsIO.ResetScrap();
                                                                     await showMessageAndImage($"Por favor, realice el desatornillado del tornillo número: {tightenincount}.", "HousingWithMask.png");
                                                                     await screwdriver.Unscrewing(ergoArm, screw, _cancellationTokenSource);
                                                                     RequestRemoveTextBox();
@@ -795,32 +797,39 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
         */
         public async void FinshProcessByErrors()
         {
-            RequestRemoveTextBox();
-            await showMessageAndImage("Retrayendo el candado.", "MGPM25-10Z.png");
-            sensorsIO.RetractPalletClamp();
-            await CheckSensorAndWaitByTime(() => sensorsIO.isRetractedClamp(), "Esperamos CLAMP DE PALLET Retraido por 5 segundos.", 5000);
-            if (!sessionApp.TaksRunExecuting)
+            try
             {
-                isCancellationRequested = true;
-                await showMessageAndImage("El candado no se replegó correctamente. Por favor, reinicie y verifique.");
-            }
-            else
-            {
-                await showMessageAndImage("El candado se replegó correctamente.", "MGPM25-10Z.png");
-                Thread.Sleep(1000);
-                await showMessageAndImage("Esperando la estación 13.");
-                await CheckSensorAndWait(() => sensorsIO.ST13Available(), "Esperamos la estación 13.");
-                if (isCancellationRequested) { return; };
+                RequestRemoveTextBox();
+                await showMessageAndImage("Retrayendo el candado.", "MGPM25-10Z.png");
+                sensorsIO.RetractPalletClamp();
+                await CheckSensorAndWaitByTime(() => sensorsIO.isRetractedClamp(), "Esperamos CLAMP DE PALLET Retraido por 5 segundos.", 5000);
+                if (!sessionApp.TaksRunExecuting)
+                {
+                    isCancellationRequested = true;
+                    await showMessageAndImage("El candado no se replegó correctamente. Por favor, reinicie y verifique.");
+                }
+                else
+                {
+                    await showMessageAndImage("El candado se replegó correctamente.", "MGPM25-10Z.png");
+                    Thread.Sleep(1000);
+                    await showMessageAndImage("Esperando la estación 13.");
+                    await CheckSensorAndWait(() => sensorsIO.ST13Available(), "Esperamos la estación 13.");
+                    if (isCancellationRequested) { return; };
 
-                await showMessageAndImage("Por favor, retire el pallet de la estación.");
-                sensorsIO.StopCylinder();
-                await CheckSensorAndWait(() => sensorsIO.PalletOutStopper(), "Esperamos la estación 13.");
-                if (isCancellationRequested) { return; };
-                await showMessageAndImage("Pallet Retirado.");
-                Thread.Sleep(1000);
-                await showMessageAndImage("¡El ciclo ha concluido exitosamente!");
+                    await showMessageAndImage("Por favor, retire el pallet de la estación.");
+                    sensorsIO.StopCylinder();
+                    await CheckSensorAndWait(() => sensorsIO.PalletOutStopper(), "Esperamos la estación 13.");
+                    if (isCancellationRequested) { return; };
+                    await showMessageAndImage("Pallet Retirado.");
+                    Thread.Sleep(1000);
+                    await showMessageAndImage("¡El ciclo ha concluido exitosamente!");
+                }
+                endOfProcess();
             }
-            endOfProcess();
+            catch(Exception ex)
+            {
+                Debug.WriteLine($"{DateTime.Now} - " + $"Error: { ex.Message }" );
+            }
         }
 
         public void RewriteResultsOfTightening(List<Screw> lstScrewsToProcess)

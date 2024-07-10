@@ -442,10 +442,10 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
         }
         public void ResetScrap()
         {
-            sessionApp.Sensors_M3.K6 = true;
+            sessionApp.Sensors_M3.ReleScrap = true;
             SendDataOutpusM3();
             Thread.Sleep(1000);
-            sessionApp.Sensors_M3.K6 = false;
+            sessionApp.Sensors_M3.ReleScrap = false;
             SendDataOutpusM3();
         }
         private bool isWaiting = true;

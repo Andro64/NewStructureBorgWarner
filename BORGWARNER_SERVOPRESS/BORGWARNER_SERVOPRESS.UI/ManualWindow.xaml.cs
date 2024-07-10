@@ -332,16 +332,18 @@ namespace BORGWARNER_SERVOPRESS.UI
             sessionApp.Sensors_M3.K5 = true;
             tryDevices.TrySendDataSensorsM3();
         }
+        
         private void Card3_ouput6_Click(object sender, RoutedEventArgs e)
         {
             sessionApp.Sensors_M3 = new IOCardType_M3();
-            sessionApp.Sensors_M3.ReleScrap = true;
+            sessionApp.Sensors_M3.K6 = sessionApp.Sensors_M3.K6 == true ?false:true;
             tryDevices.TrySendDataSensorsM3();
         }
         private void Card3_ouput7_Click(object sender, RoutedEventArgs e)
         {
             sessionApp.Sensors_M3 = new IOCardType_M3();
-            sessionApp.Sensors_M3.ReleScrap = true;
+            sessionApp.Sensors_M3.ReleScrap = sessionApp.varReleScrap == true ? false :true;
+            sessionApp.varReleScrap = sessionApp.Sensors_M3.ReleScrap;
             tryDevices.TrySendDataSensorsM3();
         }
         #endregion
