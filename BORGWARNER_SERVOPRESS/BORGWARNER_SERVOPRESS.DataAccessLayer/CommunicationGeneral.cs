@@ -258,5 +258,54 @@ namespace BORGWARNER_SERVOPRESS.DataAccessLayer
 
         }
 
+        public List<ADUPort> getADUPorts()
+        {
+            List<ADUPort> lstconnectionsRobots = new List<ADUPort>();
+            try
+            {
+                MYSQL_DB mYSQL = new MYSQL_DB(sessionApp.connStr);
+                DataTable resultData = mYSQL.ExecuteSP("SP_GET_ADUPORTS");
+                lstconnectionsRobots = resultData.AsEnumerable().Select(row =>
+                new ADUPort
+                {
+                    id = row.Field<int>("id"),
+                    IOCard = row.Field<string>("IOCard"),
+                    label = row.Field<string>("label"),
+                    id_ADU = row.Field<int>("id_ADU"),
+                    id_index = row.Field<int>("id_index"),
+                    id_routine = row.Field<string>("id_routine")
+                }).ToList();
+
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"{DateTime.Now} - " + ex.Message);
+                throw;
+            }
+            return lstconnectionsRobots;
+        }
+
+        public int getAmaountADUPorts()
+        {
+            DataTable resultData;
+            int result = 0;
+            try
+            {
+                MYSQL_DB mYSQL = new MYSQL_DB(sessionApp.connStr);
+                resultData = mYSQL.ExecuteSP("SP_GET_AMAOUNT_ADUS");
+                if (resultData.Rows.Count > 0)
+                {
+                    var resultQuery = resultData.Rows[0][0];
+                    result = Convert.ToInt32(resultQuery);
+                }
+
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"{DateTime.Now} - " + ex.Message);
+                throw;
+            }
+            return result;
+        }
     }
 }

@@ -44,6 +44,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ActionModel.cs" />
+    <Compile Include="ADUPort.cs" />
+    <Compile Include="ADU_Generic.cs" />
     <Compile Include="Camara.cs" />
     <Compile Include="CommandCamara.cs" />
     <Compile Include="ConnectionWorkStation.cs" />
@@ -58,6 +60,7 @@
     <Compile Include="IOCardType_M1.cs" />
     <Compile Include="IOCardType_M2.cs" />
     <Compile Include="IOCardType_M3.cs" />
+    <Compile Include="IOSensors.cs" />
     <Compile Include="ModelScrew.cs" />
     <Compile Include="PositionErgoArm.cs" />
     <Compile Include="Programs_ScrewDriver.cs" />

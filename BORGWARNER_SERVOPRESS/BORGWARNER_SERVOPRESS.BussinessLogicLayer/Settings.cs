@@ -68,5 +68,14 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
 
             return result;
         }
+        public List<ADUPort> GetADUPorts()
+        {
+            return communication.getADUPorts();
+        }
+
+        public int GetAmountADUPorts()
+        {
+            return communication.getAmaountADUPorts();
+        }
     }
 }

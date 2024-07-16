@@ -28,6 +28,12 @@ namespace BORGWARNER_SERVOPRESS.UI
             sessionApp.settings = settingsGeneral.getSettings(sessionApp.typeWorkstation.id);
             sessionApp.connectionsWorkStation = settingsGeneral.getConnections(sessionApp.typeWorkstation.id);
             sessionApp.commandCamaras = settingsGeneral.getCommandCamera();
+            sessionApp.ADUPorts = settingsGeneral.GetADUPorts();
+            sessionApp.amountADUPorts = settingsGeneral.GetAmountADUPorts();
+            if (sessionApp.ADUPorts.Count == 0)
+            {
+                MessageBox.Show("La estación no cuenta con ADUS configuradas. Por favor revise la base de datos", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
 
             if (sessionApp.settings.FirstOrDefault(x => x.setting.Equals("Path_LOG")) != null)
             {

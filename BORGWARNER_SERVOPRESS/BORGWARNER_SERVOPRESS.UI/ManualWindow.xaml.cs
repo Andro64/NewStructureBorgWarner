@@ -7,8 +7,10 @@ using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Shapes;
 
 namespace BORGWARNER_SERVOPRESS.UI
 {
@@ -33,8 +35,249 @@ namespace BORGWARNER_SERVOPRESS.UI
             sessionApp = _sessionApp;
             InitializeComponent();
             initialize();
+            Window_Initialize();
+        }
+        private void Window_Initialize()
+        {
+            CreateElements();
+            CreateElements2();
+            CreateElements3();
+        }
+        private void CreateElements()
+        {
+            Style baseButtonStyle = this.FindResource("BaseButton") as Style;
+            for (int row = 0; row < 4; row++)
+            {
+                // Columna 0: Ellipse
+                Ellipse ellipse1 = new Ellipse
+                {
+                    Width = 20,
+                    Height = 20,
+                    Fill = Brushes.Gray,
+                    //Margin = new Thickness(5)
+                };
+                Grid.SetRow(ellipse1, row);
+                Grid.SetColumn(ellipse1, 0);
+                MainGrid.Children.Add(ellipse1);
+
+                // Columna 1: Label
+                Label label1 = new Label
+                {
+                    Content = $"Descripción {row + 1}A",
+                    HorizontalAlignment = HorizontalAlignment.Left,
+                    VerticalAlignment = VerticalAlignment.Center
+                };
+                Grid.SetRow(label1, row);
+                Grid.SetColumn(label1, 1);
+                MainGrid.Children.Add(label1);
+
+                // Columna 2: Ellipse
+                Ellipse ellipse2 = new Ellipse
+                {
+                    Width = 20,
+                    Height = 20,
+                    Fill = Brushes.Gray,
+                    //Margin = new Thickness(5)
+                };
+                Grid.SetRow(ellipse2, row);
+                Grid.SetColumn(ellipse2, 2);
+                MainGrid.Children.Add(ellipse2);
+
+                // Columna 3: Label
+                Label label2 = new Label
+                {
+                    Content = $"Descripción {row + 1}B",
+                    HorizontalAlignment = HorizontalAlignment.Left,
+                    VerticalAlignment = VerticalAlignment.Center
+                };
+                Grid.SetRow(label2, row);
+                Grid.SetColumn(label2, 3);
+                MainGrid.Children.Add(label2);
+
+                // Columna 4: Button
+                Button button1 = new Button
+                {
+                    Content = $"Botón {row * 2 + 1}",
+                    //Margin = new Thickness(5),
+                    //Padding = new Thickness(10),
+                    Style = baseButtonStyle
+                };
+                button1.Click += (s, e) => MessageBox.Show($"{button1.Content} fue presionado.", "Información", MessageBoxButton.OK, MessageBoxImage.Information);
+                Grid.SetRow(button1, row);
+                Grid.SetColumn(button1, 4);
+                MainGrid.Children.Add(button1);
+
+                // Columna 5: Button
+                Button button2 = new Button
+                {
+                    Content = $"Botón {row * 2 + 2}",
+                    //Margin = new Thickness(5),
+                    //Padding = new Thickness(10),
+                    Style = baseButtonStyle
+                };
+                button2.Click += (s, e) => MessageBox.Show($"{button2.Content} fue presionado.", "Información", MessageBoxButton.OK, MessageBoxImage.Information);
+                Grid.SetRow(button2, row);
+                Grid.SetColumn(button2, 5);
+                MainGrid.Children.Add(button2);
+            }
+        }
+        private void CreateElements2()
+        {
+            Style baseButtonStyle = this.FindResource("BaseButton") as Style;
+            for (int row = 0; row < 4; row++)
+            {
+                // Columna 0: Ellipse
+                Ellipse ellipse1 = new Ellipse
+                {
+                    Width = 20,
+                    Height = 20,
+                    Fill = Brushes.Gray,
+                    //Margin = new Thickness(5)
+                };
+                Grid.SetRow(ellipse1, row);
+                Grid.SetColumn(ellipse1, 0);
+                MainGrid2.Children.Add(ellipse1);
+
+                // Columna 1: Label
+                Label label1 = new Label
+                {
+                    Content = $"Descripción {row + 1}A",
+                    HorizontalAlignment = HorizontalAlignment.Left,
+                    VerticalAlignment = VerticalAlignment.Center
+                };
+                Grid.SetRow(label1, row);
+                Grid.SetColumn(label1, 1);
+                MainGrid2.Children.Add(label1);
+
+                // Columna 2: Ellipse
+                Ellipse ellipse2 = new Ellipse
+                {
+                    Width = 20,
+                    Height = 20,
+                    Fill = Brushes.Gray,
+                    //Margin = new Thickness(5)
+                };
+                Grid.SetRow(ellipse2, row);
+                Grid.SetColumn(ellipse2, 2);
+                MainGrid2.Children.Add(ellipse2);
+
+                // Columna 3: Label
+                Label label2 = new Label
+                {
+                    Content = $"Descripción {row + 1}B",
+                    HorizontalAlignment = HorizontalAlignment.Left,
+                    VerticalAlignment = VerticalAlignment.Center
+                };
+                Grid.SetRow(label2, row);
+                Grid.SetColumn(label2, 3);
+                MainGrid2.Children.Add(label2);
+
+                // Columna 4: Button
+                Button button1 = new Button
+                {
+                    Content = $"Botón {row * 2 + 1}",
+                    //Margin = new Thickness(5),
+                    //Padding = new Thickness(10),
+                    Style = baseButtonStyle
+                };
+                button1.Click += (s, e) => MessageBox.Show($"{button1.Content} fue presionado.", "Información", MessageBoxButton.OK, MessageBoxImage.Information);
+                Grid.SetRow(button1, row);
+                Grid.SetColumn(button1, 4);
+                MainGrid2.Children.Add(button1);
+
+                // Columna 5: Button
+                Button button2 = new Button
+                {
+                    Content = $"Botón {row * 2 + 2}",
+                    //Margin = new Thickness(5),
+                    //Padding = new Thickness(10),
+                    Style = baseButtonStyle
+                };
+                button2.Click += (s, e) => MessageBox.Show($"{button2.Content} fue presionado.", "Información", MessageBoxButton.OK, MessageBoxImage.Information);
+                Grid.SetRow(button2, row);
+                Grid.SetColumn(button2, 5);
+                MainGrid2.Children.Add(button2);
+            }
         }
 
+        private void CreateElements3()
+        {
+            Style baseButtonStyle = this.FindResource("BaseButton") as Style;
+            for (int row = 0; row < 4; row++)
+            {
+                // Columna 0: Ellipse
+                Ellipse ellipse1 = new Ellipse
+                {
+                    Width = 20,
+                    Height = 20,
+                    Fill = Brushes.Gray,
+                    //Margin = new Thickness(5)
+                };
+                Grid.SetRow(ellipse1, row);
+                Grid.SetColumn(ellipse1, 0);
+                MainGrid3.Children.Add(ellipse1);
+
+                // Columna 1: Label
+                Label label1 = new Label
+                {
+                    Content = $"Descripción {row + 1}A",
+                    HorizontalAlignment = HorizontalAlignment.Left,
+                    VerticalAlignment = VerticalAlignment.Center
+                };
+                Grid.SetRow(label1, row);
+                Grid.SetColumn(label1, 1);
+                MainGrid3.Children.Add(label1);
+
+                // Columna 2: Ellipse
+                Ellipse ellipse2 = new Ellipse
+                {
+                    Width = 20,
+                    Height = 20,
+                    Fill = Brushes.Gray,
+                    //Margin = new Thickness(5)
+                };
+                Grid.SetRow(ellipse2, row);
+                Grid.SetColumn(ellipse2, 2);
+                MainGrid3.Children.Add(ellipse2);
+
+                // Columna 3: Label
+                Label label2 = new Label
+                {
+                    Content = $"Descripción {row + 1}B",
+                    HorizontalAlignment = HorizontalAlignment.Left,
+                    VerticalAlignment = VerticalAlignment.Center
+                };
+                Grid.SetRow(label2, row);
+                Grid.SetColumn(label2, 3);
+                MainGrid3.Children.Add(label2);
+
+                // Columna 4: Button
+                Button button1 = new Button
+                {
+                    Content = $"Botón {row * 2 + 1}",
+                    //Margin = new Thickness(5),
+                    //Padding = new Thickness(10),
+                    Style = baseButtonStyle
+                };
+                button1.Click += (s, e) => MessageBox.Show($"{button1.Content} fue presionado.", "Información", MessageBoxButton.OK, MessageBoxImage.Information);
+                Grid.SetRow(button1, row);
+                Grid.SetColumn(button1, 4);
+                MainGrid3.Children.Add(button1);
+
+                // Columna 5: Button
+                Button button2 = new Button
+                {
+                    Content = $"Botón {row * 2 + 2}",
+                    //Margin = new Thickness(5),
+                    //Padding = new Thickness(10),
+                    Style = baseButtonStyle
+                };
+                button2.Click += (s, e) => MessageBox.Show($"{button2.Content} fue presionado.", "Información", MessageBoxButton.OK, MessageBoxImage.Information);
+                Grid.SetRow(button2, row);
+                Grid.SetColumn(button2, 5);
+                MainGrid3.Children.Add(button2);
+            }
+        }
         public void initialize()
         {
             viewManual = new ViewManual(sessionApp);
@@ -523,6 +766,7 @@ namespace BORGWARNER_SERVOPRESS.UI
             catch (Exception ex)
             {
                 Debug.WriteLine($"{DateTime.Now} - Error" + ex.Message);
+                MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);                
             }
         }
 
