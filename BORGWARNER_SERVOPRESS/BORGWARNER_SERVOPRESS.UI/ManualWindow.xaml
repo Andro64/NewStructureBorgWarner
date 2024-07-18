@@ -230,7 +230,7 @@
                                             </Grid>
                                         </GroupBox>
 
-                                        <GroupBox x:Name="Ontrak_2" Style="{StaticResource SimpleGroupBox}" Header="Ontrak Card 2 I/O" Grid.Row="2">
+                                        <GroupBox x:Name="Ontrak_2" Style="{StaticResource SimpleGroupBox}" Header="Ontrak Card 2 I/O"  Grid.Row="2">
                                             <Grid>
                                                 <Grid.ColumnDefinitions>
                                                     <ColumnDefinition Width="auto"/>
@@ -318,8 +318,8 @@
                                             </Grid>
                                         </GroupBox>
 
-                                        <GroupBox x:Name="Ontrak_Gen" Style="{StaticResource SimpleGroupBox}" Header="Ontrak ................................. Card Generic I/O" Grid.Row="4">
-                                            <Grid x:Name="MainGrid" ShowGridLines="false">
+                                        <GroupBox x:Name="Ontrak_Gen1" Style="{StaticResource SimpleGroupBox}" Header="Ontrak ................................. Card Generic I/O" Visibility="Hidden" Grid.Row="4">
+                                            <Grid x:Name="MainGrid1" ShowGridLines="false">
                                                 <Grid.ColumnDefinitions>
                                                     <ColumnDefinition Width="auto"/>
                                                     <ColumnDefinition />
@@ -337,7 +337,7 @@
                                             </Grid>
                                         </GroupBox>
 
-                                        <GroupBox x:Name="Ontrak_Gen2" Style="{StaticResource SimpleGroupBox}" Header="Ontrak ................................. Card Generic 2 I/O" Grid.Row="5">
+                                        <GroupBox x:Name="Ontrak_Gen2" Style="{StaticResource SimpleGroupBox}" Header="Ontrak ................................. Card Generic 2 I/O"  Visibility="Hidden" Grid.Row="5">
                                             <Grid x:Name="MainGrid2" ShowGridLines="false">
                                                 <Grid.ColumnDefinitions>
                                                     <ColumnDefinition Width="auto"/>
@@ -355,7 +355,7 @@
                                                 </Grid.RowDefinitions>
                                             </Grid>
                                         </GroupBox>
-                                        <GroupBox x:Name="Ontrak_Gen3" Style="{StaticResource SimpleGroupBox}" Header="Ontrak ................................. Card Generic 3 I/O" Grid.Row="6">
+                                        <GroupBox x:Name="Ontrak_Gen3" Style="{StaticResource SimpleGroupBox}" Header="Ontrak ................................. Card Generic 3 I/O"  Visibility="Hidden" Grid.Row="6">
                                             <Grid x:Name="MainGrid3" ShowGridLines="false">
                                                 <Grid.ColumnDefinitions>
                                                     <ColumnDefinition Width="auto"/>

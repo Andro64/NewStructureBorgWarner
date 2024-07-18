@@ -16,16 +16,19 @@ namespace BORGWARNER_SERVOPRESS.DataModel
         public bool Cyl_Pin_LH_Ret_Sensor { get; set; }
         public bool Cyl_Pin_RH_Ext_Sensor { get; set; }
         public bool Cyl_Pin_RH_Ret_Sensor { get; set; }
+        //public bool Cyl_Pres_Stopper { get; set; }
         public bool CylFixingExtd { get; set; }
         public bool CylFixingRetd { get; set; }
         public bool E_Stop { get; set; }
+        public bool E_Stop_Active { get; set; }
         public bool Estop_signal { get; set; }
         public bool HousingatPallet { get; set; }
         public bool Interlock_Back { get; set; }
         public bool Interlock_Front { get; set; }
         public bool Interlock_Signal { get; set; }
         public bool Main_Pressure { get; set; }
-        public bool Mask_In_Holder { get; set; }
+        public bool MaskInHolder { get; set; }
+        //public bool Mask_In_Holder { get; set; }
         public bool MaskatHolder { get; set; }
         public bool MaskatHousing { get; set; }
         public bool NOk_DigiForce1 { get; set; }
@@ -51,6 +54,7 @@ namespace BORGWARNER_SERVOPRESS.DataModel
         public bool PiezaNOK_ST04 { get; set; }
         public bool PrestopperInTunnel { get; set; }
         public bool Prestopper_Pallet_Present { get; set; }
+        public bool Pressure_Sensor { get; set; }
         public bool Rework_Screw { get; set; }
         public bool Ready_Digi1 { get; set; }
         public bool Ready_Digi2 { get; set; }
@@ -70,8 +74,19 @@ namespace BORGWARNER_SERVOPRESS.DataModel
         public bool ST13Available { get; set; }
         public bool ST15Available { get; set; }
         public bool ST17AAvailable { get; set; }
+        public bool Stopper_Pallet_Present { get; set; }
         public bool Trigger_Scanner { get; set; }
         public bool UltraCapBoardReadytoScan { get; set; }
+
+        public bool PA1 { get; set; }
+        public bool PA2 { get; set; }
+        public bool PA3 { get; set; }
+        public bool PA4 { get; set; }
+
+        public bool PB1 { get; set; }
+        public bool PB2 { get; set; }
+        public bool PB3 { get; set; }
+        public bool PB4 { get; set; }
 
         public bool PA0_1 { get; set; }
         public bool PA0_2 { get; set; }
@@ -113,6 +128,35 @@ namespace BORGWARNER_SERVOPRESS.DataModel
         public bool PB3_3 { get; set; }
         public bool PB3_4 { get; set; }
 
+
+        #region OutPuts
+        public bool Opto_Grn { get; set; }
+        public bool Opto_Yllw { get; set; }
+        public bool Opto_Red { get; set; }
+        public bool Reset_Signal { get; set; }
+        public bool K4_1 { get; set; }
+        public bool ScrewDispenser { get; set; }
+        public bool Vacuum { get; set; }
+        public bool K7_1 { get; set; }
+
+        public bool PalletFixingExt { get; set; }
+        public bool PalletFixingRet { get; set; }
+        public bool Cyl_Stopper { get; set; }
+        public bool Cyl_Pres_Stopper { get; set; }
+        public bool K4_2 { get; set; }
+        public bool K5_2 { get; set; }
+        public bool K6_2 { get; set; }
+        public bool K7_2 { get; set; }
+
+        public bool ST12Available { get; set; }
+        public bool LampRCam { get; set; }
+        public bool LampLCam { get; set; }
+        public bool K3_3 { get; set; }
+        public bool K4_3 { get; set; }
+        public bool K5_3 { get; set; }
+        public bool K6_3 { get; set; }
+        public bool ReleScrap { get; set; }
+        #endregion
 
     }
 }

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
 {
-    public class SensorsIO
+    public class SensorsIOGeneric
     {
         SessionApp sessionApp;
 
@@ -16,9 +16,9 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
         CancellationTokenSource cancellationToken_ioCard1;
         CancellationTokenSource cancellationToken_ioCard2;
         CancellationTokenSource cancellationToken_ioCard3;
-        public  ManualResetEvent continueScrewFunction = new ManualResetEvent(true);
+        public ManualResetEvent continueScrewFunction = new ManualResetEvent(true);
         CancellationTokenSource cancellationToken_ScrewFunction;
-        public SensorsIO(SessionApp _sessionApp)
+        public SensorsIOGeneric(SessionApp _sessionApp)
         {
             sessionApp = _sessionApp;
             initialize();
@@ -68,8 +68,8 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
 
             //Thread monitorThread_Mask = new Thread(() => WaitingMonitorMaskOnHousing());
             //monitorThread_Mask.Start();
-           //Thread monitorThread_MaskInHousing = new Thread(() => MonitorMaskOnHousing());
-           //monitorThread_MaskInHousing.Start();
+            //Thread monitorThread_MaskInHousing = new Thread(() => MonitorMaskOnHousing());
+            //monitorThread_MaskInHousing.Start();
 
 
             //Thread monitorThread_Position = new Thread(() => MonitorPosition());
@@ -104,49 +104,57 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
         }
         public bool PalletInPreStopper()
         {
-            return sessionApp.Sensors_M1.Pallet_Pre_Stopper;
+            return sessionApp.IOSensorsGenerics.Pallet_Pre_Stopper;
+            //return sessionApp.Sensors_M1.Pallet_Pre_Stopper;
         }
         public bool PalletInStopper()
         {
+            return sessionApp.IOSensorsGenerics.Pallet_Stopper && sessionApp.IOSensorsGenerics.SecurityOK && sessionApp.IOSensorsGenerics.Main_Pressure;
             //await Sequence_Stoper_PrestoperAsync(cancellationTokenSource);
-            return sessionApp.Sensors_M1.Pallet_Stopper && sessionApp.Sensors_M1.SecurityOK && sessionApp.Sensors_M1.Main_Pressure;
+            //return sessionApp.Sensors_M1.Pallet_Stopper && sessionApp.Sensors_M1.SecurityOK && sessionApp.Sensors_M1.Main_Pressure;            
         }
         public bool PalletOutStopper()
         {
             isWaiting = true;
-            return (!sessionApp.Sensors_M1.Pallet_Stopper) && sessionApp.Sensors_M1.SecurityOK && sessionApp.Sensors_M1.Main_Pressure;
+            return (!sessionApp.IOSensorsGenerics.Pallet_Stopper) && sessionApp.IOSensorsGenerics.SecurityOK && sessionApp.IOSensorsGenerics.Main_Pressure;
+            //return (!sessionApp.Sensors_M1.Pallet_Stopper) && sessionApp.Sensors_M1.SecurityOK && sessionApp.Sensors_M1.Main_Pressure;
         }
         public bool WaitingForProduct(CancellationTokenSource cancellationTokenSource, bool isProcessFinished)
         {
             Sequence_Stoper_PrestoperAsync(cancellationTokenSource, isProcessFinished);
-            return sessionApp.Sensors_M1.Pallet_Stopper && sessionApp.Sensors_M1.SecurityOK && sessionApp.Sensors_M1.Main_Pressure;
+            return sessionApp.IOSensorsGenerics.Pallet_Stopper && sessionApp.IOSensorsGenerics.SecurityOK && sessionApp.IOSensorsGenerics.Main_Pressure;
+            //return sessionApp.Sensors_M1.Pallet_Stopper && sessionApp.Sensors_M1.SecurityOK && sessionApp.Sensors_M1.Main_Pressure;
         }
         public async Task Sequence_Stoper_PrestoperAsync(CancellationTokenSource cancellationTokenSource, bool isProcessFinished)
         {
             #region Escenario 1
-            if (!sessionApp.Sensors_M1.Pallet_Pre_Stopper && !sessionApp.Sensors_M1.Pallet_Stopper)
+            //if (!sessionApp.Sensors_M1.Pallet_Pre_Stopper && !sessionApp.Sensors_M1.Pallet_Stopper)
+            if (!sessionApp.IOSensorsGenerics.Pallet_Pre_Stopper && !sessionApp.IOSensorsGenerics.Pallet_Stopper)
             {
-                
-                await SecurePallet_PreStopper_By_Time(cancellationTokenSource, 500);                
+
+                await SecurePallet_PreStopper_By_Time(cancellationTokenSource, 500);
                 await SecurePallet_Stopper_By_Time(cancellationTokenSource, 500);
             }
-            if (sessionApp.Sensors_M1.Pallet_Pre_Stopper && !sessionApp.Sensors_M1.Pallet_Stopper)
-            {                
+            //if (sessionApp.Sensors_M1.Pallet_Pre_Stopper && !sessionApp.Sensors_M1.Pallet_Stopper)
+            if (sessionApp.IOSensorsGenerics.Pallet_Pre_Stopper && !sessionApp.IOSensorsGenerics.Pallet_Stopper)
+            {
                 await UnSecurePallet_PreStopper_By_Time(cancellationTokenSource, 500);
             }
-            if (!sessionApp.Sensors_M1.Pallet_Pre_Stopper && sessionApp.Sensors_M1.Pallet_Stopper)
-            {                
+            //if (!sessionApp.Sensors_M1.Pallet_Pre_Stopper && sessionApp.Sensors_M1.Pallet_Stopper)
+            if (!sessionApp.IOSensorsGenerics.Pallet_Pre_Stopper && sessionApp.IOSensorsGenerics.Pallet_Stopper)
+            {
                 await SecurePallet_PreStopper_By_Time(cancellationTokenSource, 500);
             }
-            if (sessionApp.Sensors_M1.Pallet_Pre_Stopper && sessionApp.Sensors_M1.Pallet_Stopper)
-            {                
-                await SecurePallet_PreStopper_By_Time(cancellationTokenSource, 500);                
+            //if (sessionApp.Sensors_M1.Pallet_Pre_Stopper && sessionApp.Sensors_M1.Pallet_Stopper)
+            if (sessionApp.IOSensorsGenerics.Pallet_Pre_Stopper && sessionApp.IOSensorsGenerics.Pallet_Stopper)
+            {
+                await SecurePallet_PreStopper_By_Time(cancellationTokenSource, 500);
                 await SecurePallet_Stopper_By_Time(cancellationTokenSource, 500);
             }
             if (isProcessFinished)
-            {                
-                await SecurePallet_PreStopper_By_Time(cancellationTokenSource, 500);                
-                await UnSecurePallet_Stopper_By_Time(cancellationTokenSource, 500);                
+            {
+                await SecurePallet_PreStopper_By_Time(cancellationTokenSource, 500);
+                await UnSecurePallet_Stopper_By_Time(cancellationTokenSource, 500);
                 Thread.Sleep(5000);
                 await SecurePallet_Stopper_By_Time(cancellationTokenSource, 500);
             }
@@ -154,7 +162,8 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
         }
         public async Task SecurePallet_PreStopper_By_Time(CancellationTokenSource cancellationTokenSource, int milliseconds)
         {
-            sessionApp.Sensors_M2.Cyl_Pres_Stopper = false;
+            //sessionApp.Sensors_M2.Cyl_Pres_Stopper = false;
+            sessionApp.IOSensorsGenerics.Cyl_Pres_Stopper = false;
             SendDataOutpusM2();
 
             var timer = new System.Timers.Timer(milliseconds);
@@ -241,7 +250,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
                 {
                     sessionApp.Sensors_M2.Cyl_Pres_Stopper = true;
                     sessionApp.Sensors_M2.Cyl_Stopper = true;
-                    SendDataOutpusM2();                  
+                    SendDataOutpusM2();
                 }
                 while (sessionApp.Sensors_M1.Pallet_Stopper && sessionApp.Sensors_M1.Main_Pressure)
                 {
@@ -249,7 +258,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
                 }
             }, cancellationTokenSource.Token);
         }
-        
+
         public void ExtendedPalletClamp()
         {
             sessionApp.Sensors_M2.PalletFixingRet = false;
@@ -277,7 +286,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
         public bool PlacedHousing()
         {
             isWaiting = true;
-            return sessionApp.Sensors_M1.Pallet_Pre_Stopper;            
+            return sessionApp.Sensors_M1.Pallet_Pre_Stopper;
         }
         public bool isTriggerScanner()
         {
@@ -286,7 +295,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
         }
         public bool isOutPieceHDVC()
         {
-            isWaiting = true;            
+            isWaiting = true;
             return !sessionApp.Sensors_M2.Trigger_Scanner;
         }
         public bool ST13Available()
@@ -307,7 +316,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
         }
         public bool WasPressedOpto()
         {
-            isWaiting = true;            
+            isWaiting = true;
             return sessionApp.Sensors_M1.OptoBtn;
         }
         public bool UltraCapBoardReadyToScan()
@@ -316,20 +325,20 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
         }
         public bool MaskOnHousing()
         {
-           bool value = false;           
-            value = sessionApp.Sensors_M2.MaskatHousing;            
+            bool value = false;
+            value = sessionApp.Sensors_M2.MaskatHousing;
             return value;
 
         }
-        public async Task  MonitorMaskOnHousing()
+        public async Task MonitorMaskOnHousing()
         {
-            while(!cancellationToken_ScrewFunction.IsCancellationRequested)
+            while (!cancellationToken_ScrewFunction.IsCancellationRequested)
             {
-                if(sessionApp.Sensors_M2.MaskatHousing)
+                if (sessionApp.Sensors_M2.MaskatHousing)
                 {
                     sessionApp.MessageOfProcess = $"Por favor, realice el atornillado ";
                     continueScrewFunction.Set();
-                    Debug.WriteLine("La función principal se ha reanudado por que tiene la mascara");                                    
+                    Debug.WriteLine("La función principal se ha reanudado por que tiene la mascara");
                 }
                 else
                 {
@@ -413,6 +422,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
         }
         public void ActivateSignalToScrewDispenser()
         {
+            sessionApp.IOSensorsGenerics.Pallet_Pre_Stopper.ToString();
             sessionApp.Sensors_M1.ScrewDispenser = true;
             ioCard_Type_M1.sendDataOutput();
         }
@@ -425,7 +435,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
         {
             sessionApp.Sensors_M1.Vacuum = false;
             SendDataOutpusM1();
-            
+
         }
         public void ActivateVacumm_by_time(int miliseconds)
         {
@@ -470,7 +480,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
             {
                 while (!sensorToCheck() && isWaiting)
                 {
-                   
+
                     cancellationTokenSource.Token.ThrowIfCancellationRequested();
                     //Debug.WriteLine("Esperando......");
                     await Task.Delay(5);
@@ -483,7 +493,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
             }
         }
         public async Task WaitingResponseByTime(CancellationTokenSource cancellationTokenSource, Func<bool> sensorToCheck, int time)
-        {           
+        {
             await Task.Run(async () =>
             {
                 var stopwatch = Stopwatch.StartNew();
@@ -502,7 +512,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
             }, cancellationTokenSource.Token);
             if (!sensorToCheck())
             {
-                Debug.WriteLine("Ya no estoy esperando.");                
+                Debug.WriteLine("Ya no estoy esperando.");
             }
         }
         public void StopWaiting()

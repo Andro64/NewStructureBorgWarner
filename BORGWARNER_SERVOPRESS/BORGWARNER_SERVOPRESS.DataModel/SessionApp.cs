@@ -43,5 +43,7 @@ namespace BORGWARNER_SERVOPRESS.DataModel
         public bool varReleScrap { get; set; }
         public List<ADUPort> ADUPorts { get; set; }
         public int amountADUPorts { get; set; }
+        public ADU_Generic CardInputGeneric { get; set; } = new ADU_Generic();
+        public IOSensors IOSensorsGenerics { get; set; } = new IOSensors();
     }
 }

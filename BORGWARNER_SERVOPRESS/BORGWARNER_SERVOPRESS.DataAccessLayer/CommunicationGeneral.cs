@@ -270,6 +270,7 @@ namespace BORGWARNER_SERVOPRESS.DataAccessLayer
                 {
                     id = row.Field<int>("id"),
                     IOCard = row.Field<string>("IOCard"),
+                    keySensor = row.Field<string>("keySensor"),
                     label = row.Field<string>("label"),
                     id_ADU = row.Field<int>("id_ADU"),
                     id_index = row.Field<int>("id_index"),

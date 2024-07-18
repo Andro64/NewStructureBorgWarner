@@ -4,6 +4,8 @@ using BORGWARNER_SERVOPRESS.DataModel;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -29,255 +31,233 @@ namespace BORGWARNER_SERVOPRESS.UI
         private CancellationTokenSource cancelllationToken_Brushes_Sensor = new CancellationTokenSource();
         private SolidColorBrush ellipseBrush = new SolidColorBrush(Colors.Black);
         private bool isRunningBrushes = false;
+        private const int rowsByGroupBox = 4;
+        private const int ellipseWidth = 20;
+        private const int ellipseHeight = 20;
 
         public ManualWindow(SessionApp _sessionApp)
         {
             sessionApp = _sessionApp;
             InitializeComponent();
             initialize();
-            Window_Initialize();
+            //Window_Initialize();
+        }
+
+        public static string FixEncoding(string input)
+        {
+            // Decodificar los bytes mal interpretados (ISO-8859-1)
+            byte[] bytes = Encoding.GetEncoding("ISO-8859-1").GetBytes(input);
+            // Convertir a la codificación correcta (UTF-8)
+            string correctlyEncoded = Encoding.UTF8.GetString(bytes);
+            return correctlyEncoded;
         }
         private void Window_Initialize()
         {
-            CreateElements();
-            CreateElements2();
-            CreateElements3();
+            for (int numADU = 1; numADU <= sessionApp.amountADUPorts; numADU++)
+            {
+                GenerateADUGroup(numADU);
+            }
         }
-        private void CreateElements()
+        private void GenerateADUGroup(int numADU)
         {
+            Grid gridContent = (Grid)this.FindName($"MainGrid{numADU}");
+            GroupBox groupBox = (GroupBox)this.FindName($"Ontrak_Gen{numADU}");
+            groupBox.Visibility = Visibility.Visible;
             Style baseButtonStyle = this.FindResource("BaseButton") as Style;
-            for (int row = 0; row < 4; row++)
+            int count = sessionApp.ADUPorts.Count;
+            for (int row = 0; row < rowsByGroupBox; row++)
             {
                 // Columna 0: Ellipse
                 Ellipse ellipse1 = new Ellipse
                 {
-                    Width = 20,
-                    Height = 20,
-                    Fill = Brushes.Gray,
-                    //Margin = new Thickness(5)
+                    Uid = $"Card{numADU}_Input_{row}",
+                    Name = $"eCard{numADU}_Input_{row}",
+                    Width = ellipseWidth,
+                    Height = ellipseHeight,
+                    Fill = Brushes.Gray                    
                 };
                 Grid.SetRow(ellipse1, row);
                 Grid.SetColumn(ellipse1, 0);
-                MainGrid.Children.Add(ellipse1);
+                gridContent.Children.Add(ellipse1);
 
                 // Columna 1: Label
                 Label label1 = new Label
                 {
-                    Content = $"Descripción {row + 1}A",
+                    Content = FixEncoding(sessionApp.ADUPorts.Find(x=> x.IOCard.Equals($"Card{numADU}_Input_{row}")).label),
                     HorizontalAlignment = HorizontalAlignment.Left,
                     VerticalAlignment = VerticalAlignment.Center
                 };
                 Grid.SetRow(label1, row);
                 Grid.SetColumn(label1, 1);
-                MainGrid.Children.Add(label1);
+                gridContent.Children.Add(label1);
 
                 // Columna 2: Ellipse
                 Ellipse ellipse2 = new Ellipse
                 {
-                    Width = 20,
-                    Height = 20,
-                    Fill = Brushes.Gray,
-                    //Margin = new Thickness(5)
+                    Uid = $"Card{numADU}_Input_{row + 4}",
+                    Name = $"eCard{numADU}_Input_{row + 4}",
+                    Width = ellipseWidth,
+                    Height = ellipseHeight,
+                    Fill = Brushes.Gray                    
                 };
                 Grid.SetRow(ellipse2, row);
                 Grid.SetColumn(ellipse2, 2);
-                MainGrid.Children.Add(ellipse2);
+                gridContent.Children.Add(ellipse2);
 
                 // Columna 3: Label
                 Label label2 = new Label
                 {
-                    Content = $"Descripción {row + 1}B",
+                    Content = FixEncoding(sessionApp.ADUPorts.Find(x => x.IOCard.Equals($"Card{numADU}_Input_{row + 4}")).label),                    
                     HorizontalAlignment = HorizontalAlignment.Left,
                     VerticalAlignment = VerticalAlignment.Center
                 };
                 Grid.SetRow(label2, row);
                 Grid.SetColumn(label2, 3);
-                MainGrid.Children.Add(label2);
+                gridContent.Children.Add(label2);
 
                 // Columna 4: Button
                 Button button1 = new Button
                 {
-                    Content = $"Botón {row * 2 + 1}",
-                    //Margin = new Thickness(5),
-                    //Padding = new Thickness(10),
-                    Style = baseButtonStyle
+                    Content = FixEncoding(sessionApp.ADUPorts.Find(x => x.IOCard.Equals($"Card{numADU}_Output_{row}")).label),
+                    Style = baseButtonStyle,
+                    Uid = $"Card{numADU}_Output_{row}",
+                    Name = $"bCard{numADU}_Output_{row}",
                 };
-                button1.Click += (s, e) => MessageBox.Show($"{button1.Content} fue presionado.", "Información", MessageBoxButton.OK, MessageBoxImage.Information);
+                //button1.Click += (s, e) => MessageBox.Show($"{button1.Content} fue presionado.", "Información", MessageBoxButton.OK, MessageBoxImage.Information);
+                button1.Click += ADUButton_Click;
                 Grid.SetRow(button1, row);
                 Grid.SetColumn(button1, 4);
-                MainGrid.Children.Add(button1);
+                gridContent.Children.Add(button1);
 
                 // Columna 5: Button
                 Button button2 = new Button
                 {
-                    Content = $"Botón {row * 2 + 2}",
-                    //Margin = new Thickness(5),
-                    //Padding = new Thickness(10),
-                    Style = baseButtonStyle
+                    Content = FixEncoding(sessionApp.ADUPorts.Find(x => x.IOCard.Equals($"Card{numADU}_Output_{row + 4}")).label),
+                    Style = baseButtonStyle,
+                    Uid = $"Card{numADU}_Output_{row + 4}",
+                    Name = $"bCard{numADU}_Output_{row + 4}",
                 };
-                button2.Click += (s, e) => MessageBox.Show($"{button2.Content} fue presionado.", "Información", MessageBoxButton.OK, MessageBoxImage.Information);
+                //button2.Click += (s, e) => MessageBox.Show($"{button2.Content} fue presionado.", "Información", MessageBoxButton.OK, MessageBoxImage.Information);
+                button2.Click += ADUButton_Click;
                 Grid.SetRow(button2, row);
                 Grid.SetColumn(button2, 5);
-                MainGrid.Children.Add(button2);
+                gridContent.Children.Add(button2);
             }
         }
-        private void CreateElements2()
+
+        private void ADUButton_Click(object sender, RoutedEventArgs e)
         {
-            Style baseButtonStyle = this.FindResource("BaseButton") as Style;
-            for (int row = 0; row < 4; row++)
+            Button clickedButton = sender as Button;
+            switch (clickedButton.Uid.ToString())
             {
-                // Columna 0: Ellipse
-                Ellipse ellipse1 = new Ellipse
-                {
-                    Width = 20,
-                    Height = 20,
-                    Fill = Brushes.Gray,
-                    //Margin = new Thickness(5)
-                };
-                Grid.SetRow(ellipse1, row);
-                Grid.SetColumn(ellipse1, 0);
-                MainGrid2.Children.Add(ellipse1);
+                #region ADU1
+                case "Card1_Output_0":
+                    MessageBox.Show("Botón Card1_Output_0 fue presionado.", "Información", MessageBoxButton.OK, MessageBoxImage.Information);
+                    break;
+                case "Card1_Output_1":
+                    MessageBox.Show("Botón Card1_Output_1 fue presionado.", "Información", MessageBoxButton.OK, MessageBoxImage.Information);
+                    break;
+                case "Card1_Output_2":
+                    MessageBox.Show("Botón Card1_Output_2 fue presionado.", "Información", MessageBoxButton.OK, MessageBoxImage.Information);
+                    break;
+                case "Card1_Output_3":
+                    MessageBox.Show("Botón Card1_Output_3 fue presionado.", "Información", MessageBoxButton.OK, MessageBoxImage.Information);
+                    break;
+                case "Card1_Output_4":
+                    MessageBox.Show("Botón Card1_Output_4 fue presionado.", "Información", MessageBoxButton.OK, MessageBoxImage.Information);
+                    break;
+                case "Card1_Output_5":
+                    MessageBox.Show("Botón Card1_Output_5 fue presionado.", "Información", MessageBoxButton.OK, MessageBoxImage.Information);
+                    break;
+                case "Card1_Output_6":
+                    MessageBox.Show("Botón Card1_Output_6 fue presionado.", "Información", MessageBoxButton.OK, MessageBoxImage.Information);
+                    break;
+                case "Card1_Output_7":
+                    MessageBox.Show("Botón Card1_Output_7 fue presionado.", "Información", MessageBoxButton.OK, MessageBoxImage.Information);
+                    break;
+                #endregion
+                #region ADU2
+                case "Card2_Output_0":
+                    MessageBox.Show("Botón Card2_Output_0 fue presionado.", "Información", MessageBoxButton.OK, MessageBoxImage.Information);
+                    break;
+                case "Card2_Output_1":
+                    MessageBox.Show("Botón Card2_Output_1 fue presionado.", "Información", MessageBoxButton.OK, MessageBoxImage.Information);
+                    break;
+                case "Card2_Output_2":
+                    MessageBox.Show("Botón Card2_Output_2 fue presionado.", "Información", MessageBoxButton.OK, MessageBoxImage.Information);
+                    break;
+                case "Card2_Output_3":
+                    MessageBox.Show("Botón Card2_Output_3 fue presionado.", "Información", MessageBoxButton.OK, MessageBoxImage.Information);
+                    break;
+                case "Card2_Output_4":
+                    MessageBox.Show("Botón Card2_Output_4 fue presionado.", "Información", MessageBoxButton.OK, MessageBoxImage.Information);
+                    break;
+                case "Card2_Output_5":
+                    MessageBox.Show("Botón Card2_Output_5 fue presionado.", "Información", MessageBoxButton.OK, MessageBoxImage.Information);
+                    break;
+                case "Card2_Output_6":
+                    MessageBox.Show("Botón Card2_Output_6 fue presionado.", "Información", MessageBoxButton.OK, MessageBoxImage.Information);
+                    break;
+                case "Card2_Output_7":
+                    MessageBox.Show("Botón Card2_Output_7 fue presionado.", "Información", MessageBoxButton.OK, MessageBoxImage.Information);
+                    break;
+                #endregion
+                #region ADU3
+                case "Card3_Output_0":
+                    MessageBox.Show("Botón Card3_Output_0 fue presionado.", "Información", MessageBoxButton.OK, MessageBoxImage.Information);
+                    break;
+                case "Card3_Output_1":
+                    MessageBox.Show("Botón Card3_Output_1 fue presionado.", "Información", MessageBoxButton.OK, MessageBoxImage.Information);
+                    break;
+                case "Card3_Output_2":
+                    MessageBox.Show("Botón Card3_Output_2 fue presionado.", "Información", MessageBoxButton.OK, MessageBoxImage.Information);
+                    break;
+                case "Card3_Output_3":
+                    MessageBox.Show("Botón Card3_Output_3 fue presionado.", "Información", MessageBoxButton.OK, MessageBoxImage.Information);
+                    break;
+                case "Card3_Output_4":
+                    MessageBox.Show("Botón Card3_Output_4 fue presionado.", "Información", MessageBoxButton.OK, MessageBoxImage.Information);
+                    break;
+                case "Card3_Output_5":
+                    MessageBox.Show("Botón Card3_Output_5 fue presionado.", "Información", MessageBoxButton.OK, MessageBoxImage.Information);
+                    break;
+                case "Card3_Output_6":
+                    MessageBox.Show("Botón Card3_Output_6 fue presionado.", "Información", MessageBoxButton.OK, MessageBoxImage.Information);
+                    break;
+                case "Card3_Output_7":
+                    MessageBox.Show("Botón Card3_Output_7 fue presionado.", "Información", MessageBoxButton.OK, MessageBoxImage.Information);
+                    break;
+                #endregion
+                #region ADU4
+                case "Card4_Output_0":
+                    MessageBox.Show("Botón Card4_Output_0 fue presionado.", "Información", MessageBoxButton.OK, MessageBoxImage.Information);
+                    break;
+                case "Card5_Output_1":
+                    MessageBox.Show("Botón Card5_Output_1 fue presionado.", "Información", MessageBoxButton.OK, MessageBoxImage.Information);
+                    break;
+                case "Card5_Output_2":
+                    MessageBox.Show("Botón Card5_Output_2 fue presionado.", "Información", MessageBoxButton.OK, MessageBoxImage.Information);
+                    break;
+                case "Card5_Output_3":
+                    MessageBox.Show("Botón Card5_Output_3 fue presionado.", "Información", MessageBoxButton.OK, MessageBoxImage.Information);
+                    break;
+                case "Card5_Output_4":
+                    MessageBox.Show("Botón Card5_Output_4 fue presionado.", "Información", MessageBoxButton.OK, MessageBoxImage.Information);
+                    break;
+                case "Card5_Output_5":
+                    MessageBox.Show("Botón Card5_Output_5 fue presionado.", "Información", MessageBoxButton.OK, MessageBoxImage.Information);
+                    break;
+                case "Card5_Output_6":
+                    MessageBox.Show("Botón Card5_Output_6 fue presionado.", "Información", MessageBoxButton.OK, MessageBoxImage.Information);
+                    break;
+                case "Card5_Output_7":
+                    MessageBox.Show("Botón Card5_Output_7 fue presionado.", "Información", MessageBoxButton.OK, MessageBoxImage.Information);
+                    break;
+                    #endregion
 
-                // Columna 1: Label
-                Label label1 = new Label
-                {
-                    Content = $"Descripción {row + 1}A",
-                    HorizontalAlignment = HorizontalAlignment.Left,
-                    VerticalAlignment = VerticalAlignment.Center
-                };
-                Grid.SetRow(label1, row);
-                Grid.SetColumn(label1, 1);
-                MainGrid2.Children.Add(label1);
-
-                // Columna 2: Ellipse
-                Ellipse ellipse2 = new Ellipse
-                {
-                    Width = 20,
-                    Height = 20,
-                    Fill = Brushes.Gray,
-                    //Margin = new Thickness(5)
-                };
-                Grid.SetRow(ellipse2, row);
-                Grid.SetColumn(ellipse2, 2);
-                MainGrid2.Children.Add(ellipse2);
-
-                // Columna 3: Label
-                Label label2 = new Label
-                {
-                    Content = $"Descripción {row + 1}B",
-                    HorizontalAlignment = HorizontalAlignment.Left,
-                    VerticalAlignment = VerticalAlignment.Center
-                };
-                Grid.SetRow(label2, row);
-                Grid.SetColumn(label2, 3);
-                MainGrid2.Children.Add(label2);
-
-                // Columna 4: Button
-                Button button1 = new Button
-                {
-                    Content = $"Botón {row * 2 + 1}",
-                    //Margin = new Thickness(5),
-                    //Padding = new Thickness(10),
-                    Style = baseButtonStyle
-                };
-                button1.Click += (s, e) => MessageBox.Show($"{button1.Content} fue presionado.", "Información", MessageBoxButton.OK, MessageBoxImage.Information);
-                Grid.SetRow(button1, row);
-                Grid.SetColumn(button1, 4);
-                MainGrid2.Children.Add(button1);
-
-                // Columna 5: Button
-                Button button2 = new Button
-                {
-                    Content = $"Botón {row * 2 + 2}",
-                    //Margin = new Thickness(5),
-                    //Padding = new Thickness(10),
-                    Style = baseButtonStyle
-                };
-                button2.Click += (s, e) => MessageBox.Show($"{button2.Content} fue presionado.", "Información", MessageBoxButton.OK, MessageBoxImage.Information);
-                Grid.SetRow(button2, row);
-                Grid.SetColumn(button2, 5);
-                MainGrid2.Children.Add(button2);
             }
         }
 
-        private void CreateElements3()
-        {
-            Style baseButtonStyle = this.FindResource("BaseButton") as Style;
-            for (int row = 0; row < 4; row++)
-            {
-                // Columna 0: Ellipse
-                Ellipse ellipse1 = new Ellipse
-                {
-                    Width = 20,
-                    Height = 20,
-                    Fill = Brushes.Gray,
-                    //Margin = new Thickness(5)
-                };
-                Grid.SetRow(ellipse1, row);
-                Grid.SetColumn(ellipse1, 0);
-                MainGrid3.Children.Add(ellipse1);
-
-                // Columna 1: Label
-                Label label1 = new Label
-                {
-                    Content = $"Descripción {row + 1}A",
-                    HorizontalAlignment = HorizontalAlignment.Left,
-                    VerticalAlignment = VerticalAlignment.Center
-                };
-                Grid.SetRow(label1, row);
-                Grid.SetColumn(label1, 1);
-                MainGrid3.Children.Add(label1);
-
-                // Columna 2: Ellipse
-                Ellipse ellipse2 = new Ellipse
-                {
-                    Width = 20,
-                    Height = 20,
-                    Fill = Brushes.Gray,
-                    //Margin = new Thickness(5)
-                };
-                Grid.SetRow(ellipse2, row);
-                Grid.SetColumn(ellipse2, 2);
-                MainGrid3.Children.Add(ellipse2);
-
-                // Columna 3: Label
-                Label label2 = new Label
-                {
-                    Content = $"Descripción {row + 1}B",
-                    HorizontalAlignment = HorizontalAlignment.Left,
-                    VerticalAlignment = VerticalAlignment.Center
-                };
-                Grid.SetRow(label2, row);
-                Grid.SetColumn(label2, 3);
-                MainGrid3.Children.Add(label2);
-
-                // Columna 4: Button
-                Button button1 = new Button
-                {
-                    Content = $"Botón {row * 2 + 1}",
-                    //Margin = new Thickness(5),
-                    //Padding = new Thickness(10),
-                    Style = baseButtonStyle
-                };
-                button1.Click += (s, e) => MessageBox.Show($"{button1.Content} fue presionado.", "Información", MessageBoxButton.OK, MessageBoxImage.Information);
-                Grid.SetRow(button1, row);
-                Grid.SetColumn(button1, 4);
-                MainGrid3.Children.Add(button1);
-
-                // Columna 5: Button
-                Button button2 = new Button
-                {
-                    Content = $"Botón {row * 2 + 2}",
-                    //Margin = new Thickness(5),
-                    //Padding = new Thickness(10),
-                    Style = baseButtonStyle
-                };
-                button2.Click += (s, e) => MessageBox.Show($"{button2.Content} fue presionado.", "Información", MessageBoxButton.OK, MessageBoxImage.Information);
-                Grid.SetRow(button2, row);
-                Grid.SetColumn(button2, 5);
-                MainGrid3.Children.Add(button2);
-            }
-        }
         public void initialize()
         {
             viewManual = new ViewManual(sessionApp);
@@ -636,16 +616,33 @@ namespace BORGWARNER_SERVOPRESS.UI
             isPressed_CardIO = !isPressed_CardIO; // Invierte el estado del botón
         }
 
+        public List<string> getInputSensors()
+        {
+            List<string> lstCardOutputs = new List<string>();
+            for (int numADU = 0; numADU <= sessionApp.amountADUPorts; numADU++)
+            {
+                var ADUPortsElements = sessionApp.ADUPorts.Where(x => x.id_ADU.Equals(numADU) && x.IOCard.Contains("Input"));
+                foreach (var ADUElement in ADUPortsElements)
+                {
+                    lstCardOutputs.Add($"e{ADUElement.IOCard}");
+                }
+            }
+            return lstCardOutputs;
+        }
         public void EndBrushesSensors()
         {
             cancelllationToken_Brushes_Sensor.Cancel();
             isRunningBrushes = false;
+           
             Debug.WriteLine($"{DateTime.Now} - " + "Termine de pintar los sensores en la pantalla");
             pageManager.ChangeBackgroundColor(Brushes.LightBlue, new List<string> { "Card1_Input_0","Card1_Input_1","Card1_Input_2","Card1_Input_3","Card1_Input_4","Card1_Input_5","Card1_Input_6","Card1_Input_7",
                                                                                     "Card2_Input_0","Card2_Input_1","Card2_Input_2","Card2_Input_3","Card2_Input_4","Card2_Input_5","Card2_Input_6","Card2_Input_7",
                                                                                     "Card3_Input_0","Card3_Input_1","Card3_Input_2","Card3_Input_3","Card3_Input_4","Card3_Input_5","Card3_Input_6","Card3_Input_7" });
+
+            //Se agrega para los sensores dinamicos
+            pageManager.ChangeBackgroundColor(Brushes.LightBlue, getInputSensors());
         }
-     
+
         private async void BrushesSensors(int sensingTime)
         {
             isRunningBrushes = true;
@@ -688,6 +685,40 @@ namespace BORGWARNER_SERVOPRESS.UI
                     pageManager.ChangeBackgroundColor(sessionApp.Sensors_M3.PB1 ? Brushes.Blue : Brushes.LightBlue, new List<string> { "Card3_Input_5" });
                     pageManager.ChangeBackgroundColor(sessionApp.Sensors_M3.Scrap_presence ? Brushes.Blue : Brushes.LightBlue, new List<string> { "Card3_Input_6" });
                     pageManager.ChangeBackgroundColor(sessionApp.Sensors_M3.PB3 ? Brushes.Blue : Brushes.LightBlue, new List<string> { "Card3_Input_7" });
+
+                    /*
+                    pageManager.ChangeBackgroundColor(sessionApp.Sensors_M1.Main_Pressure ? Brushes.Blue : Brushes.LightBlue, new List<string> { "eCard1_Input_0" });
+                    pageManager.ChangeBackgroundColor(sessionApp.Sensors_M1.OptoBtn ? Brushes.Blue : Brushes.LightBlue, new List<string> { "eCard1_Input_1" });
+                    pageManager.ChangeBackgroundColor(sessionApp.Sensors_M1.Pallet_Pre_Stopper ? Brushes.Blue : Brushes.LightBlue, new List<string> { "eCard1_Input_2" });
+                    pageManager.ChangeBackgroundColor(sessionApp.Sensors_M1.Pallet_Stopper ? Brushes.Blue : Brushes.LightBlue, new List<string> { "eCard1_Input_3" });
+                    pageManager.ChangeBackgroundColor(sessionApp.Sensors_M1.Screw_Present_Oth ? Brushes.Blue : Brushes.LightBlue, new List<string> { "eCard1_Input_4" });
+                    pageManager.ChangeBackgroundColor(sessionApp.Sensors_M1.Screw_Level_Oth ? Brushes.Blue : Brushes.LightBlue, new List<string> { "eCard1_Input_5" });
+                    pageManager.ChangeBackgroundColor(sessionApp.Sensors_M1.MaskInHolder ? Brushes.Blue : Brushes.LightBlue, new List<string> { "eCard1_Input_6" });
+                    pageManager.ChangeBackgroundColor(sessionApp.Sensors_M1.SecurityOK ? Brushes.Blue : Brushes.LightBlue, new List<string> { "eCard1_Input_7" });
+
+                    pageManager.ChangeBackgroundColor(sessionApp.Sensors_M2.Trigger_Scanner ? Brushes.Blue : Brushes.LightBlue, new List<string> { "eCard2_Input_0" });
+                    pageManager.ChangeBackgroundColor(sessionApp.Sensors_M2.MaskatHousing ? Brushes.Blue : Brushes.LightBlue, new List<string> { "eCard2_Input_1" });
+                    pageManager.ChangeBackgroundColor(sessionApp.Sensors_M2.PA2 ? Brushes.Blue : Brushes.LightBlue, new List<string> { "eCard2_Input_2" });
+                    pageManager.ChangeBackgroundColor(sessionApp.Sensors_M2.PA3 ? Brushes.Blue : Brushes.LightBlue, new List<string> { "eCard2_Input_3" });
+                    pageManager.ChangeBackgroundColor(sessionApp.Sensors_M2.Cyl_Fixing_Pall_Ext ? Brushes.Blue : Brushes.LightBlue, new List<string> { "eCard2_Input_4" });
+                    pageManager.ChangeBackgroundColor(sessionApp.Sensors_M2.Cyl_Fixing_Pall_Ret ? Brushes.Blue : Brushes.LightBlue, new List<string> { "eCard2_Input_5" });
+                    pageManager.ChangeBackgroundColor(sessionApp.Sensors_M2.PB2 ? Brushes.Blue : Brushes.LightBlue, new List<string> { "eCard2_Input_6" });
+                    pageManager.ChangeBackgroundColor(sessionApp.Sensors_M2.PB3 ? Brushes.Blue : Brushes.LightBlue, new List<string> { "eCard2_Input_7" });
+
+                    pageManager.ChangeBackgroundColor(sessionApp.Sensors_M3.PA0 ? Brushes.Blue : Brushes.LightBlue, new List<string> { "eCard3_Input_0" });
+                    pageManager.ChangeBackgroundColor(sessionApp.Sensors_M3.PA1 ? Brushes.Blue : Brushes.LightBlue, new List<string> { "eCard3_Input_1" });
+                    pageManager.ChangeBackgroundColor(sessionApp.Sensors_M3.PA2 ? Brushes.Blue : Brushes.LightBlue, new List<string> { "eCard3_Input_2" });
+                    pageManager.ChangeBackgroundColor(sessionApp.Sensors_M3.ST13Available ? Brushes.Blue : Brushes.LightBlue, new List<string> { "eCard3_Input_3" });
+                    pageManager.ChangeBackgroundColor(sessionApp.Sensors_M3.PB0 ? Brushes.Blue : Brushes.LightBlue, new List<string> { "eCard3_Input_4" });
+                    pageManager.ChangeBackgroundColor(sessionApp.Sensors_M3.PB1 ? Brushes.Blue : Brushes.LightBlue, new List<string> { "eCard3_Input_5" });
+                    pageManager.ChangeBackgroundColor(sessionApp.Sensors_M3.Scrap_presence ? Brushes.Blue : Brushes.LightBlue, new List<string> { "eCard3_Input_6" });
+                    pageManager.ChangeBackgroundColor(sessionApp.Sensors_M3.PB3 ? Brushes.Blue : Brushes.LightBlue, new List<string> { "eCard3_Input_7" });
+                    */
+                    foreach (var ADUPort in sessionApp.ADUPorts)
+                    {
+                        pageManager.ChangeBackgroundColor(ADUPort.Value ? Brushes.Blue : Brushes.LightBlue, new List<string> { $"e{ADUPort.IOCard}" });                        
+                    }
+                    
 
                 });
 

@@ -138,6 +138,7 @@
     <Compile Include="ErgoArm.cs" />
     <Compile Include="ImageProcess.cs" />
     <Compile Include="IOCards.cs" />
+    <Compile Include="IOCardsGeneric.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="ObserverPatternSensor\ISensorObserver.cs" />
     <Compile Include="ObserverPatternSensor\SensorSubject.cs" />
@@ -148,6 +149,7 @@
     <Compile Include="ScrewDriver.cs" />
     <Compile Include="ObserverPatternSensor\SensorLogic.cs" />
     <Compile Include="SensorsIO.cs" />
+    <Compile Include="SensorsIOGeneric.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="TextBoxInfoEventArgs.cs" />
     <Compile Include="TryDevices.cs" />
