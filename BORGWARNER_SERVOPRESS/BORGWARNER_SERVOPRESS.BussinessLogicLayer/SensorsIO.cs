@@ -42,7 +42,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
             IOCardsGeneric io = new IOCardsGeneric(sessionApp);
             Task.Run(async () =>
             {
-                io.getDataInput(cancellationToken_ioCard1.Token);
+                io.GetDataInput(cancellationToken_ioCard1.Token);
             }).Wait();
             /**************************************************/
 
