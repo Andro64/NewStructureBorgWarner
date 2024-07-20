@@ -18,6 +18,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
         {
             sessionApp = _sessionApp;
             sensorsIO = new SensorsIO(_sessionApp);
+            sensorsIOGeneric = new SensorsIOGeneric(_sessionApp);
         }
 
         Scanner scanner;
@@ -27,6 +28,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
         ErgoArm ergoArm;
         ScrewDriver screwdriver;
         SensorsIO sensorsIO;
+        SensorsIOGeneric sensorsIOGeneric;
         DataFIS dataFIS;
         CancellationTokenSource _cancellationTokenSource; 
 
@@ -191,6 +193,10 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
         public void TrySendDataSensorsM3()
         {
             sensorsIO.SendDataOutpusM3();
+        }
+        public void TrySendDataSensorGeneric(string keySensor)
+        {
+            sensorsIOGeneric.SendDataOutpusGeneric(keySensor);
         }
     }
 }

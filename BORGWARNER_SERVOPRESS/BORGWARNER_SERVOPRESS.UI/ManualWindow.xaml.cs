@@ -40,7 +40,7 @@ namespace BORGWARNER_SERVOPRESS.UI
             sessionApp = _sessionApp;
             InitializeComponent();
             initialize();
-            //Window_Initialize();
+            Window_Initialize();
         }
 
         public static string FixEncoding(string input)
@@ -151,106 +151,138 @@ namespace BORGWARNER_SERVOPRESS.UI
             switch (clickedButton.Uid.ToString())
             {
                 #region ADU1
-                case "Card1_Output_0":
+                case"Card1_Output_0":
+                    SelectFunctionality("Card1_Output_0");
                     MessageBox.Show("Botón Card1_Output_0 fue presionado.", "Información", MessageBoxButton.OK, MessageBoxImage.Information);
                     break;
                 case "Card1_Output_1":
+                    SelectFunctionality("Card1_Output_1");
                     MessageBox.Show("Botón Card1_Output_1 fue presionado.", "Información", MessageBoxButton.OK, MessageBoxImage.Information);
                     break;
                 case "Card1_Output_2":
+                    SelectFunctionality("Card1_Output_2");
                     MessageBox.Show("Botón Card1_Output_2 fue presionado.", "Información", MessageBoxButton.OK, MessageBoxImage.Information);
                     break;
                 case "Card1_Output_3":
+                    SelectFunctionality("Card1_Output_3");
                     MessageBox.Show("Botón Card1_Output_3 fue presionado.", "Información", MessageBoxButton.OK, MessageBoxImage.Information);
                     break;
                 case "Card1_Output_4":
+                    SelectFunctionality("Card1_Output_4");
                     MessageBox.Show("Botón Card1_Output_4 fue presionado.", "Información", MessageBoxButton.OK, MessageBoxImage.Information);
                     break;
                 case "Card1_Output_5":
+                    SelectFunctionality("Card1_Output_5");
                     MessageBox.Show("Botón Card1_Output_5 fue presionado.", "Información", MessageBoxButton.OK, MessageBoxImage.Information);
                     break;
                 case "Card1_Output_6":
+                    SelectFunctionality("Card1_Output_6");
                     MessageBox.Show("Botón Card1_Output_6 fue presionado.", "Información", MessageBoxButton.OK, MessageBoxImage.Information);
                     break;
                 case "Card1_Output_7":
+                    SelectFunctionality("Card1_Output_7");
                     MessageBox.Show("Botón Card1_Output_7 fue presionado.", "Información", MessageBoxButton.OK, MessageBoxImage.Information);
                     break;
                 #endregion
                 #region ADU2
                 case "Card2_Output_0":
+                    SelectFunctionality("Card2_Output_0");
                     MessageBox.Show("Botón Card2_Output_0 fue presionado.", "Información", MessageBoxButton.OK, MessageBoxImage.Information);
                     break;
                 case "Card2_Output_1":
+                    SelectFunctionality("Card2_Output_1");
                     MessageBox.Show("Botón Card2_Output_1 fue presionado.", "Información", MessageBoxButton.OK, MessageBoxImage.Information);
                     break;
                 case "Card2_Output_2":
+                    SelectFunctionality("Card2_Output_2");
                     MessageBox.Show("Botón Card2_Output_2 fue presionado.", "Información", MessageBoxButton.OK, MessageBoxImage.Information);
                     break;
                 case "Card2_Output_3":
+                    SelectFunctionality("Card2_Output_3");
                     MessageBox.Show("Botón Card2_Output_3 fue presionado.", "Información", MessageBoxButton.OK, MessageBoxImage.Information);
                     break;
                 case "Card2_Output_4":
+                    SelectFunctionality("Card2_Output_4");
                     MessageBox.Show("Botón Card2_Output_4 fue presionado.", "Información", MessageBoxButton.OK, MessageBoxImage.Information);
                     break;
                 case "Card2_Output_5":
+                    SelectFunctionality("Card2_Output_5");
                     MessageBox.Show("Botón Card2_Output_5 fue presionado.", "Información", MessageBoxButton.OK, MessageBoxImage.Information);
                     break;
                 case "Card2_Output_6":
+                    SelectFunctionality("Card2_Output_6");
                     MessageBox.Show("Botón Card2_Output_6 fue presionado.", "Información", MessageBoxButton.OK, MessageBoxImage.Information);
                     break;
                 case "Card2_Output_7":
+                    SelectFunctionality("Card2_Output_7");
                     MessageBox.Show("Botón Card2_Output_7 fue presionado.", "Información", MessageBoxButton.OK, MessageBoxImage.Information);
                     break;
                 #endregion
                 #region ADU3
                 case "Card3_Output_0":
+                    SelectFunctionality("Card3_Output_0");
                     MessageBox.Show("Botón Card3_Output_0 fue presionado.", "Información", MessageBoxButton.OK, MessageBoxImage.Information);
                     break;
                 case "Card3_Output_1":
+                    SelectFunctionality("Card3_Output_1");
                     MessageBox.Show("Botón Card3_Output_1 fue presionado.", "Información", MessageBoxButton.OK, MessageBoxImage.Information);
                     break;
                 case "Card3_Output_2":
+                    SelectFunctionality("Card3_Output_2");
                     MessageBox.Show("Botón Card3_Output_2 fue presionado.", "Información", MessageBoxButton.OK, MessageBoxImage.Information);
                     break;
                 case "Card3_Output_3":
+                    SelectFunctionality("Card3_Output_3");
                     MessageBox.Show("Botón Card3_Output_3 fue presionado.", "Información", MessageBoxButton.OK, MessageBoxImage.Information);
                     break;
                 case "Card3_Output_4":
+                    SelectFunctionality("Card3_Output_4");
                     MessageBox.Show("Botón Card3_Output_4 fue presionado.", "Información", MessageBoxButton.OK, MessageBoxImage.Information);
                     break;
                 case "Card3_Output_5":
+                    SelectFunctionality("Card3_Output_5");
                     MessageBox.Show("Botón Card3_Output_5 fue presionado.", "Información", MessageBoxButton.OK, MessageBoxImage.Information);
                     break;
                 case "Card3_Output_6":
+                    SelectFunctionality("Card3_Output_6");
                     MessageBox.Show("Botón Card3_Output_6 fue presionado.", "Información", MessageBoxButton.OK, MessageBoxImage.Information);
                     break;
                 case "Card3_Output_7":
+                    SelectFunctionality("Card3_Output_7");
                     MessageBox.Show("Botón Card3_Output_7 fue presionado.", "Información", MessageBoxButton.OK, MessageBoxImage.Information);
                     break;
                 #endregion
                 #region ADU4
                 case "Card4_Output_0":
+                    SelectFunctionality("Card4_Output_0");
                     MessageBox.Show("Botón Card4_Output_0 fue presionado.", "Información", MessageBoxButton.OK, MessageBoxImage.Information);
                     break;
-                case "Card5_Output_1":
+                case "Card4_Output_1":
+                    SelectFunctionality("Card4_Output_1");
                     MessageBox.Show("Botón Card5_Output_1 fue presionado.", "Información", MessageBoxButton.OK, MessageBoxImage.Information);
                     break;
-                case "Card5_Output_2":
+                case "Card4_Output_2":
+                    SelectFunctionality("Card4_Output_2");
                     MessageBox.Show("Botón Card5_Output_2 fue presionado.", "Información", MessageBoxButton.OK, MessageBoxImage.Information);
                     break;
-                case "Card5_Output_3":
+                case "Card4_Output_3":
+                    SelectFunctionality("Card4_Output_3");
                     MessageBox.Show("Botón Card5_Output_3 fue presionado.", "Información", MessageBoxButton.OK, MessageBoxImage.Information);
                     break;
-                case "Card5_Output_4":
+                case "Card4_Output_4":
+                    SelectFunctionality("Card4_Output_4");
                     MessageBox.Show("Botón Card5_Output_4 fue presionado.", "Información", MessageBoxButton.OK, MessageBoxImage.Information);
                     break;
-                case "Card5_Output_5":
+                case "Card4_Output_5":
+                    SelectFunctionality("Card4_Output_5");
                     MessageBox.Show("Botón Card5_Output_5 fue presionado.", "Información", MessageBoxButton.OK, MessageBoxImage.Information);
                     break;
-                case "Card5_Output_6":
+                case "Card4_Output_6":
+                    SelectFunctionality("Card4_Output_6");
                     MessageBox.Show("Botón Card5_Output_6 fue presionado.", "Información", MessageBoxButton.OK, MessageBoxImage.Information);
                     break;
-                case "Card5_Output_7":
+                case "Card4_Output_7":
+                    SelectFunctionality("Card4_Output_7");
                     MessageBox.Show("Botón Card5_Output_7 fue presionado.", "Información", MessageBoxButton.OK, MessageBoxImage.Information);
                     break;
                     #endregion
@@ -368,6 +400,160 @@ namespace BORGWARNER_SERVOPRESS.UI
            
         }
 
+        #region CARDGENERIC
+        private void SelectFunctionality(string nameCardOutput) 
+        {
+            string nameFunction = sessionApp.ADUPorts.FirstOrDefault(x => x.IOCard.Equals(nameCardOutput)).id_routine;
+            switch (nameFunction)
+            {
+                case "SendTrueToKeySensor":
+                    SendValueByKeySensor(nameCardOutput, true);
+                    break;
+                case "SendFalseToKeySensor":
+                    SendValueByKeySensor(nameCardOutput, false);
+                    break;
+                case "ActivateOptoGreen":
+                    ActivateOptoGreen(nameCardOutput);
+                    break;
+                case "ActivateOptoYellow":
+                    ActivateOptoYellow(nameCardOutput);
+                    break;
+                case "ActivateOptoRed":
+                    ActivateOptoRed(nameCardOutput);
+                    break;
+                case "ExtendTheLock":
+                    ExtendTheLock(nameCardOutput);
+                    break;
+                case "RetractTheLock":
+                    RetractTheLock(nameCardOutput);
+                    break;
+                case "ResetSensorScrap":
+                    ResetSensorScrap(nameCardOutput);
+                    break;
+
+                    
+            }
+        }
+        private void SendValueByKeySensor(string nameCardOutput, bool value)
+        {
+            string keySensor = sessionApp.ADUPorts.FirstOrDefault(x => x.IOCard.Equals(nameCardOutput)).keySensor;
+            sessionApp.ADUPorts.Where(x => x.keySensor.Equals(keySensor)).First().Value = value;
+            tryDevices.TrySendDataSensorGeneric(keySensor);
+        }
+        private bool isPressed_Green = false;
+        private void ActivateOptoGreen(string nameCardOutput)
+        {
+            if (!isPressed_Green)
+            {                
+                SendValueByKeySensor(nameCardOutput,true);                
+                pageManager.ChangeStyle(FindResource("GreenButton") as Style, new List<string> { $"b{nameCardOutput}" });
+                //Apagamos rojo                 
+                string IOCard_OptoRed = sessionApp.ADUPorts.FirstOrDefault(x => x.keySensor.Equals("Opto_Red")).IOCard;
+                pageManager.ChangeStyle(FindResource("BaseButton") as Style, new List<string> { $"b{IOCard_OptoRed}" });
+                //Apagamos amarillo                 
+                string IOCard_OptoYllw = sessionApp.ADUPorts.FirstOrDefault(x => x.keySensor.Equals("Opto_Yllw")).IOCard;
+                pageManager.ChangeStyle(FindResource("BaseButton") as Style, new List<string> { $"b{IOCard_OptoYllw}" });
+                isPressed_Yellow = false;
+                isPressed_Red_ = false;
+            }
+            else
+            {             
+                SendValueByKeySensor(nameCardOutput, false);
+                pageManager.ChangeStyle(FindResource("BaseButton") as Style, new List<string> { $"b{nameCardOutput}" });
+            }            
+            isPressed_Green = !isPressed_Green; // Invierte el estado del botón
+        }
+
+        private bool isPressed_Yellow = false;
+        private void ActivateOptoYellow(string nameCardOutput)
+        {
+            if (!isPressed_Yellow)
+            {
+                SendValueByKeySensor(nameCardOutput, true);
+                pageManager.ChangeStyle(FindResource("YellowButton") as Style, new List<string> { $"b{nameCardOutput}" });
+                //Apagamos rojo                 
+                string IOCard_OptoRed = sessionApp.ADUPorts.FirstOrDefault(x => x.keySensor.Equals("Opto_Red")).IOCard;
+                pageManager.ChangeStyle(FindResource("BaseButton") as Style, new List<string> { $"b{IOCard_OptoRed}" });
+                //Apagamos verde                
+                string IOCard_OptoGrn = sessionApp.ADUPorts.FirstOrDefault(x => x.keySensor.Equals("Opto_Grn")).IOCard;
+                pageManager.ChangeStyle(FindResource("BaseButton") as Style, new List<string> { $"b{IOCard_OptoGrn}" });
+                isPressed_Red_ = false;
+                isPressed_Green = false;
+            }
+            else
+            {
+                SendValueByKeySensor(nameCardOutput, false);
+                pageManager.ChangeStyle(FindResource("BaseButton") as Style, new List<string> { $"b{nameCardOutput}" });
+            }
+            isPressed_Yellow = !isPressed_Yellow; // Invierte el estado del botón
+        }
+
+        private bool isPressed_Red_ = false;
+        private void ActivateOptoRed(string nameCardOutput)
+        {
+            if (!isPressed_Red_)
+            {
+                SendValueByKeySensor(nameCardOutput, true);                
+                pageManager.ChangeStyle(FindResource("RedButton") as Style, new List<string> { $"b{nameCardOutput}" });
+                //Apagamos amarillo                 
+                string IOCard_OptoYllw = sessionApp.ADUPorts.FirstOrDefault(x => x.keySensor.Equals("Opto_Yllw")).IOCard;
+                pageManager.ChangeStyle(FindResource("BaseButton") as Style, new List<string> { $"b{IOCard_OptoYllw}" });
+                //Apagamos verde                
+                string IOCard_OptoGrn = sessionApp.ADUPorts.FirstOrDefault(x => x.keySensor.Equals("Opto_Grn")).IOCard;
+                pageManager.ChangeStyle(FindResource("BaseButton") as Style, new List<string> { $"b{IOCard_OptoGrn}" });
+                isPressed_Yellow = false;
+                isPressed_Green = false;
+            }
+            else
+            {
+                SendValueByKeySensor(nameCardOutput, false);
+                pageManager.ChangeStyle(FindResource("BaseButton") as Style, new List<string> { $"b{nameCardOutput}" });                
+            }
+            isPressed_Red_ = !isPressed_Red_; // Invierte el estado del botón
+        }
+        private void ExtendTheLock(string nameCardOutput)
+        {           
+            //sessionApp.Sensors_M2.PalletFixingExt = sessionApp.Sensors_M2.Cyl_Fixing_Pall_Ext ? false : true;
+            //tryDevices.TrySendDataSensorsM2();
+            if(sessionApp.IOSensorsGenerics.Cyl_Fixing_Pall_Ext)
+            {
+                SendValueByKeySensor(nameCardOutput, false);
+            }
+            else
+            {
+                SendValueByKeySensor(nameCardOutput, true);
+            }
+        }
+        private void RetractTheLock(string nameCardOutput)
+        {            
+            //sessionApp.Sensors_M2.PalletFixingRet = sessionApp.Sensors_M2.Cyl_Fixing_Pall_Ret ? false : true;
+            //tryDevices.TrySendDataSensorsM2();
+            if (sessionApp.IOSensorsGenerics.PalletFixingRet)
+            {
+                SendValueByKeySensor(nameCardOutput, false);
+            }
+            else
+            {
+                SendValueByKeySensor(nameCardOutput, true);
+            }
+        }
+        private void ResetSensorScrap(string nameCardOutput)
+        {
+            //sessionApp.Sensors_M3.ReleScrap = sessionApp.varReleScrap == true ? false : true;
+            //sessionApp.varReleScrap = sessionApp.Sensors_M3.ReleScrap;
+            //tryDevices.TrySendDataSensorsM3();
+            if (sessionApp.varReleScrap)
+            {
+                SendValueByKeySensor(nameCardOutput, false);
+                sessionApp.varReleScrap = false;
+            }
+            else
+            {
+                SendValueByKeySensor(nameCardOutput, true);
+                sessionApp.varReleScrap = true;
+            }
+        }
+        #endregion
 
         #region CARD1
         private bool isPressed_Grn = false;

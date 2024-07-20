@@ -39,11 +39,11 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
         public void startRead()
         {
             /******************Agrengando la generica********************************/
-            //IOCardsGeneric io = new IOCardsGeneric(sessionApp);
-            //Task.Run(async () =>
-            //{
-            //    io.getDataInput(cancellationToken_ioCard1.Token);
-            //}).Wait();
+            IOCardsGeneric io = new IOCardsGeneric(sessionApp);
+            Task.Run(async () =>
+            {
+                io.getDataInput(cancellationToken_ioCard1.Token);
+            }).Wait();
             /**************************************************/
 
             Task.Run(async () =>

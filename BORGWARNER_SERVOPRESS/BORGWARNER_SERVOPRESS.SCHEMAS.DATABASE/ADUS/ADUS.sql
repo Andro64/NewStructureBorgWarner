@@ -6,7 +6,7 @@
   label varchar(50) NOT NULL,
   id_ADU int NOT NULL,
   id_index int NOT NULL,
-  id_routine varchar(10) NOT NULL,
+  id_routine varchar(50) NOT NULL,
   PRIMARY KEY (id)
 );
 -----------------------------------------------------------------------------------------------------------------------------------------------							

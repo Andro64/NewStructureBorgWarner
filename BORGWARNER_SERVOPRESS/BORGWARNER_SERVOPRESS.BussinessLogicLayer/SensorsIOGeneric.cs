@@ -10,6 +10,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
     {
         SessionApp sessionApp;
 
+        IOCardsGeneric ioCardsGeneric;
         IOCards ioCard_Type_M1;
         IOCards ioCard_Type_M2;
         IOCards ioCard_Type_M3;
@@ -25,6 +26,8 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
         }
         public void initialize()
         {
+            ioCardsGeneric = new IOCardsGeneric(sessionApp);
+
             ioCard_Type_M1 = new IOCards(sessionApp, new IOCardType_M1());
             cancellationToken_ioCard1 = new CancellationTokenSource();
 
@@ -101,6 +104,10 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
         public void SendDataOutpusM3()
         {
             ioCard_Type_M3.sendDataOutput();
+        }
+        public void SendDataOutpusGeneric(string keySensor)
+        {
+            ioCardsGeneric.sendDataOutput(keySensor);
         }
         public bool PalletInPreStopper()
         {

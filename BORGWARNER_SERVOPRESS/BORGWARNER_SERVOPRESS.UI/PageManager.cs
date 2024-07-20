@@ -118,7 +118,34 @@ namespace BORGWARNER_SERVOPRESS.UI
                 }
             }
         }
+        public void ChangeStyle(Style styleKey, List<string> controlNames)
+        {
+            foreach (var controlName in controlNames)
+            {
+                UIElement control = GetControl(controlName);
 
+                if (control != null)
+                {
+                    Style newStyle =styleKey;
+
+                    if (newStyle != null)
+                    {
+                        if (control is Control)
+                        {
+                            ((Control)control).Style = newStyle;
+                        }
+                        else if (control is Panel)
+                        {
+                            ((Panel)control).Style = newStyle;
+                        }
+                        else if (control is Shape)
+                        {
+                            ((Shape)control).Style = newStyle;
+                        }                        
+                    }                    
+                }
+            }
+        }
         public void ChangeBackgroundColor(SolidColorBrush backgroundColor, List<string> controlNames)
         {
             foreach (var controlName in controlNames)

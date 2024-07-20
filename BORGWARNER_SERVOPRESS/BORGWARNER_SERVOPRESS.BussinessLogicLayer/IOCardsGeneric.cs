@@ -180,6 +180,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
                 //    await Task.Delay(5); //Tiempo entre cada lectura 5mls
                 //}
 
+                sessionApp.ADUPorts.Where(x=>x.keySensor.Equals("Opto_Grn")).First().Value = true;
                 sendDataOutput("Opto_Grn");
             }
             catch (Exception ex)
@@ -244,7 +245,14 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
             }
             return lstCardOutputs;
         }
-        //Cada clic en el boton deberia enviar la info dentro del evento clic
+        private void CleanOutputsSession()
+        {
+            var ADUPortsElements = sessionApp.ADUPorts.Where(x => x.IOCard.Contains("Output")).OrderBy(z => z.id_index);
+            foreach (var ADUPort in ADUPortsElements)
+            {
+                ADUPort.Value = false;
+            }
+        }
         public void sendDataOutput(string keySensor)
         {
             try
@@ -262,10 +270,12 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
                 foreach (var ADUElement in ADUPortsElements)
                 {
                     CardOutputs[index] = ADUElement.Value;
+                    index++;
                 }
 
-                ADUOutput.MapADUOutput(CardOutputs);
-
+                //ADUOutput.MapADUOutput(CardOutputs);
+                Debug.Write(CardOutputs);
+                CleanOutputsSession();
             }
             catch (Exception ex)
             {
