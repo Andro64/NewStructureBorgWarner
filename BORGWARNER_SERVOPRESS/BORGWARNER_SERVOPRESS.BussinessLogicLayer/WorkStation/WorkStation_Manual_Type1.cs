@@ -13,7 +13,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
     {
         public override string Type => "(◕‿◕) \n Manual Tipo 1";
 
-        SensorsIO sensorsIO;
+        SensorsIOGeneric sensorsIO;
         SessionApp sessionApp;
         private CancellationTokenSource _cancellationTokenSource;
         private bool isCancellationRequested = false;
@@ -35,7 +35,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
         public WorkStation_Manual_Type1(SessionApp _sessionApp)
         {
             sessionApp = _sessionApp;
-            sensorsIO = new SensorsIO(sessionApp);            
+            sensorsIO = new SensorsIOGeneric(sessionApp);            
         }
         public void showMessageAndImage(string message, string nameimage = "", bool isImageInDiferentPath = false)
         {

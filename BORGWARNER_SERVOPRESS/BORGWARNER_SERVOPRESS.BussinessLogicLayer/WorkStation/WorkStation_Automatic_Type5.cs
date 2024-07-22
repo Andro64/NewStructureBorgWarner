@@ -26,13 +26,13 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
 
         public override event EventHandler<TextBoxInfoEventArgs> CreateTextBoxRequested;
         public override event EventHandler RemoveTextBoxRequested;
-        SensorsIO sensorsIO;
+        SensorsIOGeneric sensorsIO;
         SessionApp sessionApp;
 
         public WorkStation_Automatic_Type5(SessionApp _sessionApp)
         {
             sessionApp = _sessionApp;
-            sensorsIO = new SensorsIO(sessionApp);
+            sensorsIO = new SensorsIOGeneric(sessionApp);
         }
         public override void CancelProcess()
         {

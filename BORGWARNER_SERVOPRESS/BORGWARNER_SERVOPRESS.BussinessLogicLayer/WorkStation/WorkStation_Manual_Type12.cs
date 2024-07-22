@@ -15,7 +15,8 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
     {
         public override string Type => " ╭∩╮( •̀_•́ )╭∩╮ \n WS Automatica Tipo 12";
 
-        SensorsIO sensorsIO;
+        SensorsIOGeneric sensorsIO;
+        //SensorsIO sensorsIO;
         SessionApp sessionApp;
         private CancellationTokenSource _cancellationTokenSource;
         private bool isCancellationRequested = false;
@@ -43,36 +44,37 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
                 sensorsIO.StopWaiting();
                 sensorsIO.endRead();
             }
+            sessionApp.IOSensorsGenerics.ClearAllBooleanProperties();
 
-            sessionApp.Sensors_M1.Main_Pressure = false;
-            sessionApp.Sensors_M1.OptoBtn = false;
-            sessionApp.Sensors_M1.Pallet_Pre_Stopper = false;
-            sessionApp.Sensors_M1.Pallet_Stopper = false;
-            sessionApp.Sensors_M1.Screw_Present_Oth = false;
-            sessionApp.Sensors_M1.Screw_Level_Oth = false;
-            sessionApp.Sensors_M1.MaskInHolder = false;
-            sessionApp.Sensors_M1.SecurityOK = false;
+            //sessionApp.Sensors_M1.Main_Pressure = false;
+            //sessionApp.Sensors_M1.OptoBtn = false;
+            //sessionApp.Sensors_M1.Pallet_Pre_Stopper = false;
+            //sessionApp.Sensors_M1.Pallet_Stopper = false;
+            //sessionApp.Sensors_M1.Screw_Present_Oth = false;
+            //sessionApp.Sensors_M1.Screw_Level_Oth = false;
+            //sessionApp.Sensors_M1.MaskInHolder = false;
+            //sessionApp.Sensors_M1.SecurityOK = false;
 
-            sessionApp.Sensors_M2.Trigger_Scanner = false;
-            sessionApp.Sensors_M2.MaskatHousing = false;
-            sessionApp.Sensors_M2.PA2 = false;
-            sessionApp.Sensors_M2.PA3 = false;
-            sessionApp.Sensors_M2.Cyl_Fixing_Pall_Ext = false;
-            sessionApp.Sensors_M2.Cyl_Fixing_Pall_Ret = false;
-            sessionApp.Sensors_M2.PB2 = false;
-            sessionApp.Sensors_M2.PB3 = false;
+            //sessionApp.Sensors_M2.Trigger_Scanner = false;
+            //sessionApp.Sensors_M2.MaskatHousing = false;
+            //sessionApp.Sensors_M2.PA2 = false;
+            //sessionApp.Sensors_M2.PA3 = false;
+            //sessionApp.Sensors_M2.Cyl_Fixing_Pall_Ext = false;
+            //sessionApp.Sensors_M2.Cyl_Fixing_Pall_Ret = false;
+            //sessionApp.Sensors_M2.PB2 = false;
+            //sessionApp.Sensors_M2.PB3 = false;
 
-            sessionApp.Sensors_M3.PA0 = false;
-            sessionApp.Sensors_M3.PA1 = false;
-            sessionApp.Sensors_M3.PA2 = false;
-            sessionApp.Sensors_M3.ST13Available = false;
-            sessionApp.Sensors_M3.PB0 = false;
-            sessionApp.Sensors_M3.PB1 = false;
-            sessionApp.Sensors_M3.Scrap_presence = false;
-            sessionApp.Sensors_M3.PB3 = false;
+            //sessionApp.Sensors_M3.PA0 = false;
+            //sessionApp.Sensors_M3.PA1 = false;
+            //sessionApp.Sensors_M3.PA2 = false;
+            //sessionApp.Sensors_M3.ST13Available = false;
+            //sessionApp.Sensors_M3.PB0 = false;
+            //sessionApp.Sensors_M3.PB1 = false;
+            //sessionApp.Sensors_M3.Scrap_presence = false;
+            //sessionApp.Sensors_M3.PB3 = false;
 
             sessionApp.images = new List<string>();
-
+            
         }
 
         public async Task showMessageAndImage(string message, string nameimage = "", bool isImageInDiferentPath = false)
@@ -152,7 +154,9 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
                 sensorsIO.endRead();
             }
 
-            sensorsIO = new SensorsIO(sessionApp);
+            sensorsIO = new SensorsIOGeneric(sessionApp);
+            //sensorsIO = new SensorsIO(sessionApp);
+            
             sensorsIO.startRead();
             _cancellationTokenSource = new CancellationTokenSource();
             sessionApp.areImagePASSProcessFinished = false;

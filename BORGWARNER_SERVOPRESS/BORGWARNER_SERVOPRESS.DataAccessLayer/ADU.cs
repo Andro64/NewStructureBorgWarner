@@ -95,7 +95,7 @@ namespace BORGWARNER_SERVOPRESS.DataAccessLayer
                 //[Falta_variables 2]
                 //G.status = 311;
                 //G.ActiveAlarm = true;
-                Debug.WriteLine($"{DateTime.Now} - "  + "Error: " + ex.Message);
+                Debug.WriteLine($"{DateTime.Now} - "  + "Error #2: " + ex.Message);
             }
 
         }

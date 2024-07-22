@@ -20,62 +20,67 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
         {
             sessionApp = _sessionApp;
         }
-       
+
         public async Task GetDataInput(CancellationToken cancellationToken)
         {
 
             string numSerial;
-            bool[] ioADUCard;
+            //bool[] ioADUCard;
             int idADU = 1;
 
             try
             {
-                //while (!cancellationToken.IsCancellationRequested)
-                //{
-
-                List<ADU> lstADU = new List<ADU>();
-                for (int numADU = 1; numADU <= sessionApp.amountADUPorts; numADU++)
+                while (!cancellationToken.IsCancellationRequested)
                 {
-                    numSerial = sessionApp.settings.FirstOrDefault(x => x.setting.Contains($"ADU_SERIAL_{numADU}")) != null ?
-                       sessionApp.settings.FirstOrDefault(x => x.setting.Contains($"ADU_SERIAL_{numADU}")).valueSetting : string.Empty;
-                    lstADU.Add(new ADU(numSerial));
-                }
-
-                foreach (var item in lstADU)
-                {
-                    ioADUCard = item.MapADUInput();
-
-                    for (int i = 0; i < ioADUCard.Length; i++)
+                    idADU = 1;
+                    //ioADUCard = new bool[0];
+                    List<ADU> lstADU = new List<ADU>();
+                    for (int numADU = 1; numADU <= sessionApp.amountADUPorts; numADU++)
                     {
-                        sessionApp.ADUPorts.Where(x => x.id_ADU.Equals(idADU) && x.id_index.Equals(i)).First().Value = ioADUCard[i];
-
+                        numSerial = sessionApp.settings.FirstOrDefault(x => x.setting.Contains($"ADU_SERIAL_{numADU}")) != null ?
+                           sessionApp.settings.FirstOrDefault(x => x.setting.Contains($"ADU_SERIAL_{numADU}")).valueSetting : string.Empty;
+                        lstADU.Add(new ADU(numSerial));
                     }
-                    idADU++;
-                }
 
-                PropertyInfo[] propertiesIOSensors = typeof(IOSensors).GetProperties();
-                //var valueProperty;
-                for (int indexProperty = 0; indexProperty < propertiesIOSensors.Count(); indexProperty++)
-                {
-                    if (propertiesIOSensors[indexProperty].PropertyType == typeof(bool))
+                    foreach (var item in lstADU)
                     {
-                        bool valueProperty = sessionApp.ADUPorts.Where(x => x.keySensor.Equals(propertiesIOSensors[indexProperty].Name))
-                                                                .Select(z => (bool?)z.Value)
-                                                                .FirstOrDefault() ?? false;
-                        propertiesIOSensors[indexProperty].SetValue(sessionApp.IOSensorsGenerics, valueProperty);
+                        //ioADUCard = new bool[];
+                        bool[] ioADUCard;
+                        ioADUCard = item.MapADUInput();
+
+                        for (int i = 0; i < ioADUCard.Length; i++)
+                        {
+                            //Debug.WriteLine($"{DateTime.Now} - " + $"ioADUCard.Length {ioADUCard.Length}   i {i}    idADU {idADU}");                           
+                            sessionApp.ADUPorts.Where(x => x.id_ADU.Equals(idADU) && x.id_index.Equals(i)).First().Value = ioADUCard[i];
+
+                        }
+                        idADU++;
                     }
+
+                    PropertyInfo[] propertiesIOSensors = typeof(IOSensors).GetProperties();
+                    //var valueProperty;
+                    for (int indexProperty = 0; indexProperty < propertiesIOSensors.Count(); indexProperty++)
+                    {
+                        if (propertiesIOSensors[indexProperty].PropertyType == typeof(bool))
+                        {
+                            bool valueProperty = sessionApp.ADUPorts.Where(x => x.keySensor.Equals(propertiesIOSensors[indexProperty].Name))
+                                                                    .Select(z => (bool?)z.Value)
+                                                                    .FirstOrDefault() ?? false;
+                            propertiesIOSensors[indexProperty].SetValue(sessionApp.IOSensorsGenerics, valueProperty);
+                        }
+                    }
+
+                    await Task.Delay(5); //Tiempo entre cada lectura 5mls
+                    Debug.WriteLine($"{DateTime.Now} - " + $"Estoy leyendo los sensores {idADU}");
                 }
 
-                //    await Task.Delay(5); //Tiempo entre cada lectura 5mls
-                //}
-                
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"{DateTime.Now} - " + "Error:" + ex.Message);
+                Debug.WriteLine($"{DateTime.Now} - " + $"Error #1:{idADU}" + ex.Message);
             }
         }
-                
+
         private void CleanOutputsSession()
         {
             var ADUPortsElements = sessionApp.ADUPorts.Where(x => x.IOCard.Contains("Output")).OrderBy(z => z.id_index);
@@ -104,16 +109,15 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
                     index++;
                 }
 
-                ADUOutput.MapADUOutput(CardOutputs);                
+                ADUOutput.MapADUOutput(CardOutputs);
                 CleanOutputsSession();
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"{DateTime.Now} - " + "Error:" + ex.Message);
+                Debug.WriteLine($"{DateTime.Now} - " + "Error: #2" + ex.Message);
             }
         }
-
-        public void sendDataOutputSameADU(List<keySensorValue> lstKeySensor)
+        public void sendDataOutputSameADU(List<keySensorValue> keySensorvalue)
         {
             try
             {
@@ -122,25 +126,38 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
                 ADU ADUOutput;
                 int index = 0;
 
-                int numADU = sessionApp.ADUPorts.Where(x => x.keySensor.Equals(lstKeySensor.First().keySensor)).First().id_ADU;
+                int numADU = sessionApp.ADUPorts.Where(x => x.keySensor.Equals(keySensorvalue.First().keySensor)).First().id_ADU;
                 numSerial = sessionApp.settings.FirstOrDefault(x => x.setting.Contains($"ADU_SERIAL_{numADU}")).valueSetting;
                 ADUOutput = new ADU(numSerial);
 
                 var ADUPortsElements = sessionApp.ADUPorts.Where(x => x.id_ADU.Equals(numADU) && x.IOCard.Contains("Output")).OrderBy(z => z.id_index);
                 foreach (var ADUElement in ADUPortsElements)
                 {
-                    CardOutputs[index] = ADUElement.Value;
+                    var sensorValue = keySensorvalue.FirstOrDefault(x => x.keySensor.Equals(ADUElement.keySensor));
+
+                    if (sensorValue != null)
+                    {
+                        CardOutputs[index] = sensorValue.value;
+                    }
+                    else
+                    {
+                        CardOutputs[index] = false;
+                    }
+
                     index++;
                 }
 
                 ADUOutput.MapADUOutput(CardOutputs);
+                //Debug.Write(CardOutputs);
                 CleanOutputsSession();
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"{DateTime.Now} - " + "Error:" + ex.Message);
+                Debug.WriteLine($"{DateTime.Now} - " + "Error: #3" + ex.Message);
             }
         }
+
+
 
         public bool[] matchCardOutput(Type IOCardType, object Sensor)
         {
@@ -156,7 +173,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"{DateTime.Now} - " + "Error:" + ex.Message);
+                Debug.WriteLine($"{DateTime.Now} - " + "Error: #4" + ex.Message);
             }
             return CardOutputs;
         }

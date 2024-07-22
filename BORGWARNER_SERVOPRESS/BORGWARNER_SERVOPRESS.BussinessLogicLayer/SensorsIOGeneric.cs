@@ -1,5 +1,6 @@
 ﻿using BORGWARNER_SERVOPRESS.DataModel;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
@@ -13,12 +14,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
 
         IOCardsGeneric ioCardsGeneric;
         CancellationTokenSource cancellationToken_ioCardsGeneric;
-        IOCards ioCard_Type_M1;
-        IOCards ioCard_Type_M2;
-        IOCards ioCard_Type_M3;
-        //CancellationTokenSource cancellationToken_ioCard1;
-        //CancellationTokenSource cancellationToken_ioCard2;
-        //CancellationTokenSource cancellationToken_ioCard3;
+        
         public ManualResetEvent continueScrewFunction = new ManualResetEvent(true);
         CancellationTokenSource cancellationToken_ScrewFunction;
         public SensorsIOGeneric(SessionApp _sessionApp)
@@ -29,91 +25,33 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
         public void initialize()
         {
             ioCardsGeneric = new IOCardsGeneric(sessionApp);
-
-            //ioCard_Type_M1 = new IOCards(sessionApp, new IOCardType_M1());
-            //cancellationToken_ioCard1 = new CancellationTokenSource();
-
-            //ioCard_Type_M2 = new IOCards(sessionApp, new IOCardType_M2());
-            //cancellationToken_ioCard2 = new CancellationTokenSource();
-
-            //ioCard_Type_M3 = new IOCards(sessionApp, new IOCardType_M3());
-            //cancellationToken_ioCard3 = new CancellationTokenSource();
-
+            cancellationToken_ioCardsGeneric = new CancellationTokenSource();
             cancellationToken_ScrewFunction = new CancellationTokenSource();
         }
         public void startRead()
         {
-            /******************Agrengando la generica********************************/
+            
             IOCardsGeneric io = new IOCardsGeneric(sessionApp);
             Task.Run(async () =>
             {
                 io.GetDataInput(cancellationToken_ioCardsGeneric.Token);
             }).Wait();
-            Debug.WriteLine($"{DateTime.Now} - " + "Inicia lectura de los sensores.");
-            /**************************************************/
-
-            //Task.Run(async () =>
-            //{
-            //    ioCard_Type_M1.getDataInput(cancellationToken_ioCard1.Token);
-            //}).Wait();
-            //Debug.WriteLine($"{DateTime.Now} - " + "Inicia lectura de los sensores ioCard1");
-
-
-            //Task.Run(async () =>
-            //{
-            //    ioCard_Type_M2.getDataInput(cancellationToken_ioCard2.Token);
-            //}).Wait();
-            //Debug.WriteLine($"{DateTime.Now} - " + "Inicia lectura de los sensores ioCard2");
-
-            //Task.Run(async () =>
-            //{
-
-            //    ioCard_Type_M3.getDataInput(cancellationToken_ioCard3.Token);
-            //}).Wait();
-            //Debug.WriteLine($"{DateTime.Now} - " + "Inicia lectura de los sensores ioCard3");
-
-            //Thread monitorThread_Mask = new Thread(() => WaitingMonitorMaskOnHousing());
-            //monitorThread_Mask.Start();
-            //Thread monitorThread_MaskInHousing = new Thread(() => MonitorMaskOnHousing());
-            //monitorThread_MaskInHousing.Start();
-
-
-            //Thread monitorThread_Position = new Thread(() => MonitorPosition());
-            //monitorThread_Position.Start();
-
-            //_ = MonitorMaskOnHousing();
-            //_ = MonitorPosition();
-
+            Debug.WriteLine($"{DateTime.Now} - " + "Inicia lectura de los sensores.");           
         }
         public void endRead()
         {
             cancellationToken_ioCardsGeneric.Cancel();
             Debug.WriteLine($"{DateTime.Now} - " + "Termine de leer los sensores");
-
-            //cancellationToken_ioCard1.Cancel();
-            //Debug.WriteLine($"{DateTime.Now} - " + "Termine de leer los sensores ioCard1");
-            //cancellationToken_ioCard2.Cancel();
-            //Debug.WriteLine($"{DateTime.Now} - " + "Termine de leer los sensores ioCard2");
-            //cancellationToken_ioCard3.Cancel();
-            //Debug.WriteLine($"{DateTime.Now} - " + "Termine de leer los sensores ioCard3");
-
             cancellationToken_ScrewFunction.Cancel();
         }
-        public void SendDataOutpusM1()
-        {
-            ioCard_Type_M1.sendDataOutput();
-        }
-        public void SendDataOutpusM2()
-        {
-            ioCard_Type_M2.sendDataOutput();
-        }
-        public void SendDataOutpusM3()
-        {
-            ioCard_Type_M3.sendDataOutput();
-        }
+        
         public void SendDataOutpusGeneric(string keySensor)
         {
             ioCardsGeneric.sendDataOutput(keySensor);
+        }
+        public void SendDataOutpusGenericSameADU(List<keySensorValue> keySensorvalue)
+        {
+            ioCardsGeneric.sendDataOutputSameADU(keySensorvalue);
         }
         public bool PalletInPreStopper()
         {
@@ -144,7 +82,6 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
             //if (!sessionApp.Sensors_M1.Pallet_Pre_Stopper && !sessionApp.Sensors_M1.Pallet_Stopper)
             if (!sessionApp.IOSensorsGenerics.Pallet_Pre_Stopper && !sessionApp.IOSensorsGenerics.Pallet_Stopper)
             {
-
                 await SecurePallet_PreStopper_By_Time(cancellationTokenSource, 500);
                 await SecurePallet_Stopper_By_Time(cancellationTokenSource, 500);
             }
@@ -230,18 +167,23 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
             timer.Start();
         }
         public async Task SecurePallet(CancellationTokenSource cancellationTokenSource)
-        {
+        {            
             if (cancellationTokenSource != null)
             {
                 await Task.Run(async () =>
                 {
-                    if (sessionApp.Sensors_M1.Pallet_Stopper)
+                    if (sessionApp.IOSensorsGenerics.Pallet_Stopper)
                     {
-                        sessionApp.Sensors_M2.Cyl_Pres_Stopper = false;
-                        sessionApp.Sensors_M2.Cyl_Stopper = false;
-                        SendDataOutpusM2();
+                        //sessionApp.Sensors_M2.Cyl_Pres_Stopper = false;
+                        //sessionApp.Sensors_M2.Cyl_Stopper = false;
+                        //SendDataOutpusM2();
+                        SendDataOutpusGenericSameADU(new List<keySensorValue>()
+                        { 
+                            new keySensorValue { keySensor = "Cyl_Pres_Stopper", value = false },
+                            new keySensorValue { keySensor = "Cyl_Stopper", value = false }
+                        });
                     }
-                    while (!sessionApp.Sensors_M1.Pallet_Stopper && sessionApp.Sensors_M1.Main_Pressure)
+                    while (!sessionApp.IOSensorsGenerics.Pallet_Stopper && sessionApp.IOSensorsGenerics.Main_Pressure)
                     {
                         Thread.Sleep(50);
                     }
@@ -250,29 +192,32 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
         }
         public async Task UnsecurePallet(CancellationTokenSource cancellationTokenSource)
         {
-            await Task.Run(async () =>
+            try
             {
-                //while (!sessionApp.Sensors_M1.Pallet_Stopper)
-                //{
-                //    sessionApp.Sensors_M2.Cyl_Pres_Stopper = true;
-                //    sessionApp.Sensors_M2.Cyl_Stopper = true;
-                //    SendDataOutpusM2();
-                //    if(sessionApp.Sensors_M1.Pallet_Pre_Stopper)
-                //    {
-                //        break;
-                //    }
-                //}
-                if (!sessionApp.Sensors_M1.Pallet_Stopper)
+                await Task.Run(async () =>
                 {
-                    sessionApp.Sensors_M2.Cyl_Pres_Stopper = true;
-                    sessionApp.Sensors_M2.Cyl_Stopper = true;
-                    SendDataOutpusM2();
+                    if (!sessionApp.IOSensorsGenerics.Pallet_Stopper)
+                    {
+                    //sessionApp.Sensors_M2.Cyl_Pres_Stopper = true;
+                    //sessionApp.Sensors_M2.Cyl_Stopper = true;
+                    //SendDataOutpusM2();
+                    
+                    SendDataOutpusGenericSameADU(new List<keySensorValue>()
+                                {
+                                new keySensorValue() { keySensor = "Cyl_Pres_Stopper", value = true },
+                                new keySensorValue() { keySensor = "Cyl_Stopper", value = true }                                
+                                });
                 }
-                while (sessionApp.Sensors_M1.Pallet_Stopper && sessionApp.Sensors_M1.Main_Pressure)
-                {
-                    Thread.Sleep(50);
-                }
-            }, cancellationTokenSource.Token);
+                    while (sessionApp.IOSensorsGenerics.Pallet_Stopper && sessionApp.IOSensorsGenerics.Main_Pressure)
+                    {
+                        Thread.Sleep(50);
+                    }
+                }, cancellationTokenSource.Token);
+            }
+            catch(Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+            }
         }
 
         public void ExtendedPalletClamp()
@@ -306,38 +251,36 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
         }
         public bool PlacedHousing()
         {
-            //isWaiting = true;
+            isWaiting = true;
             return sessionApp.IOSensorsGenerics.Pallet_Pre_Stopper;
         }
         public bool isTriggerScanner()
         {
-            //isWaiting = true;            
+            isWaiting = true;
             return sessionApp.IOSensorsGenerics.Trigger_Scanner;
         }
         public bool isOutPieceHDVC()
         {
-            //isWaiting = true;
+            isWaiting = true;
             return !sessionApp.IOSensorsGenerics.Trigger_Scanner;
         }
         public bool ST13Available()
         {
-            //isWaiting = true;
+            isWaiting = true;
             return sessionApp.IOSensorsGenerics.ST13Available;
         }
-
         public bool UltraCapBoardPadinPlace()
         {
-            //isWaiting = true;
+            isWaiting = true;
             return sessionApp.IOSensorsGenerics.OptoBtn;
         }
-
         public bool UCBdConnected_RoutingHarness_PlaceInHousing()
         {
             return sessionApp.IOSensorsGenerics.OptoBtn;
         }
         public bool WasPressedOpto()
         {
-            //isWaiting = true;
+            isWaiting = true;
             return sessionApp.IOSensorsGenerics.OptoBtn;
         }
         //public bool UltraCapBoardReadyToScan()
@@ -498,13 +441,9 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
 
         private void SendValueByKeySensor(string keySensor, bool value)
         {
-            sessionApp.ADUPorts.Where(x => x.keySensor.Equals(keySensor)).First().Value = true;
+            sessionApp.ADUPorts.Where(x => x.keySensor.Equals(keySensor)).First().Value = value;
             SendDataOutpusGeneric(keySensor);
         }
-        private void SendValueByKeySensor(keySensorValue keySensorvalue)
-        {
-            //sessionApp.ADUPorts.Where(x => x.keySensor.Equals(keySensor)).First().Value = true;
-            //SendDataOutpusGeneric(keySensor);
-        }
+      
     }
 }

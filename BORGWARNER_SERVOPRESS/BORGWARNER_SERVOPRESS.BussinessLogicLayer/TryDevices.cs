@@ -17,7 +17,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
         public TryDevices(SessionApp _sessionApp)
         {
             sessionApp = _sessionApp;
-            sensorsIO = new SensorsIO(_sessionApp);
+            //sensorsIO = new SensorsIO(_sessionApp);
             sensorsIOGeneric = new SensorsIOGeneric(_sessionApp);
         }
 
@@ -176,27 +176,27 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
         }
         public void TryStartSensor()
         {
-            sensorsIO.startRead();
+            sensorsIOGeneric.startRead();
         }
         public void TryEndSensor()
         {
-            sensorsIO.endRead();
+            sensorsIOGeneric.endRead();
         }
-        public void TrySendDataSensorsM1()
-        {
-            sensorsIO.SendDataOutpusM1();
-        }
-        public void TrySendDataSensorsM2()
-        {
-            sensorsIO.SendDataOutpusM2();
-        }
-        public void TrySendDataSensorsM3()
-        {
-            sensorsIO.SendDataOutpusM3();
-        }
+        //public void TrySendDataSensorsM1()
+        //{
+        //    sensorsIOGeneric.SendDataOutpusM1();
+        //}
+        //public void TrySendDataSensorsM2()
+        //{
+        //    sensorsIOGeneric.SendDataOutpusM2();
+        //}
+        //public void TrySendDataSensorsM3()
+        //{
+        //    sensorsIOGeneric.SendDataOutpusM3();
+        //}
         public void TrySendDataSensorGeneric(string keySensor)
         {
-            sensorsIOGeneric.SendDataOutpusGeneric(keySensor);
+            sensorsIOGeneric.SendDataOutpusGeneric(keySensor);           
         }
     }
 }

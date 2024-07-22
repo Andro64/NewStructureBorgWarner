@@ -186,7 +186,7 @@
                                         Style="{StaticResource BaseButton}"
                                         Content="Activar Card I/O" HorizontalAlignment="Left" VerticalAlignment="Top" Width="131" Height="31" Click="btnActivarCardIO_Click"/>
                                         
-                                        <GroupBox x:Name="Ontrak_1" Style="{StaticResource SimpleGroupBox}" Header="Ontrak Card 1 I/O" Grid.Row="1">
+                                        <!--<GroupBox x:Name="Ontrak_1" Style="{StaticResource SimpleGroupBox}" Header="Ontrak Card 1 I/O" Grid.Row="1">
                                             <Grid>
                                                 <Grid.ColumnDefinitions>
                                                     <ColumnDefinition Width="auto"/>
@@ -316,7 +316,7 @@
                                                 <Button x:Name="Card3_ouput6" Style="{StaticResource BaseButton}" Grid.Column="5" Grid.Row="2" Content="K6" Click="Card3_ouput6_Click"/>
                                                 <Button x:Name="Card3_ouput7" Style="{StaticResource BaseButton}" Grid.Column="5" Grid.Row="3" Content="Reset sensor scrap" Click="Card3_ouput7_Click"/>
                                             </Grid>
-                                        </GroupBox>
+                                        </GroupBox>-->
 
                                         <GroupBox x:Name="Ontrak_Gen1" Style="{StaticResource SimpleGroupBox}" Header="Ontrak ................................. Card Generic I/O" Visibility="Hidden" Grid.Row="4">
                                             <Grid x:Name="MainGrid1" ShowGridLines="false">

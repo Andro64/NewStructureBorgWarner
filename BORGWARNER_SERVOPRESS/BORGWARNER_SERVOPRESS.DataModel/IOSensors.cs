@@ -158,5 +158,22 @@ namespace BORGWARNER_SERVOPRESS.DataModel
         public bool ReleScrap { get; set; }
         #endregion
 
+        public void ClearAllBooleanProperties()
+        {
+            // Obtiene el tipo de la instancia actual
+            var type = this.GetType();
+
+            // Itera sobre todas las propiedades del tipo
+            foreach (var property in type.GetProperties())
+            {
+                // Verifica si la propiedad es de tipo booleano y tiene un setter
+                if (property.PropertyType == typeof(bool) && property.CanWrite)
+                {
+                    // Asigna false a la propiedad
+                    property.SetValue(this, false);
+                }
+            }
+        }
+
     }
 }
