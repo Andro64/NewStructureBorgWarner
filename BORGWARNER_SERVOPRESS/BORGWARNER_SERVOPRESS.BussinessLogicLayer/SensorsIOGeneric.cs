@@ -322,10 +322,12 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
 
         public bool ScrewInScrap()
         {
+            isWaiting = true;
             return sessionApp.IOSensorsGenerics.Scrap_presence;
         }
         public bool MaskInHolder()
         {
+            isWaiting = true;
             return sessionApp.IOSensorsGenerics.MaskInHolder;
         }
         //public bool DetectsRetractedPalletClamp()

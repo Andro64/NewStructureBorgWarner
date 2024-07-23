@@ -27,6 +27,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
             string numSerial;
             //bool[] ioADUCard;
             int idADU = 1;
+            const int limitIndexReadADU = 7;
 
             try
             {
@@ -48,9 +49,10 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
                         bool[] ioADUCard;
                         ioADUCard = item.MapADUInput();
 
-                        for (int i = 0; i < ioADUCard.Length; i++)
+                        //for (int i = 0; i < ioADUCard.Length; i++)
+                        for (int i = 0; i < limitIndexReadADU; i++)
                         {
-                            //Debug.WriteLine($"{DateTime.Now} - " + $"ioADUCard.Length {ioADUCard.Length}   i {i}    idADU {idADU}");                           
+                            Debug.WriteLine($"{DateTime.Now} - " + $"ioADUCard.Length {ioADUCard.Length}   i {i}    idADU {idADU}");
                             sessionApp.ADUPorts.Where(x => x.id_ADU.Equals(idADU) && x.id_index.Equals(i)).First().Value = ioADUCard[i];
 
                         }
