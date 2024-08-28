@@ -52,7 +52,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
                         //for (int i = 0; i < ioADUCard.Length; i++)
                         for (int i = 0; i < limitIndexReadADU; i++)
                         {
-                            Debug.WriteLine($"{DateTime.Now} - " + $"ioADUCard.Length {ioADUCard.Length}   i {i}    idADU {idADU}");
+                            //Debug.WriteLine($"{DateTime.Now} - " + $"ioADUCard.Length {ioADUCard.Length}   i {i}    idADU {idADU}");
                             sessionApp.ADUPorts.Where(x => x.id_ADU.Equals(idADU) && x.id_index.Equals(i)).First().Value = ioADUCard[i];
 
                         }
@@ -73,7 +73,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
                     }
 
                     await Task.Delay(5); //Tiempo entre cada lectura 5mls
-                    Debug.WriteLine($"{DateTime.Now} - " + $"Estoy leyendo los sensores {idADU}");
+                    //Debug.WriteLine($"{DateTime.Now} - " + $"Estoy leyendo los sensores {idADU}");
                 }
 
             }
@@ -100,15 +100,18 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
                 ADU ADUOutput;
                 int index = 0;
 
+                Debug.WriteLine($"{DateTime.Now} - " + $"Key Sensor {keySensor}");
                 int numADU = sessionApp.ADUPorts.Where(x => x.keySensor.Equals(keySensor)).First().id_ADU;
                 numSerial = sessionApp.settings.FirstOrDefault(x => x.setting.Contains($"ADU_SERIAL_{numADU}")).valueSetting;
                 ADUOutput = new ADU(numSerial);
+                Debug.WriteLine($"{DateTime.Now} - " + $"Numero de ADU {numADU} con serial {numSerial}");
 
                 var ADUPortsElements = sessionApp.ADUPorts.Where(x => x.id_ADU.Equals(numADU) && x.IOCard.Contains("Output")).OrderBy(z => z.id_index);
                 foreach (var ADUElement in ADUPortsElements)
                 {
                     CardOutputs[index] = ADUElement.Value;
                     index++;
+                    Debug.WriteLine($"{DateTime.Now} - " + $"ADU Posicion {index} = valor {ADUElement.Value}");
                 }
 
                 ADUOutput.MapADUOutput(CardOutputs);

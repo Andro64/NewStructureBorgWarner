@@ -1,4 +1,5 @@
-﻿using BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation;
+﻿using BORGWARNER_SERVOPRESS.BussinessLogicLayer.Views;
+using BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation;
 using BORGWARNER_SERVOPRESS.DataAccessLayer;
 using BORGWARNER_SERVOPRESS.DataModel;
 using System;
@@ -7,6 +8,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Media.Imaging;
 
 namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
@@ -21,6 +23,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
         private CancellationTokenSource _cancellationTokenSource;
         private bool isCancellationRequested = false;
         TighteningProcess tightening;
+        private IMessageBoxService messageBoxService;
 
         public override event EventHandler<TextBoxInfoEventArgs> CreateTextBoxRequested;
         public override event EventHandler RemoveTextBoxRequested;
@@ -28,7 +31,6 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
         public WorkStation_Manual_Type12(SessionApp _sessionApp)
         {
             sessionApp = _sessionApp;
-
         }
 
         public override void CancelProcess()
@@ -74,10 +76,10 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
             //sessionApp.Sensors_M3.PB3 = false;
 
             sessionApp.images = new List<string>();
-            
+
         }
 
-        public async Task showMessageAndImage(string message, string nameimage = "", bool isImageInDiferentPath = false)
+        public async Task showMessageAndImage(string message, string nameimage = "", bool isImageInDiferentPath = false, int timeshowing = 2000)
         {
             await Task.Run(() =>
             {
@@ -93,10 +95,10 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
                 }
 
                 Debug.WriteLine($"{DateTime.Now} - " + "Msg:" + message + " -  Image show:" + nameimage);
-                Thread.Sleep(3000);
+                Thread.Sleep(timeshowing);
             });
         }
-        public bool Validation_by_FIS(string serial, string show_message, eTypeSendToFIS typeSendToFIS, bool isPass = false)
+        public bool Validation_by_FIS(string serialParent, string serialChild, string show_message, eTypeSendToFIS typeSendToFIS, bool isTighteningOK = false, List<Screw> lstScrewsToProcess = null, int MaxNumberAttempts = 0)
         {
             CommunicationFIS fIS;
             DataFIS dataFIS;
@@ -109,17 +111,24 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
                 switch (typeSendToFIS)
                 {
                     case eTypeSendToFIS.BREQ:
-                        dataFIS = fIS.SendBREQToFIS(serial);
+                        dataFIS = fIS.SendBREQToFIS(serialParent == string.Empty ? serialChild : serialParent);
                         sessionApp.QR.To_FIS = dataFIS.to_fis;
                         sessionApp.QR.From_FIS = dataFIS.from_fis;
                         isPASS_From_FIS = dataFIS.from_fis.Contains("PASS");
 
                         break;
                     case eTypeSendToFIS.BCMP:
-                        dataFIS = fIS.BCMP(serial, isPass);
+                        if (lstScrewsToProcess != null)
+                        {
+                            dataFIS = fIS.BCMP(serialParent, serialChild, isTighteningOK, lstScrewsToProcess, MaxNumberAttempts);
+                        }
+                        else
+                        {
+                            dataFIS = fIS.BCMP(serialParent, serialChild, isTighteningOK);
+                        }
                         sessionApp.QR.To_FIS = dataFIS.to_fis;
                         sessionApp.QR.From_FIS = dataFIS.from_fis;
-                        isPASS_From_FIS = dataFIS.from_fis.Contains("ACK");
+                        isPASS_From_FIS = dataFIS.from_fis.Contains("PASS");
                         break;
                 }
             }
@@ -130,7 +139,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
             }
             return isPASS_From_FIS;
         }
-               
+
 
         public override async Task StartProcess()
         {
@@ -142,6 +151,11 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
             string resultImageVisionSystem;
             bool isFISEneable = false;
             bool isVisionEneable = false;
+            Scanner scanner = new Scanner(sessionApp, eTypeConnection.Scan_1);
+
+            Scanner scanner3 = new Scanner(sessionApp, eTypeConnection.Scan_2);
+            List<string> serials = new List<string>();
+            const int MaxNumberAttempts = 3;
 
             string serial;
             string resultFIS;
@@ -156,7 +170,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
 
             sensorsIO = new SensorsIOGeneric(sessionApp);
             //sensorsIO = new SensorsIO(sessionApp);
-            
+
             sensorsIO.startRead();
             _cancellationTokenSource = new CancellationTokenSource();
             sessionApp.areImagePASSProcessFinished = false;
@@ -166,7 +180,8 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
             isVisionEneable = sessionApp.settings.FirstOrDefault(x => x.setting.Contains("EneableVision")).valueSetting == "1";
 
             sessionApp.MessageOfProcessDebug = "Inicializando sistema";
-            
+            sensorsIO.ReleScrapOFF();
+
             await sensorsIO.Sequence_Stoper_PrestoperAsync(_cancellationTokenSource, false);
             if (isCancellationRequested) { return; };
 
@@ -193,18 +208,18 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
                     await showMessageAndImage("Candado extendido.", "MGPM25-10Z.png");
                 }
             }
-            
-            
+
+
             if (isCancellationRequested) { return; };
 
             await showMessageAndImage("Escaneando código QR del Housing.");
-            Scanner scanner = new Scanner(sessionApp, eTypeConnection.Scan_1);
+            //Scanner scanner = new Scanner(sessionApp, eTypeConnection.Scan_1);
             serial = scanner.ScanQR("LON");
             //serial = await scanner.ScanningTrigger(_cancellationTokenSource, "LON");
-            
+
             serial = serial == null ? string.Empty : serial;
-            sessionApp.QR.HOUSING = serial != string.Empty ? serial.Substring(0, (serial.Length - 1)) : "";            
-            
+            sessionApp.QR.HOUSING = serial;// != string.Empty ? serial.Substring(0, (serial.Length - 1)) : "";            
+
             if (serial == "ERROR\r" || serial == string.Empty)
             {
                 await showMessageAndImage("Error al momento de escanear el código QR del Housing. Favor de verificar.");
@@ -212,522 +227,547 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
                 await sensorsIO.Sequence_Stoper_PrestoperAsync(_cancellationTokenSource, true);
                 return;
             }
+            else
+            {
+                serials.Add(serial);
+            }
 
             scanner.DisconnectScanner();
             if (isCancellationRequested) { return; };
 
-           
-            if (isFISEneable ? Validation_by_FIS(sessionApp.QR.HOUSING, "Se envía BREQ del housing a FIS.", eTypeSendToFIS.BREQ) : true)
+
+            if (isFISEneable ? Validation_by_FIS(sessionApp.QR.HOUSING, string.Empty, "Se envía BREQ del housing a FIS.", eTypeSendToFIS.BREQ) : true)
             {
                 await showMessageAndImage("Inspección completada...");
-                Thread.Sleep(300);
+                Thread.Sleep(50); //Thread.Sleep(300);
                 await showMessageAndImage("Por favor, tome el HVDC COVER y colóquelo frente al escaner.", "ScannerHVDCCover.jpg");
                 await CheckSensorAndWait(() => sensorsIO.isTriggerScanner(), "Esperando HVDC cover.");
                 if (isCancellationRequested) { return; };
 
-                await showMessageAndImage("Escaneando código QR del HVDC Cover.");
-                Scanner scanner2 = new Scanner(sessionApp, eTypeConnection.Scan_2);
-                //serial = scanner2.ScanQR("LON");
-                serial = await scanner2.ScanningTrigger(_cancellationTokenSource, "LON");
-                sessionApp.QR.HVDC_BUSBAR = serial.Substring(0, (serial.Length - 1));
-                scanner2.DisconnectScanner();
-                if (isCancellationRequested) { return; };
-                Thread.Sleep(300);
-                
-                if (isFISEneable ? Validation_by_FIS(sessionApp.QR.HOUSING, "Se envía BREQ a FIS.", eTypeSendToFIS.BREQ) : true)
+
+
+                if (isFISEneable)
                 {
-                    await showMessageAndImage("Inspección completada...");
-                    Thread.Sleep(300);
-
-                    await showMessageAndImage("Por favor,remueva el HVDC COVER.", "ScannerHVDCCover.jpg");
-                    await CheckSensorAndWait(() => sensorsIO.isOutPieceHDVC(), "Esperando que quiten la pieza HVDC cover.");
-                    if (isCancellationRequested) { return; };
-                    await showMessageAndImage("Por favor, tome cable arnés y colóquelo frente al escaner.", "ScannerHarness.jpg");
-                    await CheckSensorAndWait(() => sensorsIO.isTriggerScanner(), "Esperamos que el operador coloque el arnés en el scaner.");
-                    if (isCancellationRequested) { return; };
-
-                    await showMessageAndImage("Leyendo QR arnés.", "ScannerHarness.jpg");
-                    Scanner scanner3 = new Scanner(sessionApp, eTypeConnection.Scan_2);
-                    //serial = scanner3.ScanQR("LON");
-                    serial = await scanner3.ScanningTrigger(_cancellationTokenSource, "LON");
-                    sessionApp.QR.HARNESS = serial.Substring(0, (serial.Length - 1));
-                    scanner3.DisconnectScanner();
-                    if (isCancellationRequested) { return; };
-
-                    
-                    if (isFISEneable ? Validation_by_FIS(sessionApp.QR.HOUSING, "Se envía BREQ árnes a FIS", eTypeSendToFIS.BREQ) : true)                    
+                    while (!isCancellationRequested)
                     {
-                        await showMessageAndImage("Inspección completada...");
-                        Thread.Sleep(300);
+                        await showMessageAndImage("Escaneando código QR del HVDC Cover.", "", false, 50);
+                        Scanner scanner2 = new Scanner(sessionApp, eTypeConnection.Scan_2);
+                        //serial = scanner2.ScanQR("LON");
+                        serial = await scanner2.ScanningTrigger(_cancellationTokenSource, "LON", serials);
+                        serials.Add(serial);
+                        sessionApp.QR.HVDC_BUSBAR = serial;//.Substring(0, (serial.Length - 1));
+                        scanner2.DisconnectScanner();
+                        if (isCancellationRequested) { return; };
+                        Thread.Sleep(50); //Thread.Sleep(300);
+                        if (serial != string.Empty)
+                        {
+                            if (Validation_by_FIS(string.Empty, sessionApp.QR.HVDC_BUSBAR, "Se envía BREQ a FIS.", eTypeSendToFIS.BREQ))
+                            {
+                                break;
+                            }
+                        }
+                        //Thread.Sleep(10);
+                    }
+                    if (isCancellationRequested) { return; };
+                }
 
-                        await showMessageAndImage("Por favor, conecte árness y realice su ruteo, despues presione el opto.", "HousingRoute.png");
-                        await CheckSensorAndWait(() => sensorsIO.WasPressedOpto(), "Esperamos que el operador presione opto del árnes.");
+
+                await showMessageAndImage("Inspección completada...");
+                Thread.Sleep(50); //Thread.Sleep(300);
+
+                await showMessageAndImage("Por favor,remueva el HVDC COVER.", "ScannerHVDCCover.jpg");
+                await CheckSensorAndWait(() => sensorsIO.isOutPieceHDVC(), "Esperando que quiten la pieza HVDC cover.");
+                if (isCancellationRequested) { return; };
+                await showMessageAndImage("Por favor, tome cable arnés y colóquelo frente al escaner.", "ScannerHarness.jpg");
+                await CheckSensorAndWait(() => sensorsIO.isTriggerScanner(), "Esperamos que el operador coloque el arnés en el scaner.");
+                if (isCancellationRequested) { return; };
+
+                await showMessageAndImage("Leyendo QR arnés.", "ScannerHarness.jpg", false, 50);
+                //Scanner scanner3 = new Scanner(sessionApp, eTypeConnection.Scan_2);
+                //serial = scanner3.ScanQR("LON");
+                serial = await scanner3.ScanningTrigger(_cancellationTokenSource, "LON", serials);
+                serials.Add(serial);
+                sessionApp.QR.HARNESS = serial;//.Substring(0, (serial.Length - 1));
+                scanner3.DisconnectScanner();
+                if (isCancellationRequested) { return; };
+
+
+                //if (isFISEneable ? Validation_by_FIS(sessionApp.QR.HARNESS, "Se envía BREQ árnes a FIS", eTypeSendToFIS.BREQ) : true)                    
+                //{
+                //    await showMessageAndImage("Inspección completada...");
+                //    Thread.Sleep(50); //Thread.Sleep(300);
+
+                await showMessageAndImage("Por favor, conecte árness y realice su ruteo, despues presione el opto.", "HousingRoute.png");
+                await CheckSensorAndWait(() => sensorsIO.WasPressedOpto(), "Esperamos que el operador presione opto del árnes.");
+                if (isCancellationRequested) { return; };
+
+                await showMessageAndImage("Realizando inspección 1...");
+                Thread.Sleep(50); //Thread.Sleep(300);
+
+                visionSystem = new VisionSystem(sessionApp, eTypeConnection.Camara_1);
+                if (isVisionEneable ? !visionSystem.FirstInspectionAttempt(serial) : false)
+                {
+                    resultImageVisionSystem = visionSystem.getNameImageResultFromCamera(false);
+                    visionSystem.Disconnect();
+                    if (!sensorsIO.WasPressedOpto() || resultImageVisionSystem == string.Empty)
+                    {
+                        Debug.WriteLine($"{DateTime.Now} - " + "Fallo primer intento ESPERA ACTIVACION DE OPTO.");
+                        await showMessageAndImage("El primer intento falló. Por favor, reacomode y presione el sensor óptico(OPTO).", resultImageVisionSystem, true);
+                        await CheckSensorAndWait(() => sensorsIO.WasPressedOpto(), "El primer intento falló. Por favor, reacomode y presione el sensor óptico(OPTO).");
                         if (isCancellationRequested) { return; };
 
-                        await showMessageAndImage("Realizando inspección 1...");
-                        Thread.Sleep(300);
-
-                        visionSystem = new VisionSystem(sessionApp, eTypeConnection.Camara_1);
-                        if (isVisionEneable ? !visionSystem.FirstInspectionAttempt(serial) : false)
+                        if (!visionSystem.SecondInspectionAttempt(serial))
                         {
                             resultImageVisionSystem = visionSystem.getNameImageResultFromCamera(false);
                             visionSystem.Disconnect();
                             if (!sensorsIO.WasPressedOpto())
                             {
-
-
-                                Debug.WriteLine($"{DateTime.Now} - " + "Fallo primer intento ESPERA ACTIVACION DE OPTO.");
-                                await showMessageAndImage("El primer intento falló. Por favor, reacomode y presione el sensor óptico(OPTO).", resultImageVisionSystem, true);
-                                await CheckSensorAndWait(() => sensorsIO.WasPressedOpto(), "El primer intento falló. Por favor, reacomode y presione el sensor óptico(OPTO).");
+                                Debug.WriteLine($"{DateTime.Now} - " + "Fallo segundo intento ESPERA ACTIVACION DE OPTO.");
+                                await showMessageAndImage("El segundo intento falló. Por favor, reacomode y presione el sensor óptico(OPTO).", resultImageVisionSystem, true);
+                                await CheckSensorAndWait(() => sensorsIO.WasPressedOpto(), "El segundo intento falló. Por favor, reacomode y presione el sensor óptico(OPTO).");
                                 if (isCancellationRequested) { return; };
 
-                                if (!visionSystem.SecondInspectionAttempt(serial))
+                                if (!visionSystem.ThirdInspectionAttempt(serial))
                                 {
                                     resultImageVisionSystem = visionSystem.getNameImageResultFromCamera(false);
                                     visionSystem.Disconnect();
-                                    if (!sensorsIO.WasPressedOpto())
-                                    {
-                                        Debug.WriteLine($"{DateTime.Now} - " + "Fallo segundo intento ESPERA ACTIVACION DE OPTO.");
-                                        await showMessageAndImage("El segundo intento falló. Por favor, reacomode y presione el sensor óptico(OPTO).", resultImageVisionSystem, true);
-                                        await CheckSensorAndWait(() => sensorsIO.WasPressedOpto(), "El segundo intento falló. Por favor, reacomode y presione el sensor óptico(OPTO).");
-                                        if (isCancellationRequested) { return; };
-
-                                        if (!visionSystem.ThirdInspectionAttempt(serial))
-                                        {
-                                            resultImageVisionSystem = visionSystem.getNameImageResultFromCamera(false);
-                                            visionSystem.Disconnect();
-                                            await showMessageAndImage("Los 3 intentos han fallado.", resultImageVisionSystem, true);
-                                            Thread.Sleep(3000);
-                                            Debug.WriteLine($"{DateTime.Now} - " + "Los 3 intentos han fallado.");
-                                            FinshProcessByErrors();
-                                            return;
-                                        }
-                                    }
+                                    await showMessageAndImage("Los 3 intentos han fallado.", resultImageVisionSystem, true);
+                                    Thread.Sleep(3000);
+                                    Debug.WriteLine($"{DateTime.Now} - " + "Los 3 intentos han fallado.");
+                                    FinshProcessByErrors();
+                                    return;
                                 }
                             }
                         }
+                    }
+                }
 
-                        if (isVisionEneable)
-                        {
-                            resultImageVisionSystem = visionSystem.getNameImageResultFromCamera(true);
-                            imagesVisionSystem.Add(resultImageVisionSystem);
-                            sessionApp.images.Add(resultImageVisionSystem);
-                            visionSystem.Disconnect();
-                            await showMessageAndImage("La inspección número 1 ha sido exitosa.", resultImageVisionSystem, true);
-                        }
-                        else
-                        {
-                            visionSystem.Disconnect();
-                            await showMessageAndImage("La inspección número 1 ha sido exitosa.");
-                        }
+                if (isVisionEneable)
+                {
+                    resultImageVisionSystem = visionSystem.getNameImageResultFromCamera(true);
+                    imagesVisionSystem.Add(resultImageVisionSystem);
+                    sessionApp.images.Add(resultImageVisionSystem);
+                    visionSystem.Disconnect();
+                    await showMessageAndImage("La inspección número 1 ha sido exitosa.", resultImageVisionSystem, true);
 
-                        Thread.Sleep(3000);
-                        Debug.WriteLine($"{DateTime.Now} - " + "INSPECCION 1 DE VISION OK.");
+                }
+                else
+                {
+                    visionSystem.Disconnect();
+                    await showMessageAndImage("La inspección número 1 ha sido exitosa.");
+                }
+
+                Thread.Sleep(3000);
+                Debug.WriteLine($"{DateTime.Now} - " + "INSPECCION 1 DE VISION OK.");
+                if (isCancellationRequested) { return; };
+
+                await showMessageAndImage("Realizando inspección 2...");
+                Thread.Sleep(300);
+
+                visionSystem = new VisionSystem(sessionApp, eTypeConnection.Camara_2);
+                if (isVisionEneable ? !visionSystem.FirstInspectionAttempt(serial) : false)
+                {
+                    resultImageVisionSystem = visionSystem.getNameImageResultFromCamera(false);
+                    visionSystem.Disconnect();
+                    if (!sensorsIO.WasPressedOpto())
+                    {
+                        Debug.WriteLine($"{DateTime.Now} - " + "Fallo primer intento ESPERA ACTIVACION DE OPTO. ");
+                        await showMessageAndImage("El primer intento falló. Por favor, reacomode y presione el sensor óptico(OPTO).", resultImageVisionSystem, true);
+                        await CheckSensorAndWait(() => sensorsIO.WasPressedOpto(), "El primer intento falló. Por favor, reacomode y presione el sensor óptico(OPTO).");
                         if (isCancellationRequested) { return; };
 
-                        await showMessageAndImage("Realizando inspección 2...");
-                        Thread.Sleep(300);
-
-                        visionSystem = new VisionSystem(sessionApp, eTypeConnection.Camara_2);
-                        if (isVisionEneable ? !visionSystem.FirstInspectionAttempt(serial) : false)
+                        if (!visionSystem.SecondInspectionAttempt(serial))
                         {
                             resultImageVisionSystem = visionSystem.getNameImageResultFromCamera(false);
                             visionSystem.Disconnect();
                             if (!sensorsIO.WasPressedOpto())
                             {
-                                Debug.WriteLine($"{DateTime.Now} - " + "Fallo primer intento ESPERA ACTIVACION DE OPTO. ");
-                                await showMessageAndImage("El primer intento falló. Por favor, reacomode y presione el sensor óptico(OPTO).", resultImageVisionSystem, true);
-                                await CheckSensorAndWait(() => sensorsIO.WasPressedOpto(), "El primer intento falló. Por favor, reacomode y presione el sensor óptico(OPTO).");
+                                Debug.WriteLine($"{DateTime.Now} - " + "Fallo segundo intento ESPERA ACTIVACION DE OPTO.");
+                                await showMessageAndImage("El segundo intento falló. Por favor, reacomode y presione el sensor óptico(OPTO).", resultImageVisionSystem, true);
+                                await CheckSensorAndWait(() => sensorsIO.WasPressedOpto(), "El segundo intento falló. Por favor, reacomode y presione el sensor óptico(OPTO).");
                                 if (isCancellationRequested) { return; };
 
-                                if (!visionSystem.SecondInspectionAttempt(serial))
+                                if (!visionSystem.ThirdInspectionAttempt(serial))
                                 {
                                     resultImageVisionSystem = visionSystem.getNameImageResultFromCamera(false);
                                     visionSystem.Disconnect();
-                                    if (!sensorsIO.WasPressedOpto())
-                                    {
-                                        Debug.WriteLine($"{DateTime.Now} - " + "Fallo segundo intento ESPERA ACTIVACION DE OPTO.");
-                                        await showMessageAndImage("El segundo intento falló. Por favor, reacomode y presione el sensor óptico(OPTO).", resultImageVisionSystem, true);
-                                        await CheckSensorAndWait(() => sensorsIO.WasPressedOpto(), "El segundo intento falló. Por favor, reacomode y presione el sensor óptico(OPTO).");
-                                        if (isCancellationRequested) { return; };
-
-                                        if (!visionSystem.ThirdInspectionAttempt(serial))
-                                        {
-                                            resultImageVisionSystem = visionSystem.getNameImageResultFromCamera(false);
-                                            visionSystem.Disconnect();
-                                            await showMessageAndImage("Los 3 intentos han fallado.", resultImageVisionSystem, true);
-                                            Thread.Sleep(3000);
-                                            Debug.WriteLine($"{DateTime.Now} - " + "Los 3 intentos han fallado.");
-                                            FinshProcessByErrors();
-                                            return;
-                                        }
-                                    }
+                                    await showMessageAndImage("Los 3 intentos han fallado.", resultImageVisionSystem, true);
+                                    Thread.Sleep(3000);
+                                    Debug.WriteLine($"{DateTime.Now} - " + "Los 3 intentos han fallado.");
+                                    FinshProcessByErrors();
+                                    return;
                                 }
                             }
                         }
-                        if (isVisionEneable)
-                        {
-                            resultImageVisionSystem = visionSystem.getNameImageResultFromCamera(true);
-                            imagesVisionSystem.Add(resultImageVisionSystem);
-                            sessionApp.images.Add(resultImageVisionSystem);
-                            visionSystem.Disconnect();
-                            await showMessageAndImage("La inspección número 2 ha sido exitosa.", resultImageVisionSystem, true);
-                        }
-                        else
-                        {
-                            visionSystem.Disconnect();
-                            await showMessageAndImage("La inspección número 2 ha sido exitosa.");
-                        }
+                    }
+                }
+                if (isVisionEneable)
+                {
+                    resultImageVisionSystem = visionSystem.getNameImageResultFromCamera(true);
+                    imagesVisionSystem.Add(resultImageVisionSystem);
+                    sessionApp.images.Add(resultImageVisionSystem);
+                    visionSystem.Disconnect();
+                    await showMessageAndImage("La inspección número 2 ha sido exitosa.", resultImageVisionSystem, true);
+                }
+                else
+                {
+                    visionSystem.Disconnect();
+                    await showMessageAndImage("La inspección número 2 ha sido exitosa.");
+                }
 
-                        Thread.Sleep(3000);
-                        Debug.WriteLine($"{DateTime.Now} - " + "INSPECCION 2 DE VISION OK.");
+                Thread.Sleep(3000);
+                Debug.WriteLine($"{DateTime.Now} - " + "INSPECCION 2 DE VISION OK.");
+                if (isCancellationRequested) { return; };
+
+                await showMessageAndImage("Realizando inspección 3...");
+                Thread.Sleep(300);
+
+                visionSystem = new VisionSystem(sessionApp, eTypeConnection.Camara_3);
+                if (isVisionEneable ? !visionSystem.FirstInspectionAttempt(serial) : false)
+                {
+                    resultImageVisionSystem = visionSystem.getNameImageResultFromCamera(false);
+                    visionSystem.Disconnect();
+                    if (!sensorsIO.WasPressedOpto())
+                    {
+                        Debug.WriteLine($"{DateTime.Now} - " + "Fallo primer intento ESPERA ACTIVACION DE OPTO.");
+                        await showMessageAndImage("El primer intento falló. Reacomode y presione el sensor óptico(OPTO)", resultImageVisionSystem, true);
+                        await CheckSensorAndWait(() => sensorsIO.WasPressedOpto(), "El primer intento falló. Por favor, reacomode y presione el sensor óptico(OPTO).");
                         if (isCancellationRequested) { return; };
 
-                        await showMessageAndImage("Realizando inspección 3...");
-                        Thread.Sleep(300);
-
-                        visionSystem = new VisionSystem(sessionApp, eTypeConnection.Camara_3);
-                        if (isVisionEneable ? !visionSystem.FirstInspectionAttempt(serial) : false)
+                        if (!visionSystem.SecondInspectionAttempt(serial))
                         {
                             resultImageVisionSystem = visionSystem.getNameImageResultFromCamera(false);
                             visionSystem.Disconnect();
                             if (!sensorsIO.WasPressedOpto())
                             {
-                                Debug.WriteLine($"{DateTime.Now} - " + "Fallo primer intento ESPERA ACTIVACION DE OPTO.");
-                                await showMessageAndImage("El primer intento falló. Reacomode y presione el sensor óptico(OPTO)", resultImageVisionSystem, true);
-                                await CheckSensorAndWait(() => sensorsIO.WasPressedOpto(), "El primer intento falló. Por favor, reacomode y presione el sensor óptico(OPTO).");
+                                Debug.WriteLine($"{DateTime.Now} - " + "Fallo segundo intento ESPERA ACTIVACION DE OPTO.");
+                                await showMessageAndImage("El segundo intento falló. Reacomode y presione el sensor óptico(OPTO).", resultImageVisionSystem, true);
+                                await CheckSensorAndWait(() => sensorsIO.WasPressedOpto(), "El segundo intento falló. Por favor, reacomode y presione el sensor óptico(OPTO).");
                                 if (isCancellationRequested) { return; };
 
-                                if (!visionSystem.SecondInspectionAttempt(serial))
+                                if (!visionSystem.ThirdInspectionAttempt(serial))
                                 {
                                     resultImageVisionSystem = visionSystem.getNameImageResultFromCamera(false);
                                     visionSystem.Disconnect();
-                                    if (!sensorsIO.WasPressedOpto())
-                                    {
-                                        Debug.WriteLine($"{DateTime.Now} - " + "Fallo segundo intento ESPERA ACTIVACION DE OPTO.");
-                                        await showMessageAndImage("El segundo intento falló. Reacomode y presione el sensor óptico(OPTO).", resultImageVisionSystem, true);
-                                        await CheckSensorAndWait(() => sensorsIO.WasPressedOpto(), "El segundo intento falló. Por favor, reacomode y presione el sensor óptico(OPTO).");
-                                        if (isCancellationRequested) { return; };
-
-                                        if (!visionSystem.ThirdInspectionAttempt(serial))
-                                        {
-                                            resultImageVisionSystem = visionSystem.getNameImageResultFromCamera(false);
-                                            visionSystem.Disconnect();
-                                            await showMessageAndImage("Los 3 intentos han fallado.", resultImageVisionSystem, true);
-                                            Thread.Sleep(3000);
-                                            Debug.WriteLine($"{DateTime.Now} - " + "Los 3 intentos han fallado.");
-                                            FinshProcessByErrors();
-                                            return;
-                                        }
-                                    }
+                                    await showMessageAndImage("Los 3 intentos han fallado.", resultImageVisionSystem, true);
+                                    Thread.Sleep(3000);
+                                    Debug.WriteLine($"{DateTime.Now} - " + "Los 3 intentos han fallado.");
+                                    FinshProcessByErrors();
+                                    return;
                                 }
                             }
                         }
+                    }
+                }
 
-                        if (isVisionEneable)
+                if (isVisionEneable)
+                {
+                    resultImageVisionSystem = visionSystem.getNameImageResultFromCamera(true);
+                    imagesVisionSystem.Add(resultImageVisionSystem);
+                    sessionApp.images.Add(resultImageVisionSystem);
+                    visionSystem.Disconnect();
+                    await showMessageAndImage("La inspección número 3 ha sido exitosa.", resultImageVisionSystem, true);
+                    Thread.Sleep(3000);
+
+
+                    sessionApp.areImagePASSProcessFinished = true;
+                    await showMessageAndImage("Este es el resultado de la inspeccion.");
+                    Thread.Sleep(5000);
+                    sessionApp.areImagePASSProcessFinished = false;
+
+                    Debug.WriteLine($"{DateTime.Now} - " + "INSPECCION 3 DE VISION OK ");
+                    if (isCancellationRequested) { return; };
+                }
+                else
+                {
+                    visionSystem.Disconnect();
+                    await showMessageAndImage("La inspección número 3 ha sido exitosa.");
+                }
+
+                await showMessageAndImage("Por favor, posicione la máscara sobre el housing.", "HousingWithMask.png");
+                await CheckSensorAndWait(() => sensorsIO.MaskOnHousing(), "Esperamos maskhousing");
+                if (isCancellationRequested) { return; };
+
+                screws = new Screws(sessionApp);
+                getModelScrew();
+                quantityScrews = screws.retriveNumberScrewsPerModel(sessionApp.ModelScrewSelected);
+                List<Screw> lstScrewsToProcess = screws.retriveScrewsToProcess(sessionApp.ModelScrewSelected);
+                if (lstScrewsToProcess.Count == 0 && (quantityScrews != lstScrewsToProcess.Count))
+                {
+                    Debug.WriteLine($"{DateTime.Now} - " + "La informacion correspondiente a los tornillos esta incompleta");
+                    return;
+                }
+
+
+                ergoArm = new ErgoArm(sessionApp);
+                ergoArm.Connect();
+                screwdriver = new ScrewDriver(sessionApp);
+                int tightenincount = 1;
+                foreach (var screw in lstScrewsToProcess)
+                {
+                    sensorsIO.DispenseAScrew();
+                    await showMessageAndImage($"Por favor, realice el atornillado número: {tightenincount}", "HousingWithMask.png");
+                    screw.tighteningprocess = new TighteningProcess();
+                    if (ergoArm.isConected())
+                    {
+                        await showMessageAndImage($"Por favor, posiciones el brazo ergonomico del tornillo número: {tightenincount}.", "HousingWithMask.png");
+                        ergoArm.startReadPositionRespectScrew(screw);
+                    }
+                    if (sessionApp.positionErgoArm.InPositionReadyToProcess)
+                    {
+
+                        await showMessageAndImage($"Por favor, realice el atornillado número: {tightenincount}", "HousingWithMask.png");
+                        Debug.WriteLine($"-------Primer intento atronillado");
+                        //sessionApp.MessageOfProcessDebug = "-------Primer intento atronillado";
+                        tightening = await screwdriver.FirstTighteningAttempt(ergoArm, screw, _cancellationTokenSource);
+
+                        if (tightening == null)
                         {
-                            resultImageVisionSystem = visionSystem.getNameImageResultFromCamera(true);
-                            imagesVisionSystem.Add(resultImageVisionSystem);
-                            sessionApp.images.Add(resultImageVisionSystem);
-                            visionSystem.Disconnect();
-                            await showMessageAndImage("La inspección número 3 ha sido exitosa.", resultImageVisionSystem, true);
-                            Thread.Sleep(3000);
+                            RewriteResultsOfTightening(lstScrewsToProcess);
+                            await showMessageAndImage($"Por favor, realice el desatornillado del tornillo número: {tightenincount}.", "HousingWithMask.png");
 
-
-                            sessionApp.areImagePASSProcessFinished = true;
-                            await showMessageAndImage("Este es el resultado de la inspeccion.");
-                            Thread.Sleep(5000);
-                            sessionApp.areImagePASSProcessFinished = false;
-
-                            Debug.WriteLine($"{DateTime.Now} - " + "INSPECCION 3 DE VISION OK ");
-                            if (isCancellationRequested) { return; };
-                        }
-                        else
-                        {
-                            visionSystem.Disconnect();
-                            await showMessageAndImage("La inspección número 3 ha sido exitosa.");
-                        }
-                     
-                        await showMessageAndImage("Por favor, posicione la máscara sobre el housing.", "HousingWithMask.png");
-                        await CheckSensorAndWait(() => sensorsIO.MaskOnHousing(), "Esperamos maskhousing");
-                        if (isCancellationRequested) { return; };
-
-                        screws = new Screws(sessionApp);
-                        getModelScrew();
-                        quantityScrews = screws.retriveNumberScrewsPerModel(sessionApp.ModelScrewSelected);
-                        List<Screw> lstScrewsToProcess = screws.retriveScrewsToProcess(sessionApp.ModelScrewSelected);
-                        if (lstScrewsToProcess.Count != 0 && (quantityScrews == lstScrewsToProcess.Count))
-                        {
-                            ergoArm = new ErgoArm(sessionApp);
-                            ergoArm.Connect();
-                            screwdriver = new ScrewDriver(sessionApp);
-                            int tightenincount = 1;
-                            foreach (var screw in lstScrewsToProcess)
+                            ergoArm.startReadPositionRespectScrew(screw);
+                            if (sessionApp.positionErgoArm.InPositionReadyToProcess)
                             {
-                                sensorsIO.DispenseAScrew();
-                                await showMessageAndImage($"Por favor, realice el atornillado número: {tightenincount}", "HousingWithMask.png");
-                                screw.tighteningprocess = new TighteningProcess();
-                                if (ergoArm.isConected())
-                                {
-                                    await showMessageAndImage($"Por favor, posiciones el brazo ergonomico del tornillo número: {tightenincount}.", "HousingWithMask.png");
-                                    ergoArm.startReadPositionRespectScrew(screw);
-                                }
+                                sensorsIO.ResetScrap();
+                                sensorsIO.ReleScrapOFF();
+                                RequestRemoveTextBox();
+                                await showMessageAndImage($"El atornillado del tornillo número : {tightenincount} ha fallado. Por favor, retire el tornillo y colóquelo en desposito de tornillos desechados.", "Scrap2.jpg");
+                                await screwdriver.Unscrewing(ergoArm, screw, _cancellationTokenSource);
+
+                                await CheckSensorAndWait(() => sensorsIO.ScrewInScrap(), "Esperamos que el operador coloque el tornillo en el scrap");
+                                if (isCancellationRequested) { return; };
+
+                                await showMessageAndImage($"Coloque la punta del atornillador en la punta de la aspiradora.", "Vacuum.jpg");
+
+                                await CheckSensorAndWait(() => ergoArm.isInVacuumNozzle(), "Esperamos ErgoArm en punta de la aspiradora");
+                                if (isCancellationRequested) { return; };
+
+                                await showMessageAndImage($"Por favor, posiciones el brazo ergonomico del tornillo número: {tightenincount}, en donde ha fallado el atornillado y aspire.", "HousingWithMask.png");
+
+                                ergoArm.startReadPositionRespectScrew(screw);
                                 if (sessionApp.positionErgoArm.InPositionReadyToProcess)
-                                {                                   
+                                {
+                                    Thread.Sleep(100);
+                                    Debug.WriteLine("*Estpy en posicion de aspiradora Intento 1");
+                                    sensorsIO.ActivateVacumm_by_time(1000);     //3000
+                                }
 
-                                    await showMessageAndImage($"Por favor, realice el atornillado número: {tightenincount}", "HousingWithMask.png");
-                                    Debug.WriteLine($"-------Primer intento atronillado");
-                                    //sessionApp.MessageOfProcessDebug = "-------Primer intento atronillado";
-                                    tightening = await screwdriver.FirstTighteningAttempt(ergoArm,screw, _cancellationTokenSource);
+                                if (isCancellationRequested) { return; };
 
+                                RewriteResultsOfTightening(lstScrewsToProcess);
+                                //await showMessageAndImage($"El primer intento de atornillado del tornillo número : {tightenincount} ha fallado.Presione OPTO para continuar", "HousingWithMask.png");
+                                //await CheckSensorAndWait(() => sensorsIO.WasPressedOpto(), "Fallo primer intento de atornillado  ESPERA ACTIVACION DE OPTO");
+
+
+                                //sensorsIO.ResetScrap();
+                                sensorsIO.DispenseAScrew();
+
+                                await showMessageAndImage($"Intento 2 - Por favor, posiciones el brazo ergonomico del tornillo número: {tightenincount}.", "HousingWithMask.png");
+                                ergoArm.startReadPositionRespectScrew(screw);
+                                if (sessionApp.positionErgoArm.InPositionReadyToProcess)
+                                {
+                                    await showMessageAndImage($"Intento 2 - Por favor, realice nuevamente el atornillado del tornillo número: {tightenincount}.", "HousingWithMask.png");
+                                    tightening = await screwdriver.SecondTighteningAttempt(ergoArm, screw, _cancellationTokenSource);
                                     if (tightening == null)
-                                    {                                           
+                                    {
                                         RewriteResultsOfTightening(lstScrewsToProcess);
-                                        await showMessageAndImage($"Por favor, realice el desatornillado del tornillo número: {tightenincount}.", "HousingWithMask.png");
+                                        //await showMessageAndImage($"Por favor, realice el desatornillado del tornillo número: {tightenincount}.", "HousingWithMask.png");
 
                                         ergoArm.startReadPositionRespectScrew(screw);
                                         if (sessionApp.positionErgoArm.InPositionReadyToProcess)
                                         {
                                             sensorsIO.ResetScrap();
-                                            await screwdriver.Unscrewing(ergoArm, screw, _cancellationTokenSource);
+                                            sensorsIO.ReleScrapOFF();
                                             RequestRemoveTextBox();
-
+                                            //await showMessageAndImage($"Por favor, realice el desatornillado del tornillo número: {tightenincount}.", "HousingWithMask.png");                                                       
                                             await showMessageAndImage($"El atornillado del tornillo número : {tightenincount} ha fallado. Por favor, retire el tornillo y colóquelo en desposito de tornillos desechados.", "Scrap2.jpg");
+                                            await screwdriver.Unscrewing(ergoArm, screw, _cancellationTokenSource);
+
+
                                             await CheckSensorAndWait(() => sensorsIO.ScrewInScrap(), "Esperamos que el operador coloque el tornillo en el scrap");
                                             if (isCancellationRequested) { return; };
 
-                                            await showMessageAndImage($"Coloque la punta del atornillador en la punta de la aspiradora.", "Vacuum.png");
-
+                                            await showMessageAndImage($"Coloque la punta del atornillador en la punta de la aspiradora.", "Vacuum.jpg");
                                             await CheckSensorAndWait(() => ergoArm.isInVacuumNozzle(), "Esperamos ErgoArm en punta de la aspiradora");
                                             if (isCancellationRequested) { return; };
 
-                                            await showMessageAndImage($"Por favor, posiciones el brazo ergonomico del tornillo número: {tightenincount}, en donde ha fallado el atornillado.", "HousingWithMask.png");
+                                            await showMessageAndImage($"Por favor, posiciones el brazo ergonomico del tornillo número: {tightenincount}, en donde ha fallado el atornillado y aspire.", "HousingWithMask.png");
 
                                             ergoArm.startReadPositionRespectScrew(screw);
                                             if (sessionApp.positionErgoArm.InPositionReadyToProcess)
                                             {
-                                                sensorsIO.ActivateVacumm_by_time(3000);
+                                                Thread.Sleep(100);
+                                                Debug.WriteLine("*Estpy en posicion de aspiradora Intento 2");
+                                                sensorsIO.ActivateVacumm_by_time(1000);
                                             }
-
                                             if (isCancellationRequested) { return; };
 
                                             RewriteResultsOfTightening(lstScrewsToProcess);
-                                            //await showMessageAndImage($"El primer intento de atornillado del tornillo número : {tightenincount} ha fallado.Presione OPTO para continuar", "HousingWithMask.png");
-                                            //await CheckSensorAndWait(() => sensorsIO.WasPressedOpto(), "Fallo primer intento de atornillado  ESPERA ACTIVACION DE OPTO");
 
-
-                                            sensorsIO.ResetScrap();
+                                            //sensorsIO.ResetScrap();
                                             sensorsIO.DispenseAScrew();
 
+                                            await showMessageAndImage($"Intento 3 - Por favor, posiciones el brazo ergonomico del tornillo número: {tightenincount}.", "HousingWithMask.png");
                                             ergoArm.startReadPositionRespectScrew(screw);
                                             if (sessionApp.positionErgoArm.InPositionReadyToProcess)
                                             {
-                                                tightening = await screwdriver.SecondTighteningAttempt(ergoArm, screw, _cancellationTokenSource);
-                                                if (tightening == null)
-                                                {   
-                                                    RewriteResultsOfTightening(lstScrewsToProcess);
-                                                    //await showMessageAndImage($"Por favor, realice el desatornillado del tornillo número: {tightenincount}.", "HousingWithMask.png");
+                                                RewriteResultsOfTightening(lstScrewsToProcess);
 
+                                                await showMessageAndImage($"Intento 3 - Por favor, realice nuevamente el atornillado del tornillo número: {tightenincount}.", "HousingWithMask.png");
+                                                tightening = await screwdriver.ThirdTighteningAttempt(ergoArm, screw, _cancellationTokenSource);
+                                                if (tightening == null)
+                                                {
                                                     ergoArm.startReadPositionRespectScrew(screw);
                                                     if (sessionApp.positionErgoArm.InPositionReadyToProcess)
                                                     {
+
+                                                        //await showMessageAndImage($"Por favor, realice el desatornillado del tornillo número: {tightenincount}.", "HousingWithMask.png");
                                                         sensorsIO.ResetScrap();
-                                                        await showMessageAndImage($"Por favor, realice el desatornillado del tornillo número: {tightenincount}.", "HousingWithMask.png");                                                       
-                                                        await screwdriver.Unscrewing(ergoArm, screw, _cancellationTokenSource);
+                                                        sensorsIO.ReleScrapOFF();
                                                         RequestRemoveTextBox();
-                                                        await showMessageAndImage($"El atornillado del tornillo número : {tightenincount} ha fallado. Por favor, retire el tornillo y colóquelo en desposito de tornillos desechados.", "Scrap2.jpg");
+                                                        await showMessageAndImage($"El atornillado número : {tightenincount} ha fallado. Por favor, retire el tornillo y colóquelo en desposito de tornillos desechados.", "Scrap2.jpg");
+                                                        await screwdriver.Unscrewing(ergoArm, screw, _cancellationTokenSource);
+
+
+
                                                         await CheckSensorAndWait(() => sensorsIO.ScrewInScrap(), "Esperamos que el operador coloque el tornillo en el scrap");
                                                         if (isCancellationRequested) { return; };
 
-                                                        await showMessageAndImage($"Coloque la punta del atornillador en la punta de la aspiradora.", "Vacuum.png");
+                                                        await showMessageAndImage($"Coloque la punta del atornillador en la punta de la aspiradora.", "Vacuum.jpg");
                                                         await CheckSensorAndWait(() => ergoArm.isInVacuumNozzle(), "Esperamos ErgoArm en punta de la aspiradora");
                                                         if (isCancellationRequested) { return; };
 
-                                                        await showMessageAndImage($"Por favor, posiciones el brazo ergonomico del tornillo número: {tightenincount}, en donde ha fallado el atornillado.", "HousingWithMask.png");
+                                                        await showMessageAndImage($"Por favor, posiciones el brazo ergonomico del tornillo número: {tightenincount}, en donde ha fallado el atornillado y aspire.", "HousingWithMask.png");
 
                                                         ergoArm.startReadPositionRespectScrew(screw);
                                                         if (sessionApp.positionErgoArm.InPositionReadyToProcess)
                                                         {
-                                                            sensorsIO.ActivateVacumm_by_time(3000);
+                                                            Thread.Sleep(100);
+                                                            Debug.WriteLine("*Estpy en posicion de aspiradora Intento 3");
+                                                            sensorsIO.ActivateVacumm_by_time(1000);
                                                         }
                                                         if (isCancellationRequested) { return; };
 
                                                         RewriteResultsOfTightening(lstScrewsToProcess);
-                                                      
                                                         sensorsIO.ResetScrap();
-                                                        sensorsIO.DispenseAScrew();
-
-                                                        ergoArm.startReadPositionRespectScrew(screw);
-                                                        if (sessionApp.positionErgoArm.InPositionReadyToProcess)
-                                                        {
-                                                            RewriteResultsOfTightening(lstScrewsToProcess);
-                                                            
-                                                            await showMessageAndImage($"Intento 3 - Por favor, realice nuevamente el atornillado del tornillo número: {tightenincount}.", "HousingWithMask.png");
-                                                            tightening = await screwdriver.ThirdTighteningAttempt(ergoArm, screw, _cancellationTokenSource);
-                                                            if (tightening == null)
-                                                            {
-                                                                ergoArm.startReadPositionRespectScrew(screw);
-                                                                if (sessionApp.positionErgoArm.InPositionReadyToProcess)
-                                                                {
-                                                                    sensorsIO.ResetScrap();
-                                                                    await showMessageAndImage($"Por favor, realice el desatornillado del tornillo número: {tightenincount}.", "HousingWithMask.png");
-                                                                    await screwdriver.Unscrewing(ergoArm, screw, _cancellationTokenSource);
-                                                                    RequestRemoveTextBox();
-
-                                                                    await showMessageAndImage($"El atornillado número : {tightenincount} ha fallado. Por favor, retire el tornillo y colóquelo en desposito de tornillos desechados.", "Scrap2.jpg");
-                                                                    await CheckSensorAndWait(() => sensorsIO.ScrewInScrap(), "Esperamos que el operador coloque el tornillo en el scrap");
-                                                                    if (isCancellationRequested) { return; };
-
-                                                                    await showMessageAndImage($"Coloque la punta del atornillador en la punta de la aspiradora.", "Vacuum.png");
-                                                                    await CheckSensorAndWait(() => ergoArm.isInVacuumNozzle(), "Esperamos ErgoArm en punta de la aspiradora");
-                                                                    if (isCancellationRequested) { return; };
-
-                                                                    await showMessageAndImage($"Por favor, posiciones el brazo ergonomico del tornillo número: {tightenincount}, en donde ha fallado el atornillado.", "HousingWithMask.png");
-
-                                                                    ergoArm.startReadPositionRespectScrew(screw);
-                                                                    if (sessionApp.positionErgoArm.InPositionReadyToProcess)
-                                                                    {
-                                                                        sensorsIO.ActivateVacumm_by_time(3000);
-                                                                    }
-                                                                    if (isCancellationRequested) { return; };
-
-                                                                    RewriteResultsOfTightening(lstScrewsToProcess);
-                                                                    sensorsIO.ResetScrap();
-
-                                                                    await showMessageAndImage($"Los 3 intentos de atornillado han fallado.");
-                                                                    Debug.WriteLine($"{DateTime.Now} - " + "Los 3 intentos de atornillado han fallado.");
-                                                                    ergoArm.endReadPostion();
-
-                                                                    FinshProcessByErrors();
-                                                                    break;
-                                                                }
-                                                            }
-                                                        }
+                                                        sensorsIO.ReleScrapOFF();
+                                                        RequestRemoveTextBox();
+                                                        await showMessageAndImage($"Los 3 intentos de atornillado han fallado.");
+                                                        Debug.WriteLine($"{DateTime.Now} - " + "Los 3 intentos de atornillado han fallado.");
+                                                        ergoArm.endReadPostion();
+                                                        Validation_by_FIS(sessionApp.QR.HOUSING, sessionApp.QR.HVDC_BUSBAR, "Se envía BCMP1 del housing a FIS correspondiente a Housing y HDVCCOVER.", eTypeSendToFIS.BCMP, false, lstScrewsToProcess, MaxNumberAttempts);
+                                                        FinshProcessByErrors();
+                                                        return;
                                                     }
                                                 }
                                             }
                                         }
                                     }
                                 }
-
-                                await showMessageAndImage($"El atornillado del tornillo número : {tightenincount} se ha realizado con éxito.", "HousingWithMask.png");
-                                //RequestCreateTextBox($"{tightening.Torque.Substring(0, 2)}.{tightening.Torque.Substring(2, 2)} Nw | {tightening.Angle.TrimStart('0')} °", screw.text_position_X, screw.text_position_Y);
-                                RewriteResultsOfTightening(lstScrewsToProcess);
-                                tightenincount++;
-                            }//Finaliza el proceso de atornillado
-
-
-                            await showMessageAndImage($"El atornillado se ha realizado con éxito.", "HousingWithMask.png");
-                            RewriteResultsOfTightening(lstScrewsToProcess);
-                            await showMessageAndImage("Por favor, coloque el atornillador en su posición base.", "HousingWithMask.png");
-                            await CheckSensorAndWait(() => ergoArm.isInHome(), "Esperamos ErgoArm en Home");
-
-
-                            ergoArm.endReadPostion();
-
-                            Thread.Sleep(3000);
-                            RequestRemoveTextBox();
-
-                            await showMessageAndImage("Por favor, retire la máscara y colóquela en su base", "MaskInHolder.jpg");
-                            await CheckSensorAndWait(() => sensorsIO.MaskInHolder(), "Esperamos maskhousing");
-                            if (isCancellationRequested) { return; };
-
-                            await showMessageAndImage("Por favor, tome la cubierta superior y colóquela frente al escáner.", "TopCover_Scanner.jpg");
-                            await CheckSensorAndWait(() => sensorsIO.isTriggerScanner(), "Esperamos maskhousing");
-                            if (isCancellationRequested) { return; };
-
-                            await showMessageAndImage("Escaneando código QR de la cubierta superior.");
-                            Scanner scanner4 = new Scanner(sessionApp, eTypeConnection.Scan_2);
-                            
-                            //serial = scanner4.ScanQR("LON");
-                            serial = await scanner4.ScanningTrigger(_cancellationTokenSource, "LON");
-                            if (isCancellationRequested) { return; };
-                            sessionApp.QR.TOP_COVER = serial.Substring(0, (serial.Length - 1));
-                            scanner4.DisconnectScanner();
-
-                           
-                            if (isFISEneable ? Validation_by_FIS(serial, "Se envía BREQ a FIS.", eTypeSendToFIS.BREQ) : true)
-                            {
-                                await showMessageAndImage("Inspección completada...");
-                                Thread.Sleep(300);
-                                await showMessageAndImage("Por favor, ensamble la cubierta superior y presione el sensor óptico(OPTO).", "HousingTopCover.png");
-                                await CheckSensorAndWait(() => sensorsIO.WasPressedOpto(), "Esperando HVDC cover");
-                                if (isCancellationRequested) { return; };
-
-                                await showMessageAndImage("Enviando señal de finalización de tarea.");
-                                Thread.Sleep(300);
-
-                                
-                                if (isFISEneable ? Validation_by_FIS(serial, "Se envía BCMP a FIS.", eTypeSendToFIS.BCMP) : true)                                
-                                {
-                                    await showMessageAndImage("Recepción de BACK completada.");
-                                    Thread.Sleep(1000);
-                                    if (isCancellationRequested) { return; };
-
-                                    await showMessageAndImage("Retrayendo el candado.", "MGPM25-10Z.png");
-                                    sensorsIO.RetractPalletClamp();
-                                    await CheckSensorAndWaitByTime(() => sensorsIO.isRetractedClamp(), "Esperamos CLAMP DE PALLET Retraido por 5 segundos.", 5000);
-                                    if (!sessionApp.TaksRunExecuting)
-                                    {
-                                        isCancellationRequested = true;
-                                        await showMessageAndImage("El candado no se replegó correctamente. Por favor, reinicie y verifique.");
-                                    }
-                                    else
-                                    {
-                                        await showMessageAndImage("El candado se replegó correctamente.", "MGPM25-10Z.png");
-                                        Thread.Sleep(1000);
-                                        await showMessageAndImage("Esperando la estación 13.");
-                                        await CheckSensorAndWait(() => sensorsIO.ST13Available(), "Esperamos la estación 13.");
-                                        if (isCancellationRequested) { return; };
-
-                                        await showMessageAndImage("Por favor, retire el pallet de la estación.");
-                                        sensorsIO.StopCylinder();
-                                        await CheckSensorAndWait(() => sensorsIO.PalletOutStopper(), "Esperamos la estación 13.");
-                                        if (isCancellationRequested) { return; };
-                                        await showMessageAndImage("Pallet Retirado.");
-                                        Thread.Sleep(1000);
-                                        await showMessageAndImage("¡El ciclo ha concluido exitosamente!");
-                                    }
-                                }
-                                else
-                                {
-                                    await showMessageAndImage("Error: Falló la cubierta superior, BACK de FIS.");
-                                }
-                            }
-                            else
-                            {
-                                await showMessageAndImage("Error: Falló la cubierta superior, BACK de FIS.");
                             }
                         }
-                        else
-                        {
-                            Debug.WriteLine($"{DateTime.Now} - " + "La informacion correspondiente a los tornillos esta incompleta");
-                        }
                     }
-                    else
-                    {
-                        await showMessageAndImage("Error: Fallo la confirmación de FIS");
-                    }
-                }
-                else
+
+                    await showMessageAndImage($"El atornillado del tornillo número : {tightenincount} se ha realizado con éxito.", "HousingWithMask.png");
+                    //RequestCreateTextBox($"{tightening.Torque.Substring(0, 2)}.{tightening.Torque.Substring(2, 2)} Nw | {tightening.Angle.TrimStart('0')} °", screw.text_position_X, screw.text_position_Y);
+                    RewriteResultsOfTightening(lstScrewsToProcess);
+                    tightenincount++;
+                }//Finaliza el proceso de atornillado
+
+
+                await showMessageAndImage($"El atornillado se ha realizado con éxito.", "HousingWithMask.png");
+
+                if (!Validation_by_FIS(sessionApp.QR.HOUSING, sessionApp.QR.HVDC_BUSBAR, "Se envía BCMP1 del housing a FIS correspondiente a Housing y HDVCCOVER.", eTypeSendToFIS.BCMP, true, lstScrewsToProcess))
                 {
-                    await showMessageAndImage("Error: Fallo la confirmación de FIS");
+                    FinshProcessByErrors();
+                    return;
                 }
-            }
-            else
-            {
-                await showMessageAndImage("Error: Fallo la confirmación de FIS");
-            }
+                await showMessageAndImage("Recepción de BACK completada.");
 
-            await sensorsIO.UnsecurePallet(_cancellationTokenSource);
-            endOfProcess();
-        }
+                RewriteResultsOfTightening(lstScrewsToProcess);
+                await showMessageAndImage("Por favor, coloque el atornillador en su posición base.", "HousingWithMask.png");
+                await CheckSensorAndWait(() => ergoArm.isInHome(), "Esperamos ErgoArm en Home");
 
-        public async void FinshProcessByErrors()
-        {
-            try
-            {
+
+                ergoArm.endReadPostion();
+
+                Thread.Sleep(3000);
                 RequestRemoveTextBox();
+                if (isCancellationRequested) { return; };
+                await showMessageAndImage("Por favor, retire la máscara y colóquela en su base", "MaskInHolder.jpg");
+                await CheckSensorAndWait(() => sensorsIO.MaskInHolder(), "Esperamos maskhousing");
+                if (isCancellationRequested) { return; };
+
+                if (isFISEneable ? !Validation_by_FIS(sessionApp.QR.HOUSING, string.Empty, "Se envía BREQ a FIS.", eTypeSendToFIS.BREQ) : true)
+                {
+                    FinshProcessByErrors();
+                    return;
+                }
+
+                await showMessageAndImage("Por favor, tome la cubierta superior y colóquela frente al escáner.", "TopCover_Scanner.jpg");
+                await CheckSensorAndWait(() => sensorsIO.isTriggerScanner(), "Esperamos maskhousing");
+                if (isCancellationRequested) { return; };
+
+
+                if (isFISEneable)
+                {
+                    while (!isCancellationRequested)
+                    {
+                        await showMessageAndImage("Escaneando código QR de la cubierta superior.", "", false, 50);
+                        Scanner scanner4 = new Scanner(sessionApp, eTypeConnection.Scan_2);
+                        serial = await scanner4.ScanningTrigger(_cancellationTokenSource, "LON", serials);
+                        serials.Add(serial);
+                        sessionApp.QR.TOP_COVER = serial;//.Substring(0, (serial.Length - 1));
+                        scanner4.DisconnectScanner();
+                        if (isCancellationRequested) { return; };
+                        Thread.Sleep(50);
+                        if (serial != string.Empty)
+                        {
+                            if (Validation_by_FIS(string.Empty, sessionApp.QR.TOP_COVER, "Se envía BREQ a FIS el TOPCOVER.", eTypeSendToFIS.BREQ))
+                            {
+                                break;
+                            }
+                        }
+                        //Thread.Sleep(10);
+                    }
+                    if (isCancellationRequested) { return; };
+                }
+
+
+
+                //await showMessageAndImage("Escaneando código QR de la cubierta superior.");
+                //    Scanner scanner4 = new Scanner(sessionApp, eTypeConnection.Scan_2);
+
+                //    //serial = scanner4.ScanQR("LON");
+                //    serial = await scanner4.ScanningTrigger(_cancellationTokenSource, "LON", serials);
+                //    if (isCancellationRequested) { return; };
+                //    sessionApp.QR.TOP_COVER = serial;//.Substring(0, (serial.Length - 1));
+                //    scanner4.DisconnectScanner();
+
+
+                //if (isFISEneable ? Validation_by_FIS(serial, "Se envía BREQ a FIS.", eTypeSendToFIS.BREQ) : true)
+                //{
+                await showMessageAndImage("Inspección completada...");
+                Thread.Sleep(300);
+                await showMessageAndImage("Por favor, ensamble la cubierta superior y presione el sensor óptico(OPTO).", "HousingTopCover.png");
+                await CheckSensorAndWait(() => sensorsIO.WasPressedOpto(), "Esperando HVDC cover");
+                if (isCancellationRequested) { return; };
+
+                await showMessageAndImage("Enviando señal de finalización de tarea.");
+                Thread.Sleep(300);
+
+                if (!Validation_by_FIS(sessionApp.QR.HOUSING, sessionApp.QR.TOP_COVER, "Se envía BCMP1 del housing a FIS correspondiente a Housing y TOPCOVER.", eTypeSendToFIS.BCMP, true))
+                {
+                    FinshProcessByErrors();
+                    return;
+                }
+                //if (isFISEneable ? Validation_by_FIS(serial, "Se envía BCMP a FIS.", eTypeSendToFIS.BCMP) : true)
+                //{
+                //await showMessageAndImage("Recepción de BACK completada.");
+                Thread.Sleep(1000);
+                if (isCancellationRequested) { return; };
+
                 await showMessageAndImage("Retrayendo el candado.", "MGPM25-10Z.png");
                 sensorsIO.RetractPalletClamp();
                 await CheckSensorAndWaitByTime(() => sensorsIO.isRetractedClamp(), "Esperamos CLAMP DE PALLET Retraido por 5 segundos.", 5000);
@@ -752,11 +792,82 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
                     Thread.Sleep(1000);
                     await showMessageAndImage("¡El ciclo ha concluido exitosamente!");
                 }
+                //}
+                //else
+                //{
+                //    await showMessageAndImage("Error: Falló la cubierta superior, BACK de FIS.");
+                //}
+                //}
+                //else
+                //{
+                //    await showMessageAndImage("Error: Falló la cubierta superior, BACK de FIS.");
+                //}
+                //}
+                //else
+                //{
+                //    Debug.WriteLine($"{DateTime.Now} - " + "La informacion correspondiente a los tornillos esta incompleta");
+                //}
+                //}
+                //else
+                //{
+                //    await showMessageAndImage("Error: Fallo la confirmación de FIS");
+                //}
+            }
+            else
+            {
+                FinshProcessByErrors();
+                await showMessageAndImage("Error: Fallo la confirmación de FIS");
+            }
+
+            await sensorsIO.UnsecurePallet(_cancellationTokenSource);
+            endOfProcess();
+        }
+
+        public async void FinshProcessByErrors()
+        {
+            try
+            {
+                Debug.WriteLine($"{DateTime.Now} - FinshProcessByErrors");
+                RequestRemoveTextBox();
+                Thread.Sleep(10);
+                await showMessageAndImage("Por favor, retire la máscara y colóquela en su base", "MaskInHolder.jpg");
+                await CheckSensorAndWait(() => sensorsIO.MaskInHolder(), "Esperamos maskhousing");
+                if (isCancellationRequested) { return; };
+
+                await showMessageAndImage("Retrayendo el candado.", "MGPM25-10Z.png");
+                Debug.WriteLine($"{DateTime.Now} - Retrayendo el candado.");
+                Debug.WriteLine($"{DateTime.Now} - Retrayendo el candado2.");
+                Thread.Sleep(10);
+                sensorsIO.RetractPalletClamp();
+                Debug.WriteLine($"{DateTime.Now} - Retraemos palletClamp.");
+                await CheckSensorAndWaitByTime(() => sensorsIO.isRetractedClamp(), "Esperamos CLAMP DE PALLET Retraido por 5 segundos.", 5000);
+                if (!sessionApp.TaksRunExecuting)
+                {
+                    isCancellationRequested = true;
+                    await showMessageAndImage("El candado no se replegó correctamente. Por favor, reinicie y verifique.");
+                }
+                else
+                {
+                    await showMessageAndImage("El candado se replegó correctamente.", "MGPM25-10Z.png");
+                    Thread.Sleep(1000);
+                    await showMessageAndImage("Esperando la estación 13.");
+                    await CheckSensorAndWait(() => sensorsIO.ST13Available(), "Esperamos la estación 13.");
+                    if (isCancellationRequested) { return; };
+
+                    await showMessageAndImage("Por favor, retire el pallet de la estación.");
+                    sensorsIO.StopCylinder();
+                    await CheckSensorAndWait(() => sensorsIO.PalletOutStopper(), "Esperamos la estación 13.");
+                    if (isCancellationRequested) { return; };
+                    await showMessageAndImage("Pallet Retirado.");
+                    Thread.Sleep(1000);
+                    await showMessageAndImage("¡El ciclo ha concluido exitosamente!");
+                    Debug.WriteLine($"{DateTime.Now} FinshProcessByErrors - ¡El ciclo ha concluido exitosamente!");
+                }
                 endOfProcess();
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
-                Debug.WriteLine($"{DateTime.Now} - " + $"Error: { ex.Message }" );
+                Debug.WriteLine($"{DateTime.Now} - " + $"Error: { ex.Message }");
             }
         }
 
@@ -769,7 +880,8 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
                 {
                     if (screw.tighteningprocess.Torque != null && screw.tighteningprocess.Torque != string.Empty)
                     {
-                        if (screw.tighteningprocess.Angle == "0000")
+                        //if (screw.tighteningprocess.Angle == "0000")
+                        if (!screw.tighteningprocess.status)
                         {
                             RequestCreateTextBox($"{screw.tighteningprocess.Torque.Substring(0, 2)}.{screw.tighteningprocess.Torque.Substring(2, 2)} Nw | {screw.tighteningprocess.Angle.TrimStart('0')} °", screw.text_position_X, screw.text_position_Y, true);
                         }
@@ -789,6 +901,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
 
         public void endOfProcess()
         {
+            Debug.WriteLine($"{DateTime.Now} - endOfProcess");
             sessionApp.QR.TOP_COVER = string.Empty;
             sessionApp.QR.HARNESS = string.Empty;
             sessionApp.QR.HOUSING = string.Empty;
@@ -828,6 +941,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
 
         public override void RequestRemoveTextBox()
         {
+            Debug.WriteLine($"{DateTime.Now} - Removemos cajas de Texto");
             RemoveTextBoxRequested?.Invoke(this, EventArgs.Empty);
         }
         protected virtual void OnCreateTextBoxRequested(TextBoxInfoEventArgs e)

@@ -119,7 +119,7 @@ namespace BORGWARNER_SERVOPRESS.DataAccessLayer
             sessionApp.positionErgoArm = new PositionErgoArm();
             try
             {
-                while (!cancellationToken.IsCancellationRequested)
+                while (!cancellationToken.IsCancellationRequested)                
                 {
                     ushort[] dataErgoArm = modbusIPMaster.ReadInputRegisters(startingAddressOfInputRegisters, numberRegisterToRead);
                     sessionApp.positionErgoArm.encoder1 = -(Convert.ToDouble(dataErgoArm[0]) * 0.0036) + 110.94;
@@ -127,12 +127,17 @@ namespace BORGWARNER_SERVOPRESS.DataAccessLayer
                     //Debug.WriteLine($"{DateTime.Now} - " + "Leyendo la posicion del ErgoArm");
                     //Debug.WriteLine($"{DateTime.Now} - " + "Validando la posicion del ErgoArm");
                     Thread.Sleep(50);
+                    if (sessionApp.positionErgoArm.endRead)
+                    {
+                        break;
+                    }
                 }
+                return;
 
             }
             catch (Exception ex)
             {
-                Debug.WriteLine("Error: " + ex.Message);
+                Debug.WriteLine("Error getDataPosition: " + ex.Message);
             }
         }
         public void validatePosition(Screw screw)

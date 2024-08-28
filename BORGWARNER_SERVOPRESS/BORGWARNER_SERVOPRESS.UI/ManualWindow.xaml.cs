@@ -21,13 +21,13 @@ namespace BORGWARNER_SERVOPRESS.UI
     /// </summary>
     public partial class ManualWindow : Window
     {
-        private SessionApp sessionApp;        
+        private SessionApp sessionApp;
         private PageManager pageManager;
         private ViewManual viewManual;
         List<string> controlNames;
-        
+
         private TryDevices tryDevices;
-        
+
         private CancellationTokenSource cancelllationToken_Brushes_Sensor = new CancellationTokenSource();
         private SolidColorBrush ellipseBrush = new SolidColorBrush(Colors.Black);
         private bool isRunningBrushes = false;
@@ -74,7 +74,7 @@ namespace BORGWARNER_SERVOPRESS.UI
                     Name = $"eCard{numADU}_Input_{row}",
                     Width = ellipseWidth,
                     Height = ellipseHeight,
-                    Fill = Brushes.Gray                    
+                    Fill = Brushes.Gray
                 };
                 Grid.SetRow(ellipse1, row);
                 Grid.SetColumn(ellipse1, 0);
@@ -83,7 +83,7 @@ namespace BORGWARNER_SERVOPRESS.UI
                 // Columna 1: Label
                 Label label1 = new Label
                 {
-                    Content = FixEncoding(sessionApp.ADUPorts.Find(x=> x.IOCard.Equals($"Card{numADU}_Input_{row}")).label),
+                    Content = FixEncoding(sessionApp.ADUPorts.Find(x => x.IOCard.Equals($"Card{numADU}_Input_{row}")).label),
                     HorizontalAlignment = HorizontalAlignment.Left,
                     VerticalAlignment = VerticalAlignment.Center
                 };
@@ -98,7 +98,7 @@ namespace BORGWARNER_SERVOPRESS.UI
                     Name = $"eCard{numADU}_Input_{row + 4}",
                     Width = ellipseWidth,
                     Height = ellipseHeight,
-                    Fill = Brushes.Gray                    
+                    Fill = Brushes.Gray
                 };
                 Grid.SetRow(ellipse2, row);
                 Grid.SetColumn(ellipse2, 2);
@@ -107,7 +107,7 @@ namespace BORGWARNER_SERVOPRESS.UI
                 // Columna 3: Label
                 Label label2 = new Label
                 {
-                    Content = FixEncoding(sessionApp.ADUPorts.Find(x => x.IOCard.Equals($"Card{numADU}_Input_{row + 4}")).label),                    
+                    Content = FixEncoding(sessionApp.ADUPorts.Find(x => x.IOCard.Equals($"Card{numADU}_Input_{row + 4}")).label),
                     HorizontalAlignment = HorizontalAlignment.Left,
                     VerticalAlignment = VerticalAlignment.Center
                 };
@@ -151,7 +151,7 @@ namespace BORGWARNER_SERVOPRESS.UI
             switch (clickedButton.Uid.ToString())
             {
                 #region ADU1
-                case"Card1_Output_0":
+                case "Card1_Output_0":
                     SelectFunctionality("Card1_Output_0");
                     MessageBox.Show("Botón Card1_Output_0 fue presionado.", "Información", MessageBoxButton.OK, MessageBoxImage.Information);
                     break;
@@ -300,14 +300,14 @@ namespace BORGWARNER_SERVOPRESS.UI
             viewManual.ShowData();
             viewManual.ShowDate();
             pageManager.IsReadOnlyControls(new List<string>() { "serialCode", "Screwdriver_Torque", "Screwdriver_Angle", "Encoder1", "Encoder2" });
-            
-        }             
+
+        }
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            
+
         }
 
-       
+
         private void settings_option_btn_Click(object sender, RoutedEventArgs e)
         {
             new SettingsWindow(sessionApp).Show();
@@ -377,7 +377,7 @@ namespace BORGWARNER_SERVOPRESS.UI
             {
                 WorkStation_Manual_Type1 workStation_Manual_Type1 = new WorkStation_Manual_Type1(sessionApp);
                 //workStation_Manual_Type1.start();
-                 workStation_Manual_Type1.MensajesPantalla();
+                workStation_Manual_Type1.MensajesPantalla();
             }
             catch (Exception ex)
             {
@@ -386,7 +386,7 @@ namespace BORGWARNER_SERVOPRESS.UI
         }
 
         private void StopCycle_btn_Click(object sender, RoutedEventArgs e)
-        {                   
+        {
             MessageBox.Show("Cerrando ciclos...");
         }
 
@@ -397,11 +397,11 @@ namespace BORGWARNER_SERVOPRESS.UI
 
         private void showMenu(string profile)
         {
-           
+
         }
 
         #region CARDGENERIC
-        private void SelectFunctionality(string nameCardOutput) 
+        private void SelectFunctionality(string nameCardOutput)
         {
             string nameFunction = sessionApp.ADUPorts.FirstOrDefault(x => x.IOCard.Equals(nameCardOutput)).id_routine;
             switch (nameFunction)
@@ -431,7 +431,7 @@ namespace BORGWARNER_SERVOPRESS.UI
                     ResetSensorScrap(nameCardOutput);
                     break;
 
-                    
+
             }
         }
         private void SendValueByKeySensor(string nameCardOutput, bool value)
@@ -444,8 +444,8 @@ namespace BORGWARNER_SERVOPRESS.UI
         private void ActivateOptoGreen(string nameCardOutput)
         {
             if (!isPressed_Green)
-            {                
-                SendValueByKeySensor(nameCardOutput,true);                
+            {
+                SendValueByKeySensor(nameCardOutput, true);
                 pageManager.ChangeStyle(FindResource("GreenButton") as Style, new List<string> { $"b{nameCardOutput}" });
                 //Apagamos rojo                 
                 string IOCard_OptoRed = sessionApp.ADUPorts.FirstOrDefault(x => x.keySensor.Equals("Opto_Red")).IOCard;
@@ -457,10 +457,10 @@ namespace BORGWARNER_SERVOPRESS.UI
                 isPressed_Red_ = false;
             }
             else
-            {             
+            {
                 SendValueByKeySensor(nameCardOutput, false);
                 pageManager.ChangeStyle(FindResource("BaseButton") as Style, new List<string> { $"b{nameCardOutput}" });
-            }            
+            }
             isPressed_Green = !isPressed_Green; // Invierte el estado del botón
         }
 
@@ -493,7 +493,7 @@ namespace BORGWARNER_SERVOPRESS.UI
         {
             if (!isPressed_Red_)
             {
-                SendValueByKeySensor(nameCardOutput, true);                
+                SendValueByKeySensor(nameCardOutput, true);
                 pageManager.ChangeStyle(FindResource("RedButton") as Style, new List<string> { $"b{nameCardOutput}" });
                 //Apagamos amarillo                 
                 string IOCard_OptoYllw = sessionApp.ADUPorts.FirstOrDefault(x => x.keySensor.Equals("Opto_Yllw")).IOCard;
@@ -507,15 +507,15 @@ namespace BORGWARNER_SERVOPRESS.UI
             else
             {
                 SendValueByKeySensor(nameCardOutput, false);
-                pageManager.ChangeStyle(FindResource("BaseButton") as Style, new List<string> { $"b{nameCardOutput}" });                
+                pageManager.ChangeStyle(FindResource("BaseButton") as Style, new List<string> { $"b{nameCardOutput}" });
             }
             isPressed_Red_ = !isPressed_Red_; // Invierte el estado del botón
         }
         private void ExtendTheLock(string nameCardOutput)
-        {           
+        {
             //sessionApp.Sensors_M2.PalletFixingExt = sessionApp.Sensors_M2.Cyl_Fixing_Pall_Ext ? false : true;
             //tryDevices.TrySendDataSensorsM2();
-            if(sessionApp.IOSensorsGenerics.Cyl_Fixing_Pall_Ext)
+            if (sessionApp.IOSensorsGenerics.Cyl_Fixing_Pall_Ext)
             {
                 SendValueByKeySensor(nameCardOutput, false);
             }
@@ -525,7 +525,7 @@ namespace BORGWARNER_SERVOPRESS.UI
             }
         }
         private void RetractTheLock(string nameCardOutput)
-        {            
+        {
             //sessionApp.Sensors_M2.PalletFixingRet = sessionApp.Sensors_M2.Cyl_Fixing_Pall_Ret ? false : true;
             //tryDevices.TrySendDataSensorsM2();
             if (sessionApp.IOSensorsGenerics.PalletFixingRet)
@@ -539,19 +539,14 @@ namespace BORGWARNER_SERVOPRESS.UI
         }
         private void ResetSensorScrap(string nameCardOutput)
         {
-            //sessionApp.Sensors_M3.ReleScrap = sessionApp.varReleScrap == true ? false : true;
-            //sessionApp.varReleScrap = sessionApp.Sensors_M3.ReleScrap;
-            //tryDevices.TrySendDataSensorsM3();
-            if (sessionApp.varReleScrap)
-            {
-                SendValueByKeySensor(nameCardOutput, false);
-                sessionApp.varReleScrap = false;
-            }
-            else
-            {
-                SendValueByKeySensor(nameCardOutput, true);
-                sessionApp.varReleScrap = true;
-            }
+
+            SendValueByKeySensor(nameCardOutput, true);
+            sessionApp.varReleScrap = true;
+            pageManager.ChangeStyle(FindResource("SelectedGreenButton") as Style, new List<string> { $"b{nameCardOutput}" });
+            Thread.Sleep(50);
+            SendValueByKeySensor(nameCardOutput, false);
+            sessionApp.varReleScrap = false;
+            pageManager.ChangeStyle(FindResource("BaseButton") as Style, new List<string> { $"b{nameCardOutput}" });
         }
         #endregion
 
@@ -564,7 +559,7 @@ namespace BORGWARNER_SERVOPRESS.UI
         //    if (!isPressed_Grn)
         //    {
         //        sessionApp.Sensors_M1.Opto_Grn = true;
-                
+
         //        Card1_ouput0.Style = FindResource("GreenButton") as Style;                                
         //    }
         //    else
@@ -741,7 +736,7 @@ namespace BORGWARNER_SERVOPRESS.UI
         //    sessionApp.Sensors_M3.K5 = true;
         //    tryDevices.TrySendDataSensorsM3();
         //}
-        
+
         //private void Card3_ouput6_Click(object sender, RoutedEventArgs e)
         //{
         //    sessionApp.Sensors_M3 = new IOCardType_M3();
@@ -756,10 +751,10 @@ namespace BORGWARNER_SERVOPRESS.UI
         //    tryDevices.TrySendDataSensorsM3();
         //}
         #endregion
-        
+
         private void Screwdriver_Btn_Click(object sender, RoutedEventArgs e)
-        {           
-           
+        {
+
         }
 
         private bool isPressed_ActiveErgoArm = false;
@@ -769,13 +764,13 @@ namespace BORGWARNER_SERVOPRESS.UI
             {
                 TestScrewdriver_Btn.Content = "Desactivar ErgoArm";
                 TestScrewdriver_Btn.Style = FindResource("SelectedButton") as Style;
-                tryDevices.TryErgoArm();                
+                tryDevices.TryErgoArm();
             }
             else
             {
                 TestScrewdriver_Btn.Content = "Activar ErgoArm";
                 TestScrewdriver_Btn.Style = FindResource("BaseButton") as Style;
-                tryDevices.FinishTestErgoArm();                
+                tryDevices.FinishTestErgoArm();
             }
 
             isPressed_ActiveErgoArm = !isPressed_ActiveErgoArm; // Invierte el estado del botón
@@ -785,14 +780,14 @@ namespace BORGWARNER_SERVOPRESS.UI
         private void btnActivarCardIO_Click(object sender, RoutedEventArgs e)
         {
             if (!isPressed_CardIO)
-            {                
+            {
                 btnActivarCardIO.Content = "Desactivar Cards I/O";
                 btnActivarCardIO.Style = FindResource("SelectedButton") as Style;
                 tryDevices.TryStartSensor();
                 BrushesSensors(3000);
             }
             else
-            {                
+            {
                 btnActivarCardIO.Content = "Activar Cards I/O";
                 btnActivarCardIO.Style = FindResource("BaseButton") as Style;
                 tryDevices.TryEndSensor();
@@ -819,7 +814,7 @@ namespace BORGWARNER_SERVOPRESS.UI
         {
             cancelllationToken_Brushes_Sensor.Cancel();
             isRunningBrushes = false;
-           
+
             //Debug.WriteLine($"{DateTime.Now} - " + "Termine de pintar los sensores en la pantalla");
             //pageManager.ChangeBackgroundColor(Brushes.LightBlue, new List<string> { "Card1_Input_0","Card1_Input_1","Card1_Input_2","Card1_Input_3","Card1_Input_4","Card1_Input_5","Card1_Input_6","Card1_Input_7",
             //                                                                        "Card2_Input_0","Card2_Input_1","Card2_Input_2","Card2_Input_3","Card2_Input_4","Card2_Input_5","Card2_Input_6","Card2_Input_7",
@@ -871,10 +866,10 @@ namespace BORGWARNER_SERVOPRESS.UI
                     //pageManager.ChangeBackgroundColor(sessionApp.Sensors_M3.PB1 ? Brushes.Blue : Brushes.LightBlue, new List<string> { "Card3_Input_5" });
                     //pageManager.ChangeBackgroundColor(sessionApp.Sensors_M3.Scrap_presence ? Brushes.Blue : Brushes.LightBlue, new List<string> { "Card3_Input_6" });
                     //pageManager.ChangeBackgroundColor(sessionApp.Sensors_M3.PB3 ? Brushes.Blue : Brushes.LightBlue, new List<string> { "Card3_Input_7" });
-                                      
+
                     foreach (var ADUPort in sessionApp.ADUPorts)
                     {
-                        pageManager.ChangeBackgroundColor(ADUPort.Value ? Brushes.Blue : Brushes.LightBlue, new List<string> { $"e{ADUPort.IOCard}" });                        
+                        pageManager.ChangeBackgroundColor(ADUPort.Value ? Brushes.Blue : Brushes.LightBlue, new List<string> { $"e{ADUPort.IOCard}" });
                     }
                 });
 
@@ -882,7 +877,7 @@ namespace BORGWARNER_SERVOPRESS.UI
                 await Task.Delay(sensingTime);
             }
         }
-        
+
         private Random random = new Random();
         private Color GetRandomColor()
         {
@@ -916,7 +911,7 @@ namespace BORGWARNER_SERVOPRESS.UI
                 }
             }
             else
-            {                
+            {
                 MessageBox.Show("No se ha seleccionado ningún elemento.");
             }
         }
@@ -926,32 +921,32 @@ namespace BORGWARNER_SERVOPRESS.UI
         {
             try
             {
-                if(cboCameras.SelectedItem != null)
+                if (cboCameras.SelectedItem != null)
                 {
                     eTypeConnection typeConnection;
                     string cameraSelected = cboCameras.SelectedItem.ToString().Substring(0, cboCameras.SelectedItem.ToString().IndexOf(" - "));
                     if (Enum.TryParse(cameraSelected, out typeConnection))
                     {
-                       VisionResult vision = tryDevices.TryVisionSystem(typeConnection, serialCode.Text);
-                       Camara_1_Manual_Image.Source = vision.Image;                                             
-                       lblMessageVision.Content = vision.Passed ? "APROBADO" : "NO APROBADO";
-                       lblMessageVision.Style = vision.Passed ? (Style)FindResource("GreenBoldLabelStyle") : (Style)FindResource("RedBoldLabelStyle");
-                        
+                        VisionResult vision = tryDevices.TryVisionSystem(typeConnection, serialCode.Text);
+                        Camara_1_Manual_Image.Source = vision.Image;
+                        lblMessageVision.Content = vision.Passed ? "APROBADO" : "NO APROBADO";
+                        lblMessageVision.Style = vision.Passed ? (Style)FindResource("GreenBoldLabelStyle") : (Style)FindResource("RedBoldLabelStyle");
+
                     }
                     else
                     {
                         MessageBox.Show("No existe la camara.");
                     }
                 }
-                else 
+                else
                 {
                     MessageBox.Show("No se ha seleccionado ningún elemento.");
-                }               
+                }
             }
             catch (Exception ex)
             {
                 Debug.WriteLine($"{DateTime.Now} - Error" + ex.Message);
-                MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);                
+                MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -960,7 +955,7 @@ namespace BORGWARNER_SERVOPRESS.UI
             try
             {
                 if (ProgramaSel.SelectedItem != null)
-                {                    
+                {
                     TighteningProcess tightening = await tryDevices.TryScrewdriver(ProgramaSel.SelectedItem.ToString());
                     if (tightening != null)
                     {

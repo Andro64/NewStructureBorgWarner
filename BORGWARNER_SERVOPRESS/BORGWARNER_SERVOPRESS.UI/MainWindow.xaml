@@ -161,7 +161,8 @@
                             <RowDefinition />
                         </Grid.RowDefinitions>
 
-                        <Label Content="Ciclo:" HorizontalAlignment="Left" VerticalAlignment="Bottom" Grid.Column="1" Grid.Row="0" Grid.ColumnSpan="2" Margin="0,0,0,0.2"/>
+                        <Label Content="Ciclo:" HorizontalAlignment="Left" VerticalAlignment="Bottom" Grid.Column="2" Grid.Row="0" Grid.ColumnSpan="2" Margin="0,0,0,0.2"/>
+                        <Ellipse x:Name="Cycle_enabled_display" Fill="Aqua" Stroke="Gray" Width="15" Height="15" HorizontalAlignment="Left" VerticalAlignment="Top" Grid.Column="1" Grid.Row="0" Margin="5,16,0,0"/>
                         <Grid Grid.Column="1" VerticalAlignment="Top" Grid.ColumnSpan="2" Margin="0,39,0.2,0" Grid.RowSpan="2">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition />
@@ -178,11 +179,11 @@
                                  Text="{Binding Seconds, StringFormat=N2}"                                 
                                  VerticalAlignment="Top" Grid.Column="4" Margin="97,16,0,0" Width="102" HorizontalAlignment="Left" Grid.Row="0"/>
 
-                        <Label Content="trigger Scan2" Visibility="Visible"  Grid.Row="0" Grid.Column="6"/>
+                        <!--<Label Content="trigger Scan2" Visibility="Visible"  Grid.Row="0" Grid.Column="6"/>
                         <TextBox  Text="{Binding trigerScan}" Visibility="Visible" Grid.Row="0" Grid.Column="6" Margin="105,0,80,0" />
                         <Label Content="Prestoper"  Grid.Row="0" Visibility="Visible" Grid.Column="8"/>
-                        <TextBox Text="{Binding prestoper}" Grid.Row="0" Visibility="Visible" Grid.Column="6" Grid.ColumnSpan="3" Margin="185,0,0,0"/>
-                        
+                        <TextBox Text="{Binding prestoper}" Grid.Row="0" Visibility="Visible" Grid.Column="6" Grid.ColumnSpan="3" Margin="185,0,0,0"/>-->
+
                         <!--<Ellipse x:Name="s1" Fill="Green" Stroke="Gray" Width="10" Height="10" HorizontalAlignment="Left" VerticalAlignment="Bottom" Grid.Row="0" Grid.Column="6" Margin="11,0,0,23"/>
                         <Label x:Name="lbls1" Content="Presi" Visibility="Visible" FontSize="9" Foreground="LightGray" VerticalAlignment="Bottom" Grid.Row="0" Grid.Column="6" Margin="0,0,80,0"/>
                         <Ellipse x:Name="s2" Fill="Green" Stroke="Gray" Width="10" Height="10" HorizontalAlignment="Left" VerticalAlignment="Bottom" Grid.Row="0" Grid.Column="6" Margin="36,0,0,23"/>
@@ -199,23 +200,24 @@
                         <Label x:Name="lbls7" Content="Stopp" Visibility="Visible" FontSize="9" Foreground="LightGray" VerticalAlignment="Bottom" Grid.Row="0" Grid.Column="6" Margin="152,0,12,0" Grid.ColumnSpan="3"/>
                         <Ellipse x:Name="s8" Fill="Green" Stroke="Gray" Width="10" Height="10" HorizontalAlignment="Left" VerticalAlignment="Bottom" Grid.Row="0" Grid.Column="6" Margin="186,0,0,23"/>
                         <Label x:Name="lbls8" Content="E-Stop" Visibility="Visible" FontSize="9" Foreground="LightGray" VerticalAlignment="Bottom" Grid.Row="0" Grid.Column="6" Margin="177,0,12,0" Grid.ColumnSpan="3"/>-->
-                        
-                        
-                        
+
+
+
 
                         <Button x:Name="Screw_Scrap" Click="Screw_Scrap_Click" Visibility="Hidden" Style="{StaticResource BaseButton}" Content="Tornillo descartado" VerticalAlignment="Top" Grid.Column="5" Grid.ColumnSpan="3" Margin="19.6,39,19.6,0" Grid.RowSpan="2"/>
 
-                        <Label Content="FIS:" HorizontalAlignment="Left" VerticalAlignment="Bottom" Grid.Column="1" Grid.Row="2" Grid.ColumnSpan="2" Margin="0,0,0,38.2" Grid.RowSpan="2"/>
-                        <Ellipse x:Name="Fis_enabled_display" Fill="Aqua" Stroke="Gray" Width="20" Height="20" HorizontalAlignment="Left" VerticalAlignment="Top" Grid.Column="2" Grid.Row="2" Margin="20,12,0,0"/>
+                        <Ellipse x:Name="Fis_enabled_display" Fill="LightGreen" Stroke="Gray" Width="10" Height="5" HorizontalAlignment="Left" VerticalAlignment="Top" Grid.Column="8" Grid.Row="0" Margin="202,17,0,0" RenderTransformOrigin="0.631,0.581"/>
+                        <Label Name="lblFIS" Content="FIS" HorizontalAlignment="Left" VerticalAlignment="Bottom" Grid.Column="8" Grid.Row="0" Margin="212,0,0,0"/>
 
-                        <Label Content="Modelo:" HorizontalAlignment="Left" VerticalAlignment="Bottom" Grid.Column="2" Grid.Row="2" Margin="46,0,0,0"/>
-                        <Label Name="lblModelScrew" Content="{Binding model_screw, UpdateSourceTrigger=PropertyChanged}"  FontSize="12" Foreground="Aquamarine" HorizontalAlignment="Left" VerticalAlignment="Bottom" Grid.Column="2" Grid.Row="2" Margin="113,0,0,1"/>
+
+                        <Label Content="Modelo:" HorizontalAlignment="Left" VerticalAlignment="Bottom" Grid.Column="1" Grid.Row="2" Grid.ColumnSpan="2" Margin="0,0,0,0"/>
+                        <Label Name="lblModelScrew" Content="{Binding model_screw, UpdateSourceTrigger=PropertyChanged}"  FontSize="12" Foreground="Aquamarine" HorizontalAlignment="Left" VerticalAlignment="Bottom" Grid.Column="1" Grid.ColumnSpan="2" Grid.Row="2" Margin="113,0,0,1"/>
 
                         <Label x:Name="from_fis_lbl" Content="From:" HorizontalAlignment="Left" VerticalAlignment="Bottom" Grid.Column="3" Grid.Row="1" Grid.ColumnSpan="2" Margin="19.8,0,0,38.2" Grid.RowSpan="2"/>
-                        <TextBox x:Name="from_fis_textblock"    Text="{Binding QRs_Scanned.From_FIS, UpdateSourceTrigger=PropertyChanged}"  
+                        <TextBox x:Name="from_fis_textblock"    Text="{Binding From_FIS, UpdateSourceTrigger=PropertyChanged}"  
                                                                 Style="{StaticResource BaseTextBox}" VerticalAlignment="Top" Height="auto" Grid.Column="4" Grid.Row="1" Grid.ColumnSpan="5" Margin="55,11,9,0" />
                         <Label x:Name="to_fis_lbl" Content="To:" HorizontalAlignment="Left" VerticalAlignment="Bottom" Grid.Column="3" Grid.Row="2" Grid.ColumnSpan="2" Margin="19.8,0,0,38.2" Grid.RowSpan="2"/>
-                        <TextBox x:Name="to_fis_textblock"  Text="{Binding QRs_Scanned.To_FIS, UpdateSourceTrigger=PropertyChanged}"  
+                        <TextBox x:Name="to_fis_textblock"  Text="{Binding To_FIS, UpdateSourceTrigger=PropertyChanged}"  
                                                             Style="{StaticResource BaseTextBox}" VerticalAlignment="Top" Height="auto" Grid.Column="4" Grid.Row="2" Grid.ColumnSpan="5" Margin="55,10,10,0" />
 
                         <Label Content="HOUSING:" HorizontalAlignment="Left"  VerticalAlignment="Bottom" Grid.Column="1" Grid.Row="3"  Grid.ColumnSpan="2" />
@@ -249,13 +251,13 @@
                 </Frame>
                 <!--<Label x:Name="lblRunCycle" Content="{Binding MessageProcess, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Grid.Row="1" Margin="63,0,0,413" Width="597"/>
                 <Image x:Name="imgImageOfProcess" Source="{Binding ImageOfProcess, UpdateSourceTrigger=PropertyChanged}"   Width="1013" Margin="63,48,54,50" Grid.Row="1" Stretch="Uniform" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>-->
-                
-                
-                
-                
-                
-                <Label x:Name="lblRunCycle" Content="{Binding MessageProcess, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Grid.Row="1" Margin="63,0,0,413" Width="597"/>
-                <Label x:Name="lbldebug" Content="{Binding MessageProcessDebug, UpdateSourceTrigger=PropertyChanged}" Foreground="LightBlue" FontSize="10" HorizontalAlignment="Left" VerticalAlignment="Bottom" Grid.Row="1" Margin="63,0,0,403" Width="597"/>
+
+
+
+
+
+                <Label x:Name="lblRunCycle" Content="{Binding MessageProcess, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Grid.Row="1" Margin="63,0,0,403" Width="1013" Height="28" />
+                <Label x:Name="lbldebug" Content="{Binding MessageProcessDebug, UpdateSourceTrigger=PropertyChanged}" Foreground="LightBlue" FontSize="10" HorizontalAlignment="Left" VerticalAlignment="Bottom" Visibility="Hidden" Grid.Row="1" Margin="63,0,0,403" Width="597"/>
                 <Image x:Name="imgImageOfProcess" Source="{Binding BitMapImageOfProcess, UpdateSourceTrigger=PropertyChanged}" Width="1013" Margin="63,48,54,50" Grid.Row="1" Stretch="Uniform" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                 </Image>
 

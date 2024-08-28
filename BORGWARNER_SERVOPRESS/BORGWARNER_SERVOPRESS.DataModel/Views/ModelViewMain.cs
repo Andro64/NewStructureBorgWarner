@@ -154,6 +154,33 @@ namespace BORGWARNER_SERVOPRESS.DataModel.Views
             }
         }
 
+        private string _From_FIS;
+        public string From_FIS
+        {
+            get { return _From_FIS; }
+            set
+            {
+                if (_From_FIS != value)
+                {
+                    _From_FIS = value;
+                    OnPropertyChanged(nameof(From_FIS));
+                }
+            }
+        }
+        private string _To_FIS;
+        public string To_FIS
+        {
+            get { return _To_FIS; }
+            set
+            {
+                if (_To_FIS != value)
+                {
+                    _To_FIS = value;
+                    OnPropertyChanged(nameof(To_FIS));
+                }
+            }
+        }
+
         private string _prestoper;
         public string prestoper
         {

@@ -40,6 +40,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
         }
         public void endRead()
         {
+            Debug.WriteLine($"{DateTime.Now} - endRead");
             cancellationToken_ioCardsGeneric.Cancel();
             Debug.WriteLine($"{DateTime.Now} - " + "Termine de leer los sensores");
             cancellationToken_ScrewFunction.Cancel();
@@ -216,7 +217,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
             }
             catch(Exception ex)
             {
-                Debug.WriteLine(ex.Message);
+                Debug.WriteLine("Error UnsecurePallet:" + ex.Message);
             }
         }
 
@@ -342,7 +343,8 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
             SendValueByKeySensor("ScrewDispenser", true);
         }
         public void Turn_ON_Vacuumm()
-        {            
+        {
+            Debug.WriteLine("*Envio un true a la apsiradora");
             //sessionApp.Sensors_M1.Vacuum = true;
             //SendDataOutpusM1();
             SendValueByKeySensor("Vacuum", true);
@@ -351,10 +353,12 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
         {
             //sessionApp.Sensors_M1.Vacuum = false;
             //SendDataOutpusM1();
+            Debug.WriteLine("*Envio un false a la aspiradora");
             SendValueByKeySensor("Vacuum", false);
         }
         public void ActivateVacumm_by_time(int miliseconds)
         {
+            Debug.WriteLine("*Activa la aspiradora por tiempo");
             Turn_ON_Vacuumm();
             Thread.Sleep(miliseconds);
             Turn_OFF_Vacuumm();
@@ -368,6 +372,8 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
         }
         public void DispenseAScrew()
         {
+            Thread.Sleep(100);
+            Debug.WriteLine("*DispenseAScrew");
             //sessionApp.Sensors_M1.ScrewDispenser = true;
             //SendDataOutpusM1();
             SendValueByKeySensor("ScrewDispenser", true);
@@ -378,6 +384,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
         }
         public void ResetScrap()
         {
+            Debug.WriteLine("Reseteamos SCRAP.");
             //sessionApp.Sensors_M3.ReleScrap = true;
             //SendDataOutpusM3();
             SendValueByKeySensor("ReleScrap", true);
@@ -386,6 +393,12 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
             //SendDataOutpusM3();
             SendValueByKeySensor("ReleScrap", false);
         }
+        public void ReleScrapOFF()
+        {
+            Debug.WriteLine("Desactivamos Rele SCRAP.");            
+            SendValueByKeySensor("ReleScrap", false);
+        }
+
         private bool isWaiting = true;
         public async Task WaitingResponse(CancellationTokenSource cancellationTokenSource, Func<bool> sensorToCheck)
         {

@@ -49,6 +49,8 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.Views
                     _modelViewMain.HVDC_BUSBAR = sessionApp.QR.HVDC_BUSBAR;
                     _modelViewMain.HARNESS = sessionApp.QR.HARNESS;
                     _modelViewMain.TOP_COVER = sessionApp.QR.TOP_COVER;
+                    _modelViewMain.From_FIS = sessionApp.QR.From_FIS;
+                    _modelViewMain.To_FIS = sessionApp.QR.To_FIS;
                 }
                 _modelViewMain.ImageOfProcess = sessionApp.ImageOfProcess;
                 if (sessionApp.ImageOfProcess != null)

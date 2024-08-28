@@ -16,7 +16,8 @@ namespace BORGWARNER_SERVOPRESS.DataModel
         public int id_model_screw { get; set; }
         public string desc_model { get; set; }
         public int text_position_X { get; set; }
-        public int text_position_Y { get; set; }
+        public int text_position_Y { get; set; }       
+        public string screw_identifier { get; set; }
         public TighteningProcess tighteningprocess { get; set; } = new TighteningProcess();
 
     }

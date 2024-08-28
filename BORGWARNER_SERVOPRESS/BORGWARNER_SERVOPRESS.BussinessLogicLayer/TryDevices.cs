@@ -115,7 +115,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
             BitmapImage bitmapImage = new BitmapImage();
 
             //#if !DEBUG
-            visionSystem = new VisionSystem(sessionApp, typeCamera);
+            visionSystem = new VisionSystem(sessionApp, typeCamera);            
 
             if (!visionSystem.FirstInspectionAttempt(serial))
             {

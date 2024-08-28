@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
@@ -22,7 +23,7 @@ namespace BORGWARNER_SERVOPRESS.UI
         private SessionApp sessionApp;
         private PageManager pageManager;
         private ViewMain viewMain;
-        List<string> controlNames;        
+        List<string> controlNames;
         private Workstation workstation;
         private bool isRequestedStopProcess;
 
@@ -38,18 +39,55 @@ namespace BORGWARNER_SERVOPRESS.UI
 
             WorkstationFactory.injectionSession(sessionApp);
             workstation = WorkstationFactory.CreateWorkstation();
-            MessageBox.Show("La estacion de trabajo es: " + workstation.Type);            
-            
+            //MessageBox.Show("La estacion de trabajo es: " + workstation.Type);            
+
             InitializeComponent();
             initialize();
             InitializeTimer();
-            
-
+            ValidateSettings();
+            ValidateFIS();
             workstation.CreateTextBoxRequested += BusinessLayer_CreateTextBoxRequested;
             workstation.RemoveTextBoxRequested += TextBoxRemoveContentGrid;
             Loaded += MainWindow_Loaded;
 
-            
+        }
+        public void ValidateSettings()
+        {
+            foreach (var commandCamara in sessionApp.commandCamaras)
+            {
+                if (!Directory.Exists(commandCamara.path_image))
+                {
+                    MessageBox.Show($"Error: El path no es válido o el directorio no existe: {commandCamara.path_image}","Error",MessageBoxButton.OK,MessageBoxImage.Error );
+                    sessionApp.MessageOfProcess = $"Error: El path no es válido o el directorio no existe: {commandCamara.path_image}";
+                    pageManager.DisableControls(new List<string> { "startCycle_btn", "stopCycle_btn" });
+                    pageManager.ChangeBackgroundColor(Brushes.DarkRed, new List<string> { "lblRunCycle" });
+                }
+                if (!Directory.Exists(commandCamara.path_image_show_errors))
+                {
+                    MessageBox.Show($"Error: El path no es válido o el directorio no existe: {commandCamara.path_image_show_errors}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    sessionApp.MessageOfProcess = $"Error: El path no es válido o el directorio no existe: {commandCamara.path_image_show_errors}";
+                    pageManager.DisableControls(new List<string> { "startCycle_btn", "stopCycle_btn" });
+                    pageManager.ChangeBackgroundColor(Brushes.DarkRed, new List<string> { "lblRunCycle" });
+                }
+            }
+
+        }
+        public void ValidateFIS()
+        {
+            if (sessionApp.settings.FirstOrDefault(x => x.setting.Contains("EneableFIS")).valueSetting == "1")
+            {
+                TryDevices tryDevices = new TryDevices(sessionApp);
+                string resultBREQ, resultBCMP;
+                resultBREQ = tryDevices.TryFIS_BREQToFIS("BREQ");
+                //resultBCMP = tryDevices.TryFIS_BCMP("BCMP");
+                if (resultBREQ.Contains("ERROR"))
+                {
+                    MessageBox.Show($"Error: El sistema de FIS no se ecuentra activo.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    sessionApp.MessageOfProcess = $"Error: El sistema de FIS no se ecuentra activo.";
+                    pageManager.DisableControls(new List<string> { "startCycle_btn", "stopCycle_btn" });
+                    pageManager.ChangeBackgroundColor(Brushes.DarkRed, new List<string> { "lblRunCycle" });
+                }
+            }
         }
 
         private void BusinessLayer_CreateTextBoxRequested(object sender, TextBoxInfoEventArgs e)
@@ -76,12 +114,12 @@ namespace BORGWARNER_SERVOPRESS.UI
 
                 // Agregar la caja de texto al contenedor en la interfaz de usuario
                 contentgrid.Children.Add(textBox);
-            
+
             });
         }
 
         private void TextBoxRemoveContentGrid(object sender, EventArgs e)
-        {            
+        {
             contentgrid.Dispatcher.Invoke(() =>
             {
                 //Elimina todos menos el primero
@@ -100,10 +138,19 @@ namespace BORGWARNER_SERVOPRESS.UI
             viewMain = new ViewMain(sessionApp);
             DataContext = viewMain.GetModel();
             pageManager = new PageManager(this);
-                        
+
             viewMain.ShowData();
             viewMain.ShowMessage();
-            pageManager.IsReadOnlyControls(new List<string> { "from_fis_textblock", "to_fis_textblock", "txtHousing" , "txt_HVDC_BUSBAR", "txtHarness", "txtTopCover", "cycletime" });
+            ShowFIS();
+            pageManager.IsReadOnlyControls(new List<string> { "from_fis_textblock", "to_fis_textblock", "txtHousing", "txt_HVDC_BUSBAR", "txtHarness", "txtTopCover", "cycletime" });
+        }
+
+        public void ShowFIS()
+        {
+            if (sessionApp.settings.FirstOrDefault(x => x.setting.Equals("EneableFIS")).valueSetting == "0")
+            {
+                pageManager.HideControls(new List<string> { "lblFIS", "from_fis_lbl", "from_fis_textblock", "to_fis_lbl", "to_fis_textblock", "Fis_enabled_display" });
+            }
         }
 
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
@@ -115,7 +162,7 @@ namespace BORGWARNER_SERVOPRESS.UI
         {
 
         }
-      
+
 
         private void settings_option_btn_Click(object sender, RoutedEventArgs e)
         {
@@ -186,19 +233,19 @@ namespace BORGWARNER_SERVOPRESS.UI
             await Task.Run(async () =>
             {
                 while (sessionApp.TaksRunExecuting)
-                {                    
-                    await Task.Delay(100); 
+                {
+                    await Task.Delay(100);
                 }
             });
             ProcessFinished();
         }
-        
+
         private void ProcessFinished()
         {
             StopChronometer();
             pageManager.EnableControls(new List<string> { "startCycle_btn", "mn_btn_run", "mn_btn_fis", "mn_btn_history", "mn_btn_modelos_screw", "mn_btn_manual", "mn_btn_positions" });
             pageManager.DisableControls(new List<string> { "stopCycle_btn" });
-            pageManager.ChangeBackgroundColor(Brushes.Aqua, new List<string> { "Fis_enabled_display" });
+            pageManager.ChangeBackgroundColor(Brushes.Aqua, new List<string> { "Cycle_enabled_display" });
 
             if (!isRequestedStopProcess)
             {
@@ -206,7 +253,7 @@ namespace BORGWARNER_SERVOPRESS.UI
                 StartCycle();
             }
         }
-        
+
         private void StartCycle_btn_Click(object sender, RoutedEventArgs e)
         {
             StartCycle();
@@ -218,7 +265,7 @@ namespace BORGWARNER_SERVOPRESS.UI
             pageManager.DisableControls(new List<string> { "startCycle_btn", "mn_btn_run", "mn_btn_fis", "mn_btn_history", "mn_btn_modelos_screw", "mn_btn_manual", "mn_btn_positions" });
             pageManager.CleanControls(new List<string> { "from_fis_textblock", "to_fis_textblock", "txtHousing", "txt_HVDC_BUSBAR", "txtHarness", "txtTopCover", "cycletime" });
             pageManager.EnableControls(new List<string> { "stopCycle_btn" });
-            pageManager.ChangeBackgroundColor(Brushes.Red, new List<string> { "Fis_enabled_display" });
+            pageManager.ChangeBackgroundColor(Brushes.Red, new List<string> { "Cycle_enabled_display" });
             sessionApp.QR.HARNESS = "";
             sessionApp.QR.HOUSING = "";
             sessionApp.QR.HVDC_BUSBAR = "";
@@ -242,11 +289,11 @@ namespace BORGWARNER_SERVOPRESS.UI
         private void StopCycle_btn_Click(object sender, RoutedEventArgs e)
         {
             isRequestedStopProcess = true;
-            pageManager.ChangeBackgroundColor(Brushes.Aqua, new List<string> { "Fis_enabled_display" });
+            pageManager.ChangeBackgroundColor(Brushes.Aqua, new List<string> { "Cycle_enabled_display" });
             workstation.CancelProcess();
             StopChronometer();
         }
-        
+
         private void Screw_Scrap_Click(object sender, RoutedEventArgs e)
         {
             var textBoxesToRemove = contentgrid.Children.OfType<Label>().Skip(1).ToList();
@@ -258,7 +305,7 @@ namespace BORGWARNER_SERVOPRESS.UI
 
         private void showMenu(string profile)
         {
-            
+
         }
         #region chronometer
         private void StartChronometer()
@@ -291,7 +338,7 @@ namespace BORGWARNER_SERVOPRESS.UI
         {
             Dispatcher.Invoke(() =>
             {
-                cycletime.Text = $"{elapsedTime.Hours:D2}:{elapsedTime.Minutes:D2}:{elapsedTime.Seconds:D2}.{elapsedTime.Milliseconds / 10:D2}";                
+                cycletime.Text = $"{elapsedTime.Hours:D2}:{elapsedTime.Minutes:D2}:{elapsedTime.Seconds:D2}.{elapsedTime.Milliseconds / 10:D2}";
             });
         }
         protected override void OnClosing(CancelEventArgs e)
@@ -307,7 +354,7 @@ namespace BORGWARNER_SERVOPRESS.UI
         }
         #endregion
 
-       
+
 
     }
 }

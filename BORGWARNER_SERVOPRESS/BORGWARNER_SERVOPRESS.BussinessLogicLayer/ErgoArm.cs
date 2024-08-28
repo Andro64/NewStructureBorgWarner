@@ -87,6 +87,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
         }
         public void endReadPostion()
         {
+            sessionApp.positionErgoArm.endRead = true;
             cancellationToken_ErgoArm.Cancel();
             communicationErgoArm.Disconnect();
             Debug.WriteLine($"{DateTime.Now} - "  + "Termine de leer la posicion del ErgoArm");

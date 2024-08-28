@@ -1,6 +1,7 @@
 ﻿using BORGWARNER_SERVOPRESS.DataModel;
 using Keyence.AutoID.SDK;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
@@ -88,7 +89,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
                 {
                     serial = ScannerOFF();
                 }
-                Thread.Sleep(500);
+                Thread.Sleep(100);
             }
             else
             {
@@ -109,8 +110,8 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
                 while (serial == string.Empty)
                 {
                     _cancellationTokenSource.Token.ThrowIfCancellationRequested();
-                    await Task.Delay(1000);
-                    serial = scanner.ExecCommand(command);
+                    //await Task.Delay(5);
+                    serial = scanner.ExecCommand(command);                    
                 }
             }
             else
@@ -120,6 +121,46 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
             DisconnectScanner();
             return serial;
 
+        }
+        public async Task<string> ScanningTrigger(CancellationTokenSource _cancellationTokenSource, string command, List<string> serials)
+        {
+            string serial = string.Empty;
+            if (_cancellationTokenSource == null) { return ""; }
+           
+
+            if (scanner.LastErrorInfo.Equals(ErrorCode.None))
+            {
+                while (serial == string.Empty)
+                { 
+                    Connect();
+                    _cancellationTokenSource.Token.ThrowIfCancellationRequested();
+                    //await Task.Delay(5);
+                    serial = scanner.ExecCommand(command);
+                    serial = await validateSerial(serial, serials) == false ? string.Empty : serial;
+                    DisconnectScanner();
+                }
+            }
+            else
+            {
+                Debug.WriteLine("Error: " + scanner.LastErrorInfo);
+            }
+            DisconnectScanner();
+            return serial;
+
+        }
+
+        public async Task<bool> validateSerial(string serial, List<string> serials)
+        {
+            if (serials.Count == 0)
+            {
+                return true; 
+            }
+            if (serials.Any(x => x.Contains(serial)))
+            {
+                sessionApp.MessageOfProcess = "Código QR invalido, Por favor vuelva a intentarlo.";
+                return false;
+            }
+            return true;
         }
 
     }

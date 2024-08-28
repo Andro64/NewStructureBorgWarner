@@ -169,14 +169,21 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
 
         public override void CancelProcess()
         {
-            showMessageAndImage("El proceso se ha finalizado a petición del usuario");
-            sessionApp.TaksRunExecuting = false;
-            isCancellationRequested = true;
-            _cancellationTokenSource?.Cancel();
-            _cancellationTokenSource?.Dispose(); // Liberar los recursos del CancellationTokenSource
-            _cancellationTokenSource = null; // Establecer el CancellationTokenSource en null para que pueda ser reasignado
+            try
+            {
+                showMessageAndImage("El proceso se ha finalizado a petición del usuario");
+                sessionApp.TaksRunExecuting = false;
+                isCancellationRequested = true;
+                _cancellationTokenSource?.Cancel();
+                _cancellationTokenSource?.Dispose(); // Liberar los recursos del CancellationTokenSource
+                _cancellationTokenSource = null; // Establecer el CancellationTokenSource en null para que pueda ser reasignado
 
-            sensorsIO.StopWaiting();
+                sensorsIO.StopWaiting();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("Error - CancelProcess:" + ex.Message);
+            }
         }
 
         public async Task CheckSensorAndWait(Func<bool> sensorCheck, string debugMessage)

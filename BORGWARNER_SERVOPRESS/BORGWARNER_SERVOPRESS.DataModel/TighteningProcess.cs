@@ -14,5 +14,6 @@ namespace BORGWARNER_SERVOPRESS.DataModel
         public bool status { get; set; }
         public string Angle { get; set; }
         public string Torque { get; set; }
+        public int Attempt { get; set; }
     }
 }

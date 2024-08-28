@@ -348,6 +348,13 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
         {            
             string filename = string.Empty;
             string file = string.Empty;
+
+            if (!Directory.Exists(path))
+            {
+                sessionApp.MessageOfProcess = $"Error: El path no es válido o el directorio no existe: {path}";
+                return string.Empty;
+            }
+
             DirectoryInfo dir = new DirectoryInfo(path);
             Debug.WriteLine($"{DateTime.Now} - " + $"El path es: {path}");
             var files = dir.GetFiles().OrderByDescending(f => f.LastWriteTime).ToList();
