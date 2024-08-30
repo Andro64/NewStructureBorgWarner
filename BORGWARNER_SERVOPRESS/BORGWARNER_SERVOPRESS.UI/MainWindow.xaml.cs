@@ -94,15 +94,37 @@ namespace BORGWARNER_SERVOPRESS.UI
         {
             contentgrid.Dispatcher.Invoke(() =>
             {
+                string style = "";
+                switch (e.eStyleText)
+                {
+                    case eStyleText.None:
+                        style = e.HasError ? "RoundLabelError" : "RoundLabel";
+                        break;
+                    case eStyleText.Normal:
+                        style = "SightLabel";
+                        break;
+                    case eStyleText.Error:
+                        style = "SightLabelError";
+                        break;
+                    case eStyleText.Success:
+                        style = "SightLabelSuccess";
+                        break;
+                    case eStyleText.InPosition:
+                        style = "SightLabelInPosition";
+                        break;
+                    default:
+                        break;
+                }
                 // Crear una nueva caja de texto
                 var textBox = new Label
                 {
                     Content = e.Text,
-                    Width = 100,
-                    Height = 30,
-                    Style = e.HasError ? (Style)Application.Current.Resources["RoundLabelError"] : (Style)Application.Current.Resources["RoundLabel"]
-                    //Style = (Style)Application.Current.Resources["BaseIsFocused"]
+                    Width = e.Width,
+                    Height = e.Height,
+                    Style = (Style)Application.Current.Resources[style]
 
+                    //e.HasError ? (Style)Application.Current.Resources["RoundLabelError"] : (Style)Application.Current.Resources["RoundLabel"]
+                    //Style = (Style)Application.Current.Resources["BaseIsFocused"]
                 };
 
                 // Establecer la posición de la caja de texto

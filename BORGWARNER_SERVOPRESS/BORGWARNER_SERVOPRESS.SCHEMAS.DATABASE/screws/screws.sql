@@ -7,15 +7,17 @@
   id_model_screw int NOT NULL,
   text_position_X int NULL,
   text_position_Y int NULL,
+  sight_position_X int NULL,
+  sight_position_Y int NULL,
   PRIMARY KEY (id,id_screw,id_model_screw)
 ) ;
 
-INSERT INTO screws VALUES 	(1,1,96.9396,112.2992,3,1,340,-150),
-							(2,2,92.6592,134.6468,3,1,0,-150),
-							(3,3,94.002 ,119.5856,3,1,305, -70),
-							(4,1,95.01  ,116.1404,3,2,340,-150),
-							(5,4,52.9944,-79.906 ,3,1,0,-150),
-							(6,5,52.998 ,-79.9192,3,1,305,-70);
+INSERT INTO screws VALUES 	(1,1,96.9396,112.2992,3,1,340,-150,330,10),
+							(2,2,92.6592,134.6468,3,1,0,-150,330,10),
+							(3,3,94.002 ,119.5856,3,1,305, -70,330,10),
+							(4,1,95.01  ,116.1404,3,2,340,-150,330,10),
+							(5,4,52.9944,-79.906 ,3,1,0,-150,330,10),
+							(6,5,52.998 ,-79.9192,3,1,305,-70,330,10);
 
 SELECT * FROM screws;
 -----------------------------------------------------------------------------------------------------------------------------------------------							
@@ -33,7 +35,9 @@ SELECT 	 	screws.id,
             models_screw.name_model,
             models_screw.quantity_screws,
             text_position_X,
-            text_position_Y
+            text_position_Y,
+            sight_position_X,
+            sight_position_Y
 FROM screws
 LEFT JOIN models_screw ON screws.id_model_screw = models_screw.id
 ORDER BY id_model_screw asc, id_screw  asc;
@@ -61,7 +65,9 @@ SELECT 	id,
 		tolerance,
 		id_model_screw,
         text_position_X,
-        text_position_Y
+        text_position_Y,
+        sight_position_X,
+        sight_position_Y
 FROM screws
 as s limit ",(@page - 1) * @_size,",",@_size);
 prepare qry from @qry_string;
@@ -86,7 +92,9 @@ CREATE PROCEDURE SP_INS_UPD_SCREWS(
 		IN p_tolerance DOUBLE,
 		IN p_id_model_screw INT,
         IN p_text_position_X INT,
-		IN p_text_position_Y INT
+		IN p_text_position_Y INT,
+        IN p_sight_position_X INT,
+        IN p_sight_position_Y INT
 )
 BEGIN
 	DECLARE screws_exist INT;
@@ -100,10 +108,12 @@ BEGIN
 			tolerance = p_tolerance ,
 			id_model_screw= p_id_model_screw,
             text_position_X = p_text_position_X,
-            text_position_Y = p_text_position_Y
+            text_position_Y = p_text_position_Y,
+            sight_position_X = p_sight_position_X,
+            sight_position_Y = p_sight_position_Y
         WHERE id = p_id;		
     ELSE
-        INSERT INTO screws (id,id_screw,encoder1,encoder2,tolerance,id_model_screw,text_position_X,text_position_Y	) 
+        INSERT INTO screws (id,id_screw,encoder1,encoder2,tolerance,id_model_screw,text_position_X,text_position_Y,sight_position_X,sight_position_Y	) 
 		VALUES (p_id ,
 				p_id_screw ,			
 				p_encoder1 ,
@@ -111,7 +121,9 @@ BEGIN
 				p_tolerance ,
 				p_id_model_screw,
                 p_text_position_X,
-                p_text_position_Y);
+                p_text_position_Y,
+                p_sight_position_X,
+                p_sight_position_Y);
     END IF;
 END //
 

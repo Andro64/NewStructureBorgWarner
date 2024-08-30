@@ -79,7 +79,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
 
         }
 
-        public async Task showMessageAndImage(string message, string nameimage = "", bool isImageInDiferentPath = false, int timeshowing = 2000)
+        public async Task showMessageAndImage(string message, string nameimage = "", bool isImageInDiferentPath = false, int timeshowing = 100)
         {
             await Task.Run(() =>
             {
@@ -180,7 +180,33 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
             isVisionEneable = sessionApp.settings.FirstOrDefault(x => x.setting.Contains("EneableVision")).valueSetting == "1";
 
             sessionApp.MessageOfProcessDebug = "Inicializando sistema";
+            
+            sensorsIO.ResetScrap();
             sensorsIO.ReleScrapOFF();
+
+            /***Prueba de etiquetas***/
+            //await showMessageAndImage($"Por favor, realice el desatornillado del tornillo número:", "HousingWithMask.png");
+
+            //await DrawingSight(265, -15, eStyleText.Normal);
+            ////await DrawingSight(330, 10, eStyleText.InPosition);
+            ////await DrawingSight(330, 10, eStyleText.Normal);
+            ////await DrawingSight(330, 10, eStyleText.Success);
+            //RequestCreateTextBox($"0000.00 Nw | 00°", 390, -15, 100, 30);
+
+            ////RequestRemoveTextBox();
+            //RequestCreateTextBox($"0000.00 Nw | 00°", 375, -215, 100, 30);
+
+            ////await DrawingSight(250, -60, eStyleText.Normal);
+            //await DrawingSight(250, -215, eStyleText.InPosition);
+            ////await DrawingSight(250, -60, eStyleText.Normal);
+            ////await DrawingSight(250, -60, eStyleText.Success);
+            ////await DrawingSight(250, -60, eStyleText.Error);
+
+
+            //await CheckSensorAndWait(() => sensorsIO.isTriggerScanner(), "Esperamos que el operador coloque el arnés en el scaner.");
+
+
+            /******/
 
             await sensorsIO.Sequence_Stoper_PrestoperAsync(_cancellationTokenSource, false);
             if (isCancellationRequested) { return; };
@@ -246,30 +272,30 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
 
 
 
-                if (isFISEneable)
+                //if (isFISEneable)
+                //{
+                while (!isCancellationRequested)
                 {
-                    while (!isCancellationRequested)
-                    {
-                        await showMessageAndImage("Escaneando código QR del HVDC Cover.", "", false, 50);
-                        Scanner scanner2 = new Scanner(sessionApp, eTypeConnection.Scan_2);
-                        //serial = scanner2.ScanQR("LON");
-                        serial = await scanner2.ScanningTrigger(_cancellationTokenSource, "LON", serials);
-                        serials.Add(serial);
-                        sessionApp.QR.HVDC_BUSBAR = serial;//.Substring(0, (serial.Length - 1));
-                        scanner2.DisconnectScanner();
-                        if (isCancellationRequested) { return; };
-                        Thread.Sleep(50); //Thread.Sleep(300);
-                        if (serial != string.Empty)
-                        {
-                            if (Validation_by_FIS(string.Empty, sessionApp.QR.HVDC_BUSBAR, "Se envía BREQ a FIS.", eTypeSendToFIS.BREQ))
-                            {
-                                break;
-                            }
-                        }
-                        //Thread.Sleep(10);
-                    }
+                    await showMessageAndImage("Escaneando código QR del HVDC Cover.", "", false, 50);
+                    Scanner scanner2 = new Scanner(sessionApp, eTypeConnection.Scan_2);
+                    //serial = scanner2.ScanQR("LON");
+                    serial = await scanner2.ScanningTrigger(_cancellationTokenSource, "LON", serials);
+                    serials.Add(serial);
+                    sessionApp.QR.HVDC_BUSBAR = serial;//.Substring(0, (serial.Length - 1));
+                    scanner2.DisconnectScanner();
                     if (isCancellationRequested) { return; };
+                    Thread.Sleep(50); //Thread.Sleep(300);
+                    if (serial != string.Empty)
+                    {
+                        if (isFISEneable ? Validation_by_FIS(string.Empty, sessionApp.QR.HVDC_BUSBAR, "Se envía BREQ a FIS.", eTypeSendToFIS.BREQ) : true)
+                        {
+                            break;
+                        }
+                    }
+                    //Thread.Sleep(10);
                 }
+                if (isCancellationRequested) { return; };
+                //}
 
 
                 await showMessageAndImage("Inspección completada...");
@@ -510,6 +536,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
                     screw.tighteningprocess = new TighteningProcess();
                     if (ergoArm.isConected())
                     {
+                        await DrawingSight(screw.sight_position_X, screw.sight_position_Y, eStyleText.Normal);
                         await showMessageAndImage($"Por favor, posiciones el brazo ergonomico del tornillo número: {tightenincount}.", "HousingWithMask.png");
                         ergoArm.startReadPositionRespectScrew(screw);
                     }
@@ -518,13 +545,15 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
 
                         await showMessageAndImage($"Por favor, realice el atornillado número: {tightenincount}", "HousingWithMask.png");
                         Debug.WriteLine($"-------Primer intento atronillado");
-                        //sessionApp.MessageOfProcessDebug = "-------Primer intento atronillado";
+                        
+                        /***************************************** 1 Primer intento de atornillado ***********************/
                         tightening = await screwdriver.FirstTighteningAttempt(ergoArm, screw, _cancellationTokenSource);
 
                         if (tightening == null)
                         {
                             RewriteResultsOfTightening(lstScrewsToProcess);
                             await showMessageAndImage($"Por favor, realice el desatornillado del tornillo número: {tightenincount}.", "HousingWithMask.png");
+                            await DrawingSight(screw.sight_position_X, screw.sight_position_Y, eStyleText.Error);
 
                             ergoArm.startReadPositionRespectScrew(screw);
                             if (sessionApp.positionErgoArm.InPositionReadyToProcess)
@@ -543,7 +572,10 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
                                 await CheckSensorAndWait(() => ergoArm.isInVacuumNozzle(), "Esperamos ErgoArm en punta de la aspiradora");
                                 if (isCancellationRequested) { return; };
 
-                                await showMessageAndImage($"Por favor, posiciones el brazo ergonomico del tornillo número: {tightenincount}, en donde ha fallado el atornillado y aspire.", "HousingWithMask.png");
+                                
+                                await showMessageAndImage($"Por favor, posiciones el brazo ergonomico del tornillo número: {tightenincount}, en donde ha fallado el atornillado y aspire.", "HousingWithMask.png",false,500);                                
+                                await DrawingSight(screw.sight_position_X, screw.sight_position_Y, eStyleText.Normal);
+                                
 
                                 ergoArm.startReadPositionRespectScrew(screw);
                                 if (sessionApp.positionErgoArm.InPositionReadyToProcess)
@@ -563,15 +595,22 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
                                 //sensorsIO.ResetScrap();
                                 sensorsIO.DispenseAScrew();
 
+                                
                                 await showMessageAndImage($"Intento 2 - Por favor, posiciones el brazo ergonomico del tornillo número: {tightenincount}.", "HousingWithMask.png");
+                                await DrawingSight(screw.sight_position_X, screw.sight_position_Y, eStyleText.Normal);
                                 ergoArm.startReadPositionRespectScrew(screw);
                                 if (sessionApp.positionErgoArm.InPositionReadyToProcess)
                                 {
+                                    RewriteResultsOfTightening(lstScrewsToProcess);
+
                                     await showMessageAndImage($"Intento 2 - Por favor, realice nuevamente el atornillado del tornillo número: {tightenincount}.", "HousingWithMask.png");
+                                    await DrawingSight(screw.sight_position_X, screw.sight_position_Y, eStyleText.Normal);
+                                    /***************************************** 2 Segundo intento de atornillado ***********************/
                                     tightening = await screwdriver.SecondTighteningAttempt(ergoArm, screw, _cancellationTokenSource);
                                     if (tightening == null)
                                     {
-                                        RewriteResultsOfTightening(lstScrewsToProcess);
+                                        await DrawingSight(screw.sight_position_X, screw.sight_position_Y, eStyleText.Error);
+                                        //RewriteResultsOfTightening(lstScrewsToProcess);
                                         //await showMessageAndImage($"Por favor, realice el desatornillado del tornillo número: {tightenincount}.", "HousingWithMask.png");
 
                                         ergoArm.startReadPositionRespectScrew(screw);
@@ -580,7 +619,6 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
                                             sensorsIO.ResetScrap();
                                             sensorsIO.ReleScrapOFF();
                                             RequestRemoveTextBox();
-                                            //await showMessageAndImage($"Por favor, realice el desatornillado del tornillo número: {tightenincount}.", "HousingWithMask.png");                                                       
                                             await showMessageAndImage($"El atornillado del tornillo número : {tightenincount} ha fallado. Por favor, retire el tornillo y colóquelo en desposito de tornillos desechados.", "Scrap2.jpg");
                                             await screwdriver.Unscrewing(ergoArm, screw, _cancellationTokenSource);
 
@@ -592,7 +630,11 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
                                             await CheckSensorAndWait(() => ergoArm.isInVacuumNozzle(), "Esperamos ErgoArm en punta de la aspiradora");
                                             if (isCancellationRequested) { return; };
 
-                                            await showMessageAndImage($"Por favor, posiciones el brazo ergonomico del tornillo número: {tightenincount}, en donde ha fallado el atornillado y aspire.", "HousingWithMask.png");
+                                            
+                                            await showMessageAndImage($"Por favor, posiciones el brazo ergonomico del tornillo número: {tightenincount}, en donde ha fallado el atornillado y aspire.", "HousingWithMask.png",false,500);
+                                            
+                                            await DrawingSight(screw.sight_position_X, screw.sight_position_Y, eStyleText.Normal);
+                                            
 
                                             ergoArm.startReadPositionRespectScrew(screw);
                                             if (sessionApp.positionErgoArm.InPositionReadyToProcess)
@@ -608,16 +650,22 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
                                             //sensorsIO.ResetScrap();
                                             sensorsIO.DispenseAScrew();
 
+                                            
                                             await showMessageAndImage($"Intento 3 - Por favor, posiciones el brazo ergonomico del tornillo número: {tightenincount}.", "HousingWithMask.png");
+                                            await DrawingSight(screw.sight_position_X, screw.sight_position_Y, eStyleText.Normal);
                                             ergoArm.startReadPositionRespectScrew(screw);
                                             if (sessionApp.positionErgoArm.InPositionReadyToProcess)
                                             {
                                                 RewriteResultsOfTightening(lstScrewsToProcess);
 
                                                 await showMessageAndImage($"Intento 3 - Por favor, realice nuevamente el atornillado del tornillo número: {tightenincount}.", "HousingWithMask.png");
+                                                await DrawingSight(screw.sight_position_X, screw.sight_position_Y, eStyleText.Normal);
+                                                /*****************************************  3 Tercer intento de atornillado ***********************/
                                                 tightening = await screwdriver.ThirdTighteningAttempt(ergoArm, screw, _cancellationTokenSource);
                                                 if (tightening == null)
                                                 {
+                                                    await DrawingSight(screw.sight_position_X, screw.sight_position_Y, eStyleText.Error);
+
                                                     ergoArm.startReadPositionRespectScrew(screw);
                                                     if (sessionApp.positionErgoArm.InPositionReadyToProcess)
                                                     {
@@ -638,12 +686,15 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
                                                         await CheckSensorAndWait(() => ergoArm.isInVacuumNozzle(), "Esperamos ErgoArm en punta de la aspiradora");
                                                         if (isCancellationRequested) { return; };
 
-                                                        await showMessageAndImage($"Por favor, posiciones el brazo ergonomico del tornillo número: {tightenincount}, en donde ha fallado el atornillado y aspire.", "HousingWithMask.png");
+                                                        
+                                                        await showMessageAndImage($"Por favor, posiciones el brazo ergonomico del tornillo número: {tightenincount}, en donde ha fallado el atornillado y aspire.", "HousingWithMask.png", false,500);                                                        
+                                                        await DrawingSight(screw.sight_position_X, screw.sight_position_Y, eStyleText.Normal);
+                                                        
 
                                                         ergoArm.startReadPositionRespectScrew(screw);
                                                         if (sessionApp.positionErgoArm.InPositionReadyToProcess)
                                                         {
-                                                            Thread.Sleep(100);
+                                                            //Thread.Sleep(100);
                                                             Debug.WriteLine("*Estpy en posicion de aspiradora Intento 3");
                                                             sensorsIO.ActivateVacumm_by_time(1000);
                                                         }
@@ -657,6 +708,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
                                                         Debug.WriteLine($"{DateTime.Now} - " + "Los 3 intentos de atornillado han fallado.");
                                                         ergoArm.endReadPostion();
                                                         Validation_by_FIS(sessionApp.QR.HOUSING, sessionApp.QR.HVDC_BUSBAR, "Se envía BCMP1 del housing a FIS correspondiente a Housing y HDVCCOVER.", eTypeSendToFIS.BCMP, false, lstScrewsToProcess, MaxNumberAttempts);
+                                                        RequestRemoveTextBox();
                                                         FinshProcessByErrors();
                                                         return;
                                                     }
@@ -677,6 +729,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
 
 
                 await showMessageAndImage($"El atornillado se ha realizado con éxito.", "HousingWithMask.png");
+                RequestRemoveTextBox();
 
                 if (!Validation_by_FIS(sessionApp.QR.HOUSING, sessionApp.QR.HVDC_BUSBAR, "Se envía BCMP1 del housing a FIS correspondiente a Housing y HDVCCOVER.", eTypeSendToFIS.BCMP, true, lstScrewsToProcess))
                 {
@@ -692,7 +745,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
 
                 ergoArm.endReadPostion();
 
-                Thread.Sleep(3000);
+                Thread.Sleep(500);
                 RequestRemoveTextBox();
                 if (isCancellationRequested) { return; };
                 await showMessageAndImage("Por favor, retire la máscara y colóquela en su base", "MaskInHolder.jpg");
@@ -710,29 +763,29 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
                 if (isCancellationRequested) { return; };
 
 
-                if (isFISEneable)
+                //if (isFISEneable)
+                //{
+                while (!isCancellationRequested)
                 {
-                    while (!isCancellationRequested)
-                    {
-                        await showMessageAndImage("Escaneando código QR de la cubierta superior.", "", false, 50);
-                        Scanner scanner4 = new Scanner(sessionApp, eTypeConnection.Scan_2);
-                        serial = await scanner4.ScanningTrigger(_cancellationTokenSource, "LON", serials);
-                        serials.Add(serial);
-                        sessionApp.QR.TOP_COVER = serial;//.Substring(0, (serial.Length - 1));
-                        scanner4.DisconnectScanner();
-                        if (isCancellationRequested) { return; };
-                        Thread.Sleep(50);
-                        if (serial != string.Empty)
-                        {
-                            if (Validation_by_FIS(string.Empty, sessionApp.QR.TOP_COVER, "Se envía BREQ a FIS el TOPCOVER.", eTypeSendToFIS.BREQ))
-                            {
-                                break;
-                            }
-                        }
-                        //Thread.Sleep(10);
-                    }
+                    await showMessageAndImage("Escaneando código QR de la cubierta superior.", "", false, 50);
+                    Scanner scanner4 = new Scanner(sessionApp, eTypeConnection.Scan_2);
+                    serial = await scanner4.ScanningTrigger(_cancellationTokenSource, "LON", serials);
+                    serials.Add(serial);
+                    sessionApp.QR.TOP_COVER = serial;//.Substring(0, (serial.Length - 1));
+                    scanner4.DisconnectScanner();
                     if (isCancellationRequested) { return; };
+                    Thread.Sleep(50);
+                    if (serial != string.Empty)
+                    {
+                        if (isFISEneable ? Validation_by_FIS(string.Empty, sessionApp.QR.TOP_COVER, "Se envía BREQ a FIS el TOPCOVER.", eTypeSendToFIS.BREQ) : true)
+                        {
+                            break;
+                        }
+                    }
+                    //Thread.Sleep(10);
                 }
+                if (isCancellationRequested) { return; };
+                //}
 
 
 
@@ -870,8 +923,36 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
                 Debug.WriteLine($"{DateTime.Now} - " + $"Error: { ex.Message }");
             }
         }
+        public async Task DrawingSight(int PositionX, int PositionY, eStyleText eStyleText)
+        {
+            Debug.WriteLine("Entre DrawingSight");
+            await Task.Run(() =>
+            {
+                //RequestRemoveTextBox();
+                switch (eStyleText)
+                {
+                    case eStyleText.None:
+                        break;
+                    case eStyleText.Normal:
+                        RequestCreateTextBox($"X", PositionX, PositionY, 30, 30, true, eStyleText.Normal);
+                        break;
+                    case eStyleText.Error:
+                        RequestCreateTextBox($"X", PositionX, PositionY, 30, 30, true, eStyleText.Error);
+                        break;
+                    case eStyleText.Success:
+                        RequestCreateTextBox($"X", PositionX, PositionY, 30, 30, true, eStyleText.Success);
+                        break;
+                    case eStyleText.InPosition:
+                        RequestCreateTextBox($"X", PositionX, PositionY, 30, 30, true, eStyleText.InPosition);
+                        break;
+                    default:
+                        break;
+                }
+                Thread.Sleep(100);
+            });
 
-        public void RewriteResultsOfTightening(List<Screw> lstScrewsToProcess)
+        }
+        public async Task RewriteResultsOfTightening(List<Screw> lstScrewsToProcess)
         {
             RequestRemoveTextBox();
             if (lstScrewsToProcess != null)
@@ -883,11 +964,13 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
                         //if (screw.tighteningprocess.Angle == "0000")
                         if (!screw.tighteningprocess.status)
                         {
-                            RequestCreateTextBox($"{screw.tighteningprocess.Torque.Substring(0, 2)}.{screw.tighteningprocess.Torque.Substring(2, 2)} Nw | {screw.tighteningprocess.Angle.TrimStart('0')} °", screw.text_position_X, screw.text_position_Y, true);
+                            RequestCreateTextBox($"{screw.tighteningprocess.Torque.Substring(0, 2)}.{screw.tighteningprocess.Torque.Substring(2, 2)} Nw | {screw.tighteningprocess.Angle.TrimStart('0')} °", screw.text_position_X, screw.text_position_Y, 100, 30, true);
+                            await DrawingSight(screw.sight_position_X, screw.sight_position_Y, eStyleText.Error);
                         }
                         else
                         {
-                            RequestCreateTextBox($"{screw.tighteningprocess.Torque.Substring(0, 2)}.{screw.tighteningprocess.Torque.Substring(2, 2)} Nw | {screw.tighteningprocess.Angle.TrimStart('0')} °", screw.text_position_X, screw.text_position_Y);
+                            RequestCreateTextBox($"{screw.tighteningprocess.Torque.Substring(0, 2)}.{screw.tighteningprocess.Torque.Substring(2, 2)} Nw | {screw.tighteningprocess.Angle.TrimStart('0')} °", screw.text_position_X, screw.text_position_Y, 100, 30);
+                            await DrawingSight(screw.sight_position_X, screw.sight_position_Y, eStyleText.Success);
                         }
 
                     }
@@ -929,13 +1012,16 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
                 await sensorsIO.WaitingResponseByTime(_cancellationTokenSource, sensorCheck, time);
             }
         }
-        public override void RequestCreateTextBox(string msg, int PositionX, int PositionY, bool hasError = false)
+        public override void RequestCreateTextBox(string msg, int PositionX, int PositionY, int Width, int Height, bool hasError = false, eStyleText eStyleText = eStyleText.None)
         {
             OnCreateTextBoxRequested(new TextBoxInfoEventArgs
             {
                 Text = msg,
                 Position = new System.Windows.Point(PositionX, PositionY),
-                HasError = hasError
+                HasError = hasError,
+                eStyleText = eStyleText,
+                Height = Height,
+                Width = Width
             });
         }
 

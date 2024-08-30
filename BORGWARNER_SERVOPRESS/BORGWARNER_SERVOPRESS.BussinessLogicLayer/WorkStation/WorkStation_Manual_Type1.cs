@@ -49,19 +49,19 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
         {
             showMessageAndImage("Esperamos pallet en Pre-Stopper", "GNC_Mask.png");
             //RequestCreateTextBox("Entranndo desde la vista (╯°□°)╯︵ ʞooqǝɔɐɟ ", 50, 100);
-            RequestCreateTextBox("Torque: 102.12 ", 0, -150);            
-            RequestCreateTextBox("5 Nm 30° ", 350, -150);
-            RequestCreateTextBox("Angulo: 102.12' ", 40, -60);
+            RequestCreateTextBox("Torque: 102.12 ", 0, -150,100,30);            
+            RequestCreateTextBox("5 Nm 30° ", 350, -150, 100, 30);
+            RequestCreateTextBox("Angulo: 102.12' ", 40, -60,100, 30);
             Debug.WriteLine($"{DateTime.Now} - "  + "Path de Imagenes:" + sessionApp.PathOperationalImages);
             await Task.Run(() =>
             {
                 Thread.Sleep(3000);
                 RequestRemoveTextBox();
-                RequestCreateTextBox("(╯°□°)╯", 50, 100);
+                RequestCreateTextBox("(╯°□°)╯", 50, 100, 100, 30);
                 showMessageAndImage("SCANNER 1 LEE CODIGO SERIAL: ", "GNC_PalletInHousing.jpg");
                 Thread.Sleep(3000);
                 RequestRemoveTextBox();
-                RequestCreateTextBox(" ʕ•ᴥ•ʔ​​ ", 0, 0);
+                RequestCreateTextBox(" ʕ•ᴥ•ʔ​​ ", 0, 0, 100, 30);
                 showMessageAndImage("La informacion correspondiente a los tornillos esta incompleta");
                 Thread.Sleep(3000);
                 RequestRemoveTextBox();
@@ -464,7 +464,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
             sessionApp.TaksRunExecuting = false;
         */}
 
-        public override void RequestCreateTextBox(string msg, int PositionX, int PositionY, bool HasError = false)
+        public override void RequestCreateTextBox(string msg, int PositionX, int PositionY,int Width, int Height, bool HasError = false, eStyleText eStyleText = eStyleText.None)
         {
             throw new NotImplementedException();
         }

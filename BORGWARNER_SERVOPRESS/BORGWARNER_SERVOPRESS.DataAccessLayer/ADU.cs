@@ -86,8 +86,8 @@ namespace BORGWARNER_SERVOPRESS.DataAccessLayer
                 String Response;
                 sResponse.Append("No Data");
                 // The preloaded string is "+++No Data+++" which will be displayed if there is no returned data.
-                iRC = ModuleADUImport.ReadAduDevice(aduHandle, sResponse, 7, iBytesRead, 500);
-                Response = sResponse.ToString();
+                //iRC = ModuleADUImport.ReadAduDevice(aduHandle, sResponse, 7, iBytesRead, 500);
+                //Response = sResponse.ToString();
                 //Displays the received ASCII string in the Textbox
             }
             catch (Exception ex)

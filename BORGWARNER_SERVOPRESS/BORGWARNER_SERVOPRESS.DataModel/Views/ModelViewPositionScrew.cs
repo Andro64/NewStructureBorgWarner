@@ -17,7 +17,8 @@ namespace BORGWARNER_SERVOPRESS.DataModel.Views
         private int _id_model_screw;
         private int _text_position_X;
         private int _text_position_Y;
-
+        private int _sight_position_X;
+        private int _sight_position_Y;
         public int id
         {
             get { return _id; }
@@ -115,7 +116,30 @@ namespace BORGWARNER_SERVOPRESS.DataModel.Views
             }
         }
 
-
+        public int sight_position_X
+        {
+            get { return _sight_position_X; }
+            set
+            {
+                if (_sight_position_X != value)
+                {
+                    _sight_position_X = value;
+                    OnPropertyChanged(nameof(sight_position_X));
+                }
+            }
+        }
+        public int sight_position_Y
+        {
+            get { return _sight_position_Y; }
+            set
+            {
+                if (_sight_position_Y != value)
+                {
+                    _sight_position_Y = value;
+                    OnPropertyChanged(nameof(sight_position_Y));
+                }
+            }
+        }
 
         public bool IsValid()
         {

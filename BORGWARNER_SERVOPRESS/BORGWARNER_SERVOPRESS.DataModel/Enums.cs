@@ -60,4 +60,12 @@ namespace BORGWARNER_SERVOPRESS.DataModel
         BREQ,
         BCMP
     }
+    public enum eStyleText
+    {
+        None = 0,
+        Normal = 1,
+        Error = 2,
+        Success = 3,
+        InPosition = 4
+    }
 }

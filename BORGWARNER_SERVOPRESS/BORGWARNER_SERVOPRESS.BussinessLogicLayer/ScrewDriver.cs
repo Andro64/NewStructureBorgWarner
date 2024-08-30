@@ -304,7 +304,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer
             ScrewingResult result;
             //sessionApp.messageTorque = "...";
             screw.tighteningprocess.result = false;
-            await Task.Delay(500);
+            await Task.Delay(100);
             connect();
             if (isConnected())
             {

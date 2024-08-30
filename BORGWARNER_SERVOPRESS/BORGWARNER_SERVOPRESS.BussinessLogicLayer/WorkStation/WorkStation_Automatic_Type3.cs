@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BORGWARNER_SERVOPRESS.DataModel;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -19,7 +20,7 @@ namespace BORGWARNER_SERVOPRESS.BussinessLogicLayer.WorkStation
         }
                
 
-        public override void RequestCreateTextBox(string msg, int PositionX, int PositionY, bool HasError = false)
+        public override void RequestCreateTextBox(string msg, int PositionX, int PositionY, int Width, int Height, bool HasError = false, eStyleText eStyleText = eStyleText.None)
         {
             throw new NotImplementedException();
         }

@@ -40,7 +40,9 @@ namespace BORGWARNER_SERVOPRESS.DataAccessLayer
                     id_model_screw = row.Field<int>("id_model_screw"),
                     desc_model = row.Field<string>("name_model"),
                     text_position_X = row.Field<int>("text_position_X"),
-                    text_position_Y = row.Field<int>("text_position_Y")
+                    text_position_Y = row.Field<int>("text_position_Y"),
+                    sight_position_X = row.Field<int>("sight_position_X"),
+                    sight_position_Y = row.Field<int>("sight_position_Y")
                 }).ToList();
 
             }
@@ -190,6 +192,8 @@ namespace BORGWARNER_SERVOPRESS.DataAccessLayer
                     id_model_screw = row.Field<int>("id_model_screw"),
                     text_position_X = row.Field<int>("text_position_X"),
                     text_position_Y = row.Field<int>("text_position_Y"),
+                    sight_position_X = row.Field<int>("sight_position_X"),
+                    sight_position_Y = row.Field<int>("sight_position_Y")
                 }).ToList();
 
             }
@@ -215,7 +219,9 @@ namespace BORGWARNER_SERVOPRESS.DataAccessLayer
                     new MySqlParameter("p_tolerance", MySqlDbType.Double) { Value = ModelViewPositionScrew.tolerance },
                     new MySqlParameter("p_id_model_screw", MySqlDbType.Int32) { Value = ModelViewPositionScrew.id_model_screw },
                     new MySqlParameter("p_text_position_X", MySqlDbType.Int32) { Value = ModelViewPositionScrew.text_position_X },
-                    new MySqlParameter("p_text_position_Y", MySqlDbType.Int32) { Value = ModelViewPositionScrew.text_position_Y }
+                    new MySqlParameter("p_text_position_Y", MySqlDbType.Int32) { Value = ModelViewPositionScrew.text_position_Y },
+                    new MySqlParameter("p_sight_position_X", MySqlDbType.Int32) { Value = ModelViewPositionScrew.sight_position_X },
+                    new MySqlParameter("p_sight_position_Y", MySqlDbType.Int32) { Value = ModelViewPositionScrew.sight_position_Y }
                 });
             }
             catch (Exception ex)
